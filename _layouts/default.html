@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    {% include head.html %}
+</head>
+
+<body>
+    <!-- Top Bar -->
+    {% include topbar.html %}
+
+    <!-- Navigation -->
+    {% include header.html %}
+
+    <!-- Mobile Menu -->
+    {% include mobile-menu.html %}
+
+    {{ content }}
+
+    <!-- Quote Form -->
+    {% include quote-form.html %}
+
+    <!-- Testimonials -->
+    {% include testimonials.html %}
+
+    <!-- Contact Section -->
+    {% include contact.html %}
+
+    <!-- Footer -->
+    {% include footer.html %}
+
+    <script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+</body>
+
+</html>

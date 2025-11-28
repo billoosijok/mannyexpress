@@ -1,0 +1,19 @@
+<div id="mobileMenu" class="mobile-menu">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <div class="logo-title" style="font-size: 1.2rem;">MANNY EXPRESS</div>
+            <button id="mobileMenuClose" class="mobile-menu-btn" aria-label="Close menu" style="display: block;">
+                <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mobile-nav">
+            <a href="{{ '/' | relative_url }}" class="mobile-nav-link">Accueil</a>
+            <a href="{{ '/particuler.html' | relative_url }}" class="mobile-nav-link">Particulier</a>
+            <a href="{{ '/entreprises.html' | relative_url }}" class="mobile-nav-link">Entreprises</a>
+            <a href="{{ '/index.html#contact' | relative_url }}" class="mobile-nav-link">Contact</a>
+        </nav>
+    </div>
+</div>

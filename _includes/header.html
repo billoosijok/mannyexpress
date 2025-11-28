@@ -1,0 +1,25 @@
+<nav class="navbar">
+    <div class="container nav-content">
+        <a href="{{ '/' | relative_url }}" class="logo-section">
+            <img src="{{ '/assets/img/logo.svg' | relative_url }}" alt="Manny Express" class="logo-img" />
+            <div class="logo-title">MANNY EXPRESS</div>
+        </a>
+        <div class="nav-links">
+            <a href="{{ '/' | relative_url }}"
+                class="nav-link {% if page.url == '/' or page.url == '/index.html' %}active{% endif %}">Accueil</a>
+            <a href="{{ '/particuler.html' | relative_url }}"
+                class="nav-link {% if page.url == '/particuler.html' or page.url == '/particuler' %}active{% endif %}">Particulier</a>
+            <a href="{{ '/entreprises.html' | relative_url }}"
+                class="nav-link {% if page.url == '/entreprises.html' or page.url == '/entreprises' %}active{% endif %}">Entreprises</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#quote" class="btn btn-primary">Devis Gratuit</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <svg class="icon-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</nav>

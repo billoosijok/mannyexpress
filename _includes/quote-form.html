@@ -1,0 +1,76 @@
+<section id="quote" class="quote-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" style="color: white; margin-bottom: 0.5rem;">DEMANDEZ VOTRE DEVIS GRATUIT</h2>
+            <h2 class="section-title" style="color: white; margin-top: 0;">DÈS MAINTENANT</h2>
+        </div>
+        <div class="quote-form-wrapper">
+            <form class="quote-form" id="quoteForm">
+
+                <!-- Row 1: Contact Info (3 cols) -->
+                <div class="form-row three-cols">
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Téléphone *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                </div>
+
+                <!-- Row 2: Addresses (2 cols) -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="from">Adresse complète de départ (étage, etc) *</label>
+                        <input type="text" id="from" name="from" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="to">Adresse complète d'arrivée (étage, etc) *</label>
+                        <input type="text" id="to" name="to" required>
+                    </div>
+                </div>
+
+                <!-- Row 3: Details (2 cols) -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="surface">Surface (m²)</label>
+                        <input type="number" id="surface" name="surface" min="0" placeholder="Ex: 50">
+                    </div>
+                    <div class="form-group">
+                        <label for="tier">Formule</label>
+                        <select id="tier" name="tier">
+                            <option value="" disabled selected>Choisir une formule</option>
+                            <option value="eco">Eco</option>
+                            <option value="standard">Standard</option>
+                            <option value="luxe">Luxe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 3: Dates (2 cols) -->
+                <!-- Row 3: Date -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date">
+                    </div>
+                </div>
+
+                <!-- Row 4: Message -->
+                <div class="form-group">
+                    <label for="message">Details supplementaire</label>
+                    <textarea id="message" name="message" rows="4"></textarea>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-submit">ENVOYEZ VOTRE DEMANDE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

@@ -33,16 +33,17 @@ Then open your browser to `http://localhost:8000`
 
 ## 📁 Project Structure
 
-```
 mannyexpress/
 ├── index.html          # Main HTML file
-├── styles.css          # All styles
-├── script.js           # JavaScript functionality
-├── assets/             # Images and media
-│   ├── logo.svg
-│   └── hero.webp
+├── assets/             # Assets directory
+│   ├── css/            # Stylesheets
+│   │   └── styles.css
+│   ├── js/             # JavaScript files
+│   │   └── script.js
+│   └── img/            # Images and media
+│       ├── logo.svg
+│       └── hero.webp
 └── README.md
-```
 
 ## 🌟 Features
 
