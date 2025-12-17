@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Manny Express - Entreprise de déménagement
-description: Service de déménagement professionnel et rapide. Tarifs compétitifs, équipe expérimentée.
+title: {{ site.data.i18n[site.active_lang].index_title }}
+description: {{ site.data.i18n[site.active_lang].index_desc }}
 ---
 
 <!-- Hero Section -->
@@ -10,13 +10,13 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
   <div class="container hero-container">
     <div class="hero-content">
       <h1 class="hero-title">
-        Déménagement sans stress avec Manny Express
+        {{ site.data.i18n[site.active_lang].hero_title }}
       </h1>
       <p class="hero-description">
-        Du petit déménagement au grand transfert, notre équipe d'experts rend votre relocation facile.
+        {{ site.data.i18n[site.active_lang].hero_desc }}
       </p>
       <div class="hero-cta">
-        <a href="#quote" class="btn btn-primary btn-lg">Devis Gratuit</a>
+        <a href="#quote" class="btn btn-primary btn-lg">{{ site.data.i18n[site.active_lang].quote }}</a>
       </div>
     </div>
   </div>
@@ -26,9 +26,9 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
 <section id="services" class="services-section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Nos services de déménagement</h2>
+      <h2 class="section-title">{{ site.data.i18n[site.active_lang].services_title }}</h2>
       <p style="color: var(--text-gray); max-width: 600px; margin: 0 auto;">
-        Des solutions complètes pour tous vos besoins de déménagement, du local à l'international.
+        {{ site.data.i18n[site.active_lang].services_subtitle }}
       </p>
     </div>
     <div class="services-grid">
@@ -45,11 +45,12 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
               </path>
             </svg>
           </div>
-          <h3 class="service-title">Déménagement Longue Distance</h3>
+          <h3 class="service-title">{{ site.data.i18n[site.active_lang].long_distance }}</h3>
           <p class="service-description">
-            Service complet pour vos déménagements interurbains.
+            {{ site.data.i18n[site.active_lang].long_distance_desc }}
           </p>
-          <a href="{{ '/particuler.html' | relative_url }}" class="service-link">En savoir plus &rarr;</a>
+          <a href="{{ '/particuler.html' | relative_url }}" class="service-link">{{
+            site.data.i18n[site.active_lang].read_more }} &rarr;</a>
         </div>
       </div>
 
@@ -66,11 +67,12 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
           </div>
-          <h3 class="service-title">Déménagement Local</h3>
+          <h3 class="service-title">{{ site.data.i18n[site.active_lang].local_move }}</h3>
           <p class="service-description">
-            Déménagez facilement et rapidement dans votre région.
+            {{ site.data.i18n[site.active_lang].local_move_desc }}
           </p>
-          <a href="{{ '/particuler.html' | relative_url }}" class="service-link">En savoir plus &rarr;</a>
+          <a href="{{ '/particuler.html' | relative_url }}" class="service-link">{{
+            site.data.i18n[site.active_lang].read_more }} &rarr;</a>
         </div>
       </div>
 
@@ -86,11 +88,11 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
               </path>
             </svg>
           </div>
-          <h3 class="service-title">Déménagement International</h3>
+          <h3 class="service-title">{{ site.data.i18n[site.active_lang].intl_move }}</h3>
           <p class="service-description">
-            Partez à l'étranger ou revenez en France en toute sérénité.
+            {{ site.data.i18n[site.active_lang].intl_move_desc }}
           </p>
-          <a href="#contact" class="service-link">En savoir plus &rarr;</a>
+          <a href="#contact" class="service-link">{{ site.data.i18n[site.active_lang].read_more }} &rarr;</a>
         </div>
       </div>
 
@@ -106,11 +108,12 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
               </path>
             </svg>
           </div>
-          <h3 class="service-title">Déménagement d'Entreprise</h3>
+          <h3 class="service-title">{{ site.data.i18n[site.active_lang].corp_move }}</h3>
           <p class="service-description">
-            Transfert de bureaux et relocation d'employés.
+            {{ site.data.i18n[site.active_lang].corp_move_desc }}
           </p>
-          <a href="{{ '/entreprises.html' | relative_url }}" class="service-link">En savoir plus &rarr;</a>
+          <a href="{{ '/entreprises.html' | relative_url }}" class="service-link">{{
+            site.data.i18n[site.active_lang].read_more }} &rarr;</a>
         </div>
       </div>
 
@@ -127,11 +130,11 @@ description: Service de déménagement professionnel et rapide. Tarifs compétit
                 d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
             </svg>
           </div>
-          <h3 class="service-title">Emballage Professionnel</h3>
+          <h3 class="service-title">{{ site.data.i18n[site.active_lang].packing }}</h3>
           <p class="service-description">
-            Emballage soigné pour protéger vos objets.
+            {{ site.data.i18n[site.active_lang].packing_desc }}
           </p>
-          <a href="#contact" class="service-link">En savoir plus &rarr;</a>
+          <a href="#contact" class="service-link">{{ site.data.i18n[site.active_lang].read_more }} &rarr;</a>
         </div>
       </div>
 

@@ -9,3 +9,7 @@ github_username:  jekyll
 
 # Build settings
 theme: jekyll-theme-minimal
+
+languages: ["fr", "en"]
+default_lang: "fr"
+exclude_from_localization: ["javascript", "images", "css", "assets", "Gemfile", "Gemfile.lock", "_site", "node_modules"]

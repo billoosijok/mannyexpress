@@ -3,9 +3,9 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const cors = require("cors")({
     origin: [
+        "https://mannyexpress.com",
         "https://manny-express.web.app",
         "https://manny-express.firebaseapp.com",
-        "http://localhost:4000",
     ],
 });
 

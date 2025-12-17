@@ -1,56 +1,59 @@
 <section class="services-section" style="background-color: var(--bg-light); padding: 4rem 0;">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Nos Formules</h2>
+            <h2 class="section-title">{{ site.data.i18n[site.active_lang].tiers_title }}</h2>
             <p style="color: var(--text-gray); max-width: 600px; margin: 0 auto;">
-                Choisissez la formule qui correspond le mieux à vos besoins.
+                {{ site.data.i18n[site.active_lang].tiers_subtitle }}
             </p>
         </div>
         <div class="pricing-grid">
 
             <!-- SIMPLE -->
             <div class="pricing-card">
-                <h3 class="pricing-title">SIMPLE</h3>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">L'essentiel pour un déménagement
-                    économique.</p>
+                <h3 class="pricing-title">{{ site.data.i18n[site.active_lang].tier_simple }}</h3>
+                <p style="color: var(--text-gray); margin-bottom: 1rem;">{{
+                    site.data.i18n[site.active_lang].tier_simple_desc }}</p>
                 <ul class="pricing-features">
-                    <li>Chargement</li>
-                    <li>Transport sécurisé</li>
-                    <li>Déchargement</li>
-                    <li>Protection du mobilier</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_simple_f1 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_simple_f2 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_simple_f3 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_simple_f4 }}</li>
                 </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Simple</a>
+                <a href="#quote" class="btn btn-primary" style="width: 100%;">{{
+                    site.data.i18n[site.active_lang].tier_simple_btn }}</a>
             </div>
 
             <!-- STANDARD -->
             <div class="pricing-card featured">
                 <div
                     style="background: var(--accent-blue); color: white; padding: 0.25rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; align-self: center; margin-bottom: 1rem;">
-                    POPULAIRE</div>
-                <h3 class="pricing-title">STANDARD</h3>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">Le parfait équilibre entre service et
-                    budget.</p>
+                    {{ site.data.i18n[site.active_lang].tier_standard_badge }}</div>
+                <h3 class="pricing-title">{{ site.data.i18n[site.active_lang].tier_standard }}</h3>
+                <p style="color: var(--text-gray); margin-bottom: 1rem;">{{
+                    site.data.i18n[site.active_lang].tier_standard_desc }}</p>
                 <ul class="pricing-features">
-                    <li>Tout de la formule Simple</li>
-                    <li>Démontage des meubles</li>
-                    <li>Remontage des meubles</li>
-                    <li>Mise en place des cartons</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_standard_f1 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_standard_f2 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_standard_f3 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_standard_f4 }}</li>
                 </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Standard</a>
+                <a href="#quote" class="btn btn-primary" style="width: 100%;">{{
+                    site.data.i18n[site.active_lang].tier_standard_btn }}</a>
             </div>
 
             <!-- LUXE -->
             <div class="pricing-card">
-                <h3 class="pricing-title">LUXE</h3>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">Service clé en main pour une tranquillité
-                    totale.</p>
+                <h3 class="pricing-title">{{ site.data.i18n[site.active_lang].tier_luxe }}</h3>
+                <p style="color: var(--text-gray); margin-bottom: 1rem;">{{
+                    site.data.i18n[site.active_lang].tier_luxe_desc }}</p>
                 <ul class="pricing-features">
-                    <li>Tout de la formule Standard</li>
-                    <li>Emballage complet (vaisselle, vêtements...)</li>
-                    <li>Fourniture des cartons</li>
-                    <li>Déballage des objets fragiles</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_luxe_f1 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_luxe_f2 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_luxe_f3 }}</li>
+                    <li>{{ site.data.i18n[site.active_lang].tier_luxe_f4 }}</li>
                 </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Luxe</a>
+                <a href="#quote" class="btn btn-primary" style="width: 100%;">{{
+                    site.data.i18n[site.active_lang].tier_luxe_btn }}</a>
             </div>
 
         </div>

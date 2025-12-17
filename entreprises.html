@@ -1,16 +1,16 @@
 ---
 layout: default
-title: Déménagement Entreprises - Manny Express
-description: Solutions de déménagement pour entreprises. Transfert de bureaux, relocation d'employés.
+title: {{ site.data.i18n[site.active_lang].entreprises_title }}
+description: {{ site.data.i18n[site.active_lang].entreprises_desc }}
 ---
 
 <!-- Page Header -->
 <header class="page-header entreprises">
     <div class="page-header-bg"></div>
     <div class="container page-header-content">
-        <h1 class="page-title">Déménagement d'Entreprise</h1>
+        <h1 class="page-title">{{ site.data.i18n[site.active_lang].entreprises_header_title }}</h1>
         <p class="page-subtitle">
-            Des solutions professionnelles pour minimiser l'impact sur votre activité.
+            {{ site.data.i18n[site.active_lang].entreprises_header_subtitle }}
         </p>
     </div>
 </header>
@@ -32,10 +32,9 @@ description: Solutions de déménagement pour entreprises. Transfert de bureaux,
                             </path>
                         </svg>
                     </div>
-                    <h3 class="service-title">Transfert de Bureaux</h3>
+                    <h3 class="service-title">{{ site.data.i18n[site.active_lang].office_transfer }}</h3>
                     <p class="service-description">
-                        Déménagement complet de vos locaux professionnels. Gestion de l'informatique, du mobilier et des
-                        archives.
+                        {{ site.data.i18n[site.active_lang].office_transfer_desc }}
                     </p>
                 </div>
             </div>
@@ -52,10 +51,9 @@ description: Solutions de déménagement pour entreprises. Transfert de bureaux,
                             </path>
                         </svg>
                     </div>
-                    <h3 class="service-title">Relocation d'Employés</h3>
+                    <h3 class="service-title">{{ site.data.i18n[site.active_lang].employee_relocation }}</h3>
                     <p class="service-description">
-                        Accompagnement de vos collaborateurs dans leur mobilité géographique. Recherche de logement et
-                        installation.
+                        {{ site.data.i18n[site.active_lang].employee_relocation_desc }}
                     </p>
                 </div>
             </div>
@@ -74,9 +72,9 @@ description: Solutions de déménagement pour entreprises. Transfert de bureaux,
                             </path>
                         </svg>
                     </div>
-                    <h3 class="service-title">Logistique & Manutention</h3>
+                    <h3 class="service-title">{{ site.data.i18n[site.active_lang].logistics }}</h3>
                     <p class="service-description">
-                        Transport de matériel lourd, machines et équipements spécifiques. Solutions sur mesure.
+                        {{ site.data.i18n[site.active_lang].logistics_desc }}
                     </p>
                 </div>
             </div>
@@ -85,7 +83,7 @@ description: Solutions de déménagement pour entreprises. Transfert de bureaux,
 
         <div class="hero-cta" style="margin-top: 3rem; text-align: center;">
             <a href="#quote" class="btn btn-primary btn-lg">
-                Demander un devis entreprise
+                {{ site.data.i18n[site.active_lang].entreprises_cta }}
             </a>
         </div>
     </div>

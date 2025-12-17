@@ -5,13 +5,12 @@
                 <img src="{{ '/assets/img/logo.svg' | relative_url }}" alt="Manny Express" class="footer-logo"
                     style="width: 120px; margin-bottom: 1rem;">
                 <p class="footer-description">
-                    Nous sommes une entreprise de déménagement professionnelle dédiée
-                    à fournir un service exceptionnel et la satisfaction de la
-                    clientèle.
+                    {{ site.data.i18n[site.active_lang].footer_desc }}
                 </p>
             </div>
             <div class="footer-social">
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Suivez-nous</h3>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">{{ site.data.i18n[site.active_lang].follow_us }}
+                </h3>
                 <div class="footer-social-links">
                     <a href="https://www.facebook.com/profile.php?id=61577660656772" class="footer-social-link"
                         aria-label="Facebook">
@@ -41,7 +40,8 @@
         </div>
         <div class="footer-bottom">
             <p>
-                &copy; {{ site.time | date: '%Y' }} Manny Express. Tous droits réservés. <br>
+                &copy; {{ site.time | date: '%Y' }} Manny Express. {{ site.data.i18n[site.active_lang].rights_reserved
+                }} <br>
                 SIRET : 95258964600019
             </p>
         </div>
