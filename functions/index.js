@@ -62,9 +62,15 @@ exports.sendQuoteEmail = functions.https.onRequest((req, res) => {
 
         try {
             await transporter.sendMail(mailOptions);
+            functions.logger.info("Email sent successfully", {
+                name,
+                email,
+                from,
+                to
+            });
             res.status(200).send({ success: true, message: "Email sent successfully" });
         } catch (error) {
-            console.error("Error sending email:", error);
+            functions.logger.error("Error sending email", error);
             res.status(500).send({ success: false, error: error.message });
         }
     });

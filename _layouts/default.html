@@ -30,6 +30,16 @@
     {% include footer.html %}
 
     <script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVM3Z8D6ZX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GVM3Z8D6ZX');
+    </script>
 </body>
 
 </html>
