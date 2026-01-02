@@ -40,6 +40,10 @@ exports.sendQuoteEmail = functions.https.onRequest((req, res) => {
             message,
         } = req.body;
 
+        if (!email) {
+            return res.status(400).send({ success: false, error: "Email is required" });
+        }
+
         const mailOptions = {
             from: `Manny Express Website <${functions.config().gmail.email}>`,
             to: "mannyexpress11@gmail.com",
