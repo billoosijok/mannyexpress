@@ -130,4 +130,82 @@ document.addEventListener('DOMContentLoaded', function () {
             pricingGrid.scrollLeft = scrollLeft;
         }
     }
+
+    // Testimonials Carousel
+    const track = document.querySelector('.testimonials-track');
+    if (track) {
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const cards = Array.from(track.children);
+
+        // Configuration
+        const GAP = 24; // 1.5rem = 24px
+        let currentIndex = 0;
+
+        function updateSlider() {
+            // Calculate width of one card + gap
+            const cardWidth = cards[0].getBoundingClientRect().width;
+            const slideWidth = cardWidth + GAP;
+
+            // Move track
+            track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+            // Update button states
+            updateButtonState();
+        }
+
+        function getVisibleCards() {
+            if (window.innerWidth >= 1024) return 3;
+            if (window.innerWidth >= 768) return 2;
+            return 1;
+        }
+
+        function updateButtonState() {
+            const visibleCards = getVisibleCards();
+            const totalCards = cards.length;
+            const maxIndex = totalCards - visibleCards;
+
+            // Disable/Enable buttons logic can be added here if we want to stop at ends
+            // For loop capability, we handle logic in click events
+            prevBtn.style.opacity = currentIndex <= 0 ? '0.5' : '1';
+            prevBtn.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
+
+            nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+            nextBtn.style.cursor = currentIndex >= maxIndex ? 'default' : 'pointer';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            const visibleCards = getVisibleCards();
+            const totalCards = cards.length;
+            const maxIndex = totalCards - visibleCards;
+
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+                updateSlider();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlider();
+            }
+        });
+
+        // Initialize
+        updateButtonState();
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // Reset to 0 or clamp current index on resize
+                const visibleCards = getVisibleCards();
+                const maxIndex = cards.length - visibleCards;
+                if (currentIndex > maxIndex) currentIndex = maxIndex;
+                updateSlider();
+            }, 100);
+        });
+    }
 });

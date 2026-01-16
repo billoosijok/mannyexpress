@@ -526,53 +526,141 @@ a {
     gap: 0.75rem;
 }
 
-/* Testimonials */
+/* Testimonials Slider */
 .testimonials-section {
-    padding: 2rem 0;
+    padding: 3rem 0;
     background-color: var(--bg-light);
 }
 
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    max-width: 1200px;
+.testimonials-slider-container {
+    position: relative;
+    max-width: 1000px;
     margin: 0 auto;
+    padding: 0 3rem;
+}
+
+.testimonials-track-wrapper {
+    overflow: hidden;
+    margin: 0 -1rem;
+    /* Negative margin to compensate for card padding/gap if needed */
+    padding: 1rem;
+}
+
+.testimonials-track {
+    display: flex;
+    gap: 1.5rem;
+    transition: transform 0.5s ease;
 }
 
 .testimonial-card {
+    flex: 0 0 calc(100% - 1.5rem);
+    /* Default to 1 card per view on mobile */
+    min-width: 0;
+    /* Fix flexbox overflow issue */
     background: var(--white);
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    height: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    height: auto;
     display: flex;
     flex-direction: column;
+}
+
+/* Responsive cards */
+@media (min-width: 768px) {
+    .testimonial-card {
+        flex: 0 0 calc(50% - 1.5rem);
+        /* 2 cards per view on tablet */
+    }
+}
+
+@media (min-width: 1024px) {
+    .testimonial-card {
+        flex: 0 0 calc(33.333% - 1.5rem);
+        /* 3 cards per view on desktop */
+    }
+}
+
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    color: var(--primary-blue);
+    transition: all 0.3s;
+}
+
+.slider-btn:hover {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+
+.testimonial-header {
+    display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.testimonial-author-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.testimonial-author-info h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.1rem;
+    color: var(--text-dark);
+}
+
+.testimonial-date {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.google-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.testimonial-rating-row {
+    margin-bottom: 0.75rem;
 }
 
 .testimonial-stars {
     color: #FFD700;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
 }
 
 .testimonial-quote {
     font-size: 0.9rem;
-    font-style: italic;
     color: var(--text-dark);
-    margin-bottom: 1rem;
-    line-height: 1.4;
-}
-
-.testimonial-author h4 {
-    font-size: 0.9rem;
-    margin-bottom: 0;
-}
-
-.testimonial-author p {
-    font-size: 0.8rem;
+    line-height: 1.5;
+    flex-grow: 1;
 }
 
 /* Contact Section */
@@ -967,7 +1055,7 @@ input[type="date"] {
     background: white;
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-dark);
@@ -996,7 +1084,7 @@ input[type="date"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,114,206,0.4);
+    box-shadow: 0 4px 12px rgba(0, 114, 206, 0.4);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     border: none;
@@ -1015,8 +1103,15 @@ input[type="date"] {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
@@ -1024,9 +1119,9 @@ input[type="date"] {
         bottom: 1.5rem;
         right: 1.5rem;
     }
-    
+
     .call-bubble {
-       font-size: 0.8rem;
-       padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
     }
 }
