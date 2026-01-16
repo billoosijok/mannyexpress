@@ -950,3 +950,83 @@ input[type="date"] {
         font-size: 1.5rem;
     }
 }
+
+/* Sticky Call Button */
+.sticky-call-wrapper {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.call-bubble {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    position: relative;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.call-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: white;
+    transform: rotate(45deg);
+}
+
+.sticky-call-btn {
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: var(--accent-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,114,206,0.4);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    border: none;
+    color: white;
+}
+
+.sticky-call-btn:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-blue);
+}
+
+.sticky-call-btn svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .sticky-call-wrapper {
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    
+    .call-bubble {
+       font-size: 0.8rem;
+       padding: 0.5rem 0.75rem;
+    }
+}

@@ -1,0 +1,26 @@
+# Contexte du Projet Manny Express
+
+## Vue d'Ensemble
+Manny Express est le site web d'une entreprise de déménagement professionnelle desservant la région de l'Aude en France.
+Le site est construit avec Jekyll, un générateur de site statique, et repose sur du HTML sémantique, du CSS et du JavaScript vanilla.
+
+## Architecture
+- **Framework** : Jekyll (Générateur de Site Statique) / Fallback HTML/CSS pur si Jekyll n'est pas utilisé.
+- **Styles** : CSS personnalisé dans `assets/css/styles.css`.
+- **Scripts** : JavaScript Vanilla dans `assets/js/script.js`.
+- **Hébergement** : Hébergement statique (compatible GitHub Pages / Netlify).
+
+## Informations Clés
+- **Nom de l'Entreprise** : Manny Express
+- **Services** : Déménagement local & longue distance, Montage de meubles, Services d'emballage.
+- **Contact** :
+  - Téléphones : 07 51 16 85 03 / 06 66 18 19 15
+  - Email : mannyexpress11@gmail.com
+  - Localisation : Narbonne / Aude, France
+
+## Structure des Dossiers
+- `_includes/` : Partiels HTML (en-tête, pied de page, formulaires).
+- `_layouts/` : Modèles de pages.
+- `assets/` : Ressources statiques (images, css, js).
+- `index.html` : Page d'accueil.
+- `_config.yml` : Configuration Jekyll.

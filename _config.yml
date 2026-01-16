@@ -9,3 +9,5 @@ github_username:  jekyll
 
 # Build settings
 theme: jekyll-theme-minimal
+plugins:
+  - jekyll-sitemap
