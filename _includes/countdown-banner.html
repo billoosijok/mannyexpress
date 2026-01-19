@@ -1,23 +1,21 @@
 <div id="promo-banner">
     <div class="promo-content">
-        <span class="promo-text">🔥 <strong>LIMITED TIME:</strong> Get 30% OFF any order! Ends in: </span>
-        <span id="countdown-timer">Loading...</span>
-        <a href="#contact" class="promo-btn">Order Now</a>
+        <span class="promo-text">🔥 <strong>OFFRE LIMITÉE :</strong> -30% sur tout le site ! Fin de l'offre : </span>
+        <span id="countdown-timer">Chargement...</span>
+        <a href="#contact" class="promo-btn">Contactez-nous</a>
     </div>
 </div>
 
 <style>
     #promo-banner {
         background-color: #e74c3c;
-        /* Urgent Red Color */
+        /* Rouge Urgent */
         color: white;
         text-align: center;
         padding: 12px 0;
         font-family: 'Poppins', sans-serif;
-        /* Matches your site font */
         position: relative;
         z-index: 9999;
-        /* Ensures it sits on top of everything */
     }
 
     .promo-content {
@@ -34,7 +32,6 @@
         border-radius: 4px;
         font-weight: bold;
         font-family: monospace;
-        /* Makes numbers easier to read */
         font-size: 1.1em;
     }
 
@@ -55,26 +52,27 @@
 </style>
 
 <script>
-    // --- MECHANIC NOTES: SET YOUR END DATE HERE ---
+    // --- REGLAGE MECANO : DATE DE FIN ---
+    // Gardez le mois en anglais pour que le code comprenne (Jan, Feb, Mar...)
     // Format: "Month Day, Year Time"
     var countDownDate = new Date("Jan 26, 2026 23:59:59").getTime();
-    // ----------------------------------------------
+    // ------------------------------------
 
     var x = setInterval(function () {
         var now = new Date().getTime();
         var distance = countDownDate - now;
 
-        // Calculations for days, hours, minutes and seconds
+        // Calcul des jours, heures, minutes et secondes
         var days = Math.floor(distance / (1000 * 60 * 60 * 24));
         var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Display the result
+        // Affichage (j = jours)
         document.getElementById("countdown-timer").innerHTML =
-            days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+            days + "j " + hours + "h " + minutes + "m " + seconds + "s ";
 
-        // If the count down is finished, write some text or hide the banner
+        // Si le compte à rebours est fini, on cache la bannière
         if (distance < 0) {
             clearInterval(x);
             document.getElementById("promo-banner").style.display = "none";
