@@ -105,6 +105,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
 
                 if (response.ok && result.success) {
+                    // Google Ads Conversion Event
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-17649539123/bOV6CK2Lv-gbELOw-t9B'
+                    });
+
                     alert('Votre demande a été envoyée avec succès ! Nous vous contacterons bientôt.');
                     quoteForm.reset();
                 } else {
