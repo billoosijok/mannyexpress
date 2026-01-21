@@ -1,26 +1,23 @@
-# Contexte du Projet Manny Express
+# Déménagement Professionnel à Narbonne | Manny Express
 
-## Vue d'Ensemble
-Manny Express est le site web d'une entreprise de déménagement professionnelle desservant la région de l'Aude en France.
-Le site est construit avec Jekyll, un générateur de site statique, et repose sur du HTML sémantique, du CSS et du JavaScript vanilla.
+Déménagement Professionnel à Narbonne, France avec Manny Express. Services rapides, sans stress, pour déménagements locaux, longue distance et internationaux.
 
-## Architecture
-- **Framework** : Jekyll (Générateur de Site Statique) / Fallback HTML/CSS pur si Jekyll n'est pas utilisé.
-- **Styles** : CSS personnalisé dans `assets/css/styles.css`.
-- **Scripts** : JavaScript Vanilla dans `assets/js/script.js`.
-- **Hébergement** : Hébergement statique (compatible GitHub Pages / Netlify).
+## Informations de Contact
 
-## Informations Clés
-- **Nom de l'Entreprise** : Manny Express
-- **Services** : Déménagement local & longue distance, Montage de meubles, Services d'emballage.
-- **Contact** :
-  - Téléphones : 07 51 16 85 03 / 06 66 18 19 15
-  - Email : mannyexpress11@gmail.com
-  - Localisation : Narbonne / Aude, France
+- [07 51 16 85 03](tel:+33751168503): Numéro de contact pour toute demande concernant les services de déménagement.
+- [06 66 18 19 15](tel:+33666181915): Numéro de contact alternatif pour le support client.
+- [mannyexpress11@gmail.com](mailto:mannyexpress11@gmail.com): Adresse e-mail pour une communication directe et des demandes.
 
-## Structure des Dossiers
-- `_includes/` : Partiels HTML (en-tête, pied de page, formulaires).
-- `_layouts/` : Modèles de pages.
-- `assets/` : Ressources statiques (images, css, js).
-- `index.html` : Page d'accueil.
-- `_config.yml` : Configuration Jekyll.
+## Services Offerts
+
+- [Particulier](https://mannyexpress.com/particuler.html): Services de déménagement spécialisés pour les particuliers, assurant une transition en douceur vers de nouveaux logements.
+- [Entreprises](https://mannyexpress.com/entreprises.html): Solutions de déménagement sur mesure pour les entreprises, visant à minimiser les temps d'arrêt et les perturbations pendant les déménagements.
+- [Déménagement Entreprises - Manny Express](http://mannyexpress.com/entreprises.html): Informations détaillées sur les services de déménagement d'entreprises proposés par Manny Express.
+
+## Ressources Supplémentaires
+
+- [Devis Gratuit](https://mannyexpress.com/#quote): Service de devis gratuit pour estimer les coûts de déménagement en fonction des besoins et exigences spécifiques.
+- [Contactez-nous](https://mannyexpress.com/#contact): Un lien pour nous contacter pour plus d'informations ou pour programmer une consultation.
+- [MANNY EXPRESS](https://mannyexpress.com/): Aperçu de l'entreprise et de son engagement à fournir des services de déménagement professionnels.
+
+Ce résumé structuré fournit une vue d'ensemble claire des services et des options de contact disponibles via Manny Express pour le déménagement professionnel à Narbonne.
