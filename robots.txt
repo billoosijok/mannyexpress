@@ -1,0 +1,4 @@
+Sitemap: https://mannyexpress.com/sitemap.xml
+
+User-agent: *
+Allow: /
