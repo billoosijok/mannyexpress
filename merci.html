@@ -1,12 +1,49 @@
+---
+title: Merci pour votre demande | Manny Express
+description: Votre demande de devis a été envoyée avec succès. Notre équipe vous contactera rapidement.
+---
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Merci pour votre demande</title>
+    {% include head.html %}
 </head>
-<body style="font-family: Arial; text-align: center; padding: 50px;">
-  <h1>✅ Merci pour votre demande</h1>
-  <p>Nous avons bien reçu votre demande de devis.</p>
-  <p>Notre équipe vous contactera très rapidement.</p>
+
+<body>
+    <!-- Navigation -->
+    {% include header.html %}
+
+    <!-- Thank You Section -->
+    <section class="thank-you-section">
+        <div class="container">
+            <div class="thank-you-content">
+                <div class="thank-you-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="80" height="80">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <h1>Merci pour votre demande !</h1>
+                <p class="thank-you-message">Nous avons bien recu votre demande de devis.</p>
+                <p class="thank-you-submessage">Notre equipe vous contactera dans les plus brefs delais pour discuter de votre projet de demenagement.</p>
+                <a href="/" class="btn btn-primary">Retour a l'accueil</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include footer.html %}
+
+    <script src="{{ '/assets/js/script.js' | relative_url }}"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P0NNERE2WH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-P0NNERE2WH');
+    </script>
 </body>
+
 </html>

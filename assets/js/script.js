@@ -105,13 +105,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    // Google Ads Conversion Event
+                    // Google Ads Conversion Event with callback to redirect
                     gtag('event', 'conversion', {
-                        'send_to': 'AW-17649539123/bOV6CK2Lv-gbELOw-t9B'
+                        'send_to': 'AW-17649539123/bOV6CK2Lv-gbELOw-t9B',
+                        'event_callback': function() {
+                            window.location.href = '/merci.html';
+                        }
                     });
 
-                    alert('Votre demande a été envoyée avec succès ! Nous vous contacterons bientôt.');
-                    quoteForm.reset();
+                    // Fallback redirect if gtag callback doesn't fire within 1 second
+                    setTimeout(function() {
+                        window.location.href = '/merci.html';
+                    }, 1000);
                 } else {
                     throw new Error(result.error || 'Une erreur est survenue');
                 }
