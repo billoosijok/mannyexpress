@@ -1192,3 +1192,17 @@ input[type="date"] {
         font-size: 1.1rem;
     }
 }
+
+/* Limiter le texte des avis sur mobile */
+@media (max-width: 768px) {
+    .testimonial-card p, 
+    .testimonial-content, 
+    blockquote p,
+    .customer-review-text { 
+        display: -webkit-box;
+        -webkit-line-clamp: 4; 
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
