@@ -3,19 +3,22 @@ layout: default
 title: Charte Cookies
 ---
 
-# Charte d’utilisation des cookies – Manny Express
+<div style="max-width: 800px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
 
-Chez **Manny Express**, nous attachons une grande importance à la protection de vos données personnelles et à la transparence de nos pratiques numériques.
+<h1 style="color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">CHARTE COOKIES</h1>
 
-Lors de votre navigation sur notre site **mannyexpress.com**, des cookies peuvent être déposés sur votre appareil. Ces petits fichiers texte nous permettent de vous offrir une expérience fluide et optimisée.
+<p>Chez <strong>Manny Express</strong>, nous attachons une grande importance à la protection de vos données personnelles et à la transparence.</p>
 
-### Pourquoi utilisons-nous des cookies ?
-Les cookies que nous utilisons sont nécessaires au bon fonctionnement de notre site et à l'amélioration de nos services. Ils nous permettent notamment de :
-* Faciliter l'utilisation de notre **formulaire de devis gratuit**.
-* Analyser les performances de notre site grâce à des données statistiques anonymes (pages visitées, durée de navigation) afin de vous proposer une expérience plus intuitive.
+<h3 style="color: #0056b3; margin-top: 30px;">Pourquoi utilisons-nous des cookies ?</h3>
+<p>Les cookies utilisés sur ce site servent uniquement à :</p>
+<ul>
+    <li>Faciliter l'utilisation de notre <strong>formulaire de devis gratuit</strong>.</li>
+    <li>Analyser de façon anonyme la fréquentation du site pour améliorer nos services de déménagement.</li>
+</ul>
 
-Nous n'utilisons **aucun cookie publicitaire intrusif**. Les données collectées sont anonymisées et ne permettent pas de vous identifier personnellement.
+<p>Nous n'utilisons aucun cookie publicitaire intrusif.</p>
 
-### Comment gérer ou désactiver les cookies ?
-À tout moment, vous pouvez paramétrer votre navigateur pour bloquer les cookies. 
-👉 [Consultez le site de la CNIL pour savoir comment faire](https://www.cnil.fr/vos-droits/vos-traces/les-cookies)
+<h3 style="color: #0056b3; margin-top: 30px;">Gérer vos préférences</h3>
+<p>Vous pouvez à tout moment configurer votre navigateur pour bloquer les cookies. Pour plus d'informations, consultez le site de la <a href="https://www.cnil.fr/vos-droits/vos-traces/les-cookies" style="color: #0056b3;">CNIL</a>.</p>
+
+</div>
