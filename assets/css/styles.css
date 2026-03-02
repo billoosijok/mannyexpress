@@ -11,6 +11,7 @@
     /* Darker, corporate blue */
     --primary-blue-hover: #00447a;
     --accent-blue: #0072CE;
+    --accent-yellow: #FFD700;
     /* Brighter blue for buttons/links */
     --text-dark: #1a1a1a;
     --text-gray: #555555;
@@ -1110,7 +1111,7 @@ input[type="date"] {
 .sticky-call-btn {
     width: 3.5rem;
     height: 3.5rem;
-    background-color: var(--accent-blue);
+    background-color: var(--accent-yellow);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1119,12 +1120,12 @@ input[type="date"] {
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
     border: none;
-    color: white;
+    color: var(--accent-blue);
 }
 
 .sticky-call-btn:hover {
     transform: scale(1.1);
-    background-color: var(--primary-blue);
+    background-color: var(--accent-blue);
 }
 
 .sticky-call-btn svg {
@@ -1226,12 +1227,13 @@ input[type="date"] {
 
 /* Limiter le texte des avis sur mobile */
 @media (max-width: 768px) {
-    .testimonial-card p, 
-    .testimonial-content, 
+
+    .testimonial-card p,
+    .testimonial-content,
     blockquote p,
-    .customer-review-text { 
+    .customer-review-text {
         display: -webkit-box;
-        -webkit-line-clamp: 4; 
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
