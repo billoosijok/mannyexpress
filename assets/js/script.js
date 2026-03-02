@@ -142,18 +142,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Testimonials Carousel
-    const track = document.querySelector('.testimonials-track');
-    if (track) {
+    function initializeTestimonialSlider() {
+        const track = document.querySelector('.testimonials-track');
+        if (!track) return;
+
         const prevBtn = document.querySelector('.prev-btn');
         const nextBtn = document.querySelector('.next-btn');
-        const cards = Array.from(track.children);
+        let cards = Array.from(track.children);
 
-        // Configuration
-        const GAP = 24; // 1.5rem = 24px
+        // Don't initialize if there are no cards (e.g. still loading or error)
+        if (cards.length === 0 || cards[0].id === 'loading-reviews') return;
+
+        // Reset state
         let currentIndex = 0;
+        const GAP = 24; // 1.5rem = 24px
+
+        // Remove old event listeners by replacing buttons with clones to ensure clean slate
+        // This is important if `initializeTestimonialSlider` is called multiple times
+        const newPrevBtn = prevBtn.cloneNode(true);
+        const newNextBtn = nextBtn.cloneNode(true);
+        if (prevBtn.parentNode) prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+        if (nextBtn.parentNode) nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
 
         function updateSlider() {
-            // Calculate width of one card + gap
+            // Reassign cards in case dom changed
+            cards = Array.from(track.children);
+            if (cards.length === 0) return;
+
             const cardWidth = cards[0].getBoundingClientRect().width;
             const slideWidth = cardWidth + GAP;
 
@@ -161,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
             track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
 
             // Update button states
-            updateButtonState();
+            updateButtonState(cards);
         }
 
         function getVisibleCards() {
@@ -170,24 +185,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return 1;
         }
 
-        function updateButtonState() {
+        function updateButtonState(currentCards) {
             const visibleCards = getVisibleCards();
-            const totalCards = cards.length;
-            const maxIndex = totalCards - visibleCards;
+            const totalCards = currentCards.length;
+            const maxIndex = Math.max(0, totalCards - visibleCards);
 
-            // Disable/Enable buttons logic can be added here if we want to stop at ends
-            // For loop capability, we handle logic in click events
-            prevBtn.style.opacity = currentIndex <= 0 ? '0.5' : '1';
-            prevBtn.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
+            newPrevBtn.style.opacity = currentIndex <= 0 ? '0.5' : '1';
+            newPrevBtn.style.cursor = currentIndex <= 0 ? 'default' : 'pointer';
 
-            nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
-            nextBtn.style.cursor = currentIndex >= maxIndex ? 'default' : 'pointer';
+            newNextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+            newNextBtn.style.cursor = currentIndex >= maxIndex ? 'default' : 'pointer';
         }
 
-        nextBtn.addEventListener('click', () => {
+        newNextBtn.addEventListener('click', () => {
+            const currentCards = Array.from(track.children);
             const visibleCards = getVisibleCards();
-            const totalCards = cards.length;
-            const maxIndex = totalCards - visibleCards;
+            const maxIndex = Math.max(0, currentCards.length - visibleCards);
 
             if (currentIndex < maxIndex) {
                 currentIndex++;
@@ -195,27 +208,41 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        prevBtn.addEventListener('click', () => {
+        newPrevBtn.addEventListener('click', () => {
             if (currentIndex > 0) {
                 currentIndex--;
                 updateSlider();
             }
         });
 
-        // Initialize
-        updateButtonState();
+        // Initialize display
+        track.style.transform = `translateX(0px)`;
+        updateButtonState(cards);
 
         // Handle window resize
         let resizeTimer;
-        window.addEventListener('resize', () => {
+        // Clean up old resize listener (simplistic approach: we just bind one new listener or rely on existing one)
+        window.removeEventListener('resize', window.testimonialResizeHandler);
+        window.testimonialResizeHandler = () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                // Reset to 0 or clamp current index on resize
+                const currentCards = Array.from(track.children);
                 const visibleCards = getVisibleCards();
-                const maxIndex = cards.length - visibleCards;
+                const maxIndex = Math.max(0, currentCards.length - visibleCards);
                 if (currentIndex > maxIndex) currentIndex = maxIndex;
                 updateSlider();
             }, 100);
-        });
+        };
+        window.addEventListener('resize', window.testimonialResizeHandler);
     }
+
+    // Expose globally so inline scripts can call it after fetching reviews
+    window.initializeTestimonialSlider = initializeTestimonialSlider;
+
+    // Listen for custom event triggered by the Google Places API callback
+    document.addEventListener('reviewsLoaded', initializeTestimonialSlider);
+
+    // Call once initially just in case static fallback exists
+    initializeTestimonialSlider();
+
 });

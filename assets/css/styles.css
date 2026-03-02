@@ -367,6 +367,37 @@ a {
     position: relative;
     z-index: 2;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2.5rem;
+    flex-direction: column;
+}
+
+.hero-side-image-wrapper {
+    order: -1;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: flex;
+}
+
+.hero-side-image {
+    height: auto;
+    object-fit: contain;
+    width: 180px;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+@media (min-width: 900px) {
+    .hero-container {
+        flex-direction: row;
+    }
+
+    .hero-side-image-wrapper {
+        order: 1;
+
+    }
 }
 
 .hero-content {
