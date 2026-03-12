@@ -11,7 +11,7 @@ title: À Propos - Manny Express
 "Nous ne vendons pas seulement un déménagement, nous vous offrons la tranquillité d'esprit."
 </p>
 
-<p>L'aventure <strong>Manny Express</strong> est avant tout celle de deux associés passionnés par leur métier. Avant de fonder notre propre marque, nous avons forgé notre expérience pendant <strong>6 ans</strong> au sein de diverses sociétés de transport et de déménagement. Ce parcours nous a permis de comprendre une chose essentielle : déménager est une étape stressante, et ce que les clients recherchent par-dessus tout, c'est la sérénité.</p>
+<p>L'aventure <strong>Manny Express</strong> est avant tout celle de deux associés passionnés par leur métier. Avant de fonder notre propre marque, nous avons forgé une expérience au sein de diverses sociétés de transport et de déménagement. Ce parcours nous a permis de comprendre une chose essentielle : déménager est une étape stressante, et ce que les clients recherchent par-dessus tout, c'est la sérénité.</p>
 
 <h3 style="color: #0056b3; margin-top: 35px; border-left: 5px solid #0056b3; padding-left: 15px;">Une prise en charge de A à Z</h3>
 <p>Déménager, c'est souvent devoir gérer des dizaines d'appels, des problèmes de stationnement et une logistique épuisante. <strong>Notre mission est de tout gérer pour vous.</strong> 

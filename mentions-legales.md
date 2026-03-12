@@ -16,7 +16,7 @@ title: Mentions Légales
 • Directeur de la publication : M. Manail Benkhaled</p>
 
 <h3 style="color: #0056b3; margin-top: 30px;">2. Hébergement du site</h3>
-<p>Le site est hébergé par la société <strong>Hostinger International Ltd.</strong>, situé au 61 Lordou Vironos Street, 6023 Larnaca, Chypre.</p>
+<p>Le site est hébergé par la société <strong>Fastly, Inc.</strong></p>
 
 <h3 style="color: #0056b3; margin-top: 30px;">3. Propriété intellectuelle</h3>
 <p>Toute reproduction, intégrale ou partielle, du site ou de l’un quelconque des éléments qui le composent est interdite sans autorisation préalable.</p>
