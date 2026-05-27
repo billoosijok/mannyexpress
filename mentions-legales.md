@@ -11,7 +11,7 @@ title: Mentions Légales
 <p>Le présent site, accessible à l’URL <strong>mannyexpress.com</strong>, est édité par :</p>
 <p><strong>Manny Express</strong><br>
 • Statut juridique : Micro-entreprise (Auto-entrepreneur)<br>
-• SIRET : 952 589 646 00019<br>
+• SIRET : 840 546 097 00014<br>
 • Siège social : 1 Impasse de la Distillerie, 11100 Narbonne<br>
 • Directeur de la publication : M. Manail Benkhaled</p>
 
