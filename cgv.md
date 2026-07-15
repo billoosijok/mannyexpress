@@ -17,8 +17,13 @@ title: Conditions Générales de Vente
 
 <h3 style="color: #0056b3; margin-top: 35px; border-left: 5px solid #0056b3; padding-left: 15px;">ARTICLE 3 – Prix et Paiement</h3>
 <p>Les prix sont indiqués en <strong>Euros TTC</strong>. 
-<br>• <strong>Acompte :</strong> Un acompte de <strong>40%</strong> est exigé pour valider la réservation de la date.
-<br>• <strong>Solde :</strong> Le reste est dû le jour de la prestation.
+<br>• <strong>Acompte :</strong> 40% d'arrhes à la signature du devis ( confirmation de la réservation) <strong></strong> 
+<br>• <strong>Solde :</strong> Le solde 60% à l'arrivée avant déchargement
+
+<br /><br />
+Les arrhes permettent de réserver votre créneau et de couvrir les frais
+d'organisation. En cas d'annulation moins de 7 jours avant la date
+prévue, les arrhes restent acquises.
 
 <h3 style="color: #0056b3; margin-top: 35px; border-left: 5px solid #0056b3; padding-left: 15px;">ARTICLE 4 – Droit de Rétractation</h3>
 <p>Conformément à l’article L221-28 du Code de la consommation, le droit de rétractation ne peut être exercé pour les prestations de services de transport de biens qui doivent être fournis à une date ou à une période déterminée. Toute annulation par le client entraînera la perte de l'acompte.</p>

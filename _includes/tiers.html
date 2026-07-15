@@ -8,9 +8,26 @@
         </div>
         <div class="pricing-grid">
 
+            <!-- P'TIT EXPRESS -->
+            <div class="pricing-card">
+                <h3 class="pricing-title">P'TIT EXPRESS</h3>
+                <!-- TODO: ajuster le prix -->
+                <p class="pricing-price">À partir de 350 €</p>
+                <p style="color: var(--text-gray); margin-bottom: 1rem;">Studio ou petit volume : vous emballez,
+                    on transporte.</p>
+                <ul class="pricing-features">
+                    <li>Chargement</li>
+                    <li>Transport sécurisé</li>
+                    <li>Déchargement</li>
+                </ul>
+                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir P'tit Express</a>
+            </div>
+
             <!-- SIMPLE -->
             <div class="pricing-card">
                 <h3 class="pricing-title">SIMPLE</h3>
+                <!-- TODO: ajuster le prix -->
+                <p class="pricing-price">À partir de 600 €</p>
                 <p style="color: var(--text-gray); margin-bottom: 1rem;">L'essentiel pour un déménagement
                     économique.</p>
                 <ul class="pricing-features">
@@ -28,6 +45,8 @@
                     style="background: var(--accent-blue); color: white; padding: 0.25rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; align-self: center; margin-bottom: 1rem;">
                     POPULAIRE</div>
                 <h3 class="pricing-title">STANDARD</h3>
+                <!-- TODO: ajuster le prix -->
+                <p class="pricing-price">À partir de 900 €</p>
                 <p style="color: var(--text-gray); margin-bottom: 1rem;">Le parfait équilibre entre service et
                     budget.</p>
                 <ul class="pricing-features">
@@ -42,6 +61,8 @@
             <!-- LUXE -->
             <div class="pricing-card">
                 <h3 class="pricing-title">LUXE</h3>
+                <!-- TODO: ajuster le prix -->
+                <p class="pricing-price">À partir de 1 400 €</p>
                 <p style="color: var(--text-gray); margin-bottom: 1rem;">Service clé en main pour une tranquillité
                     totale.</p>
                 <ul class="pricing-features">
@@ -54,5 +75,15 @@
             </div>
 
         </div>
+        <p style="text-align: center; color: var(--text-gray); font-size: 0.9rem; margin-top: 2rem;">
+            Prix indicatifs « à partir de », selon volume, distance et accès. Devis gratuit et personnalisé.
+        </p>
+        {% unless page.url == '/formules.html' %}
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="{{ '/formules.html' | relative_url }}"
+                style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">Comparer les formules en
+                détail →</a>
+        </div>
+        {% endunless %}
     </div>
 </section>

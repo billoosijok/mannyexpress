@@ -9,10 +9,10 @@ title: Mentions Légales
 
 <h3 style="color: #0056b3; margin-top: 30px;">1. Édition du site</h3>
 <p>Le présent site, accessible à l’URL <strong>mannyexpress.com</strong>, est édité par :</p>
-<p><strong>Manny Express</strong><br>
-• Statut juridique : Micro-entreprise (Auto-entrepreneur)<br>
+<p><strong>Amouri Express</strong><br>
+• Statut juridique : SAS, société par actions simplifiée<br>
 • SIRET : 840 546 097 00014<br>
-• Siège social : 1 Impasse de la Distillerie, 11100 Narbonne<br>
+• Siège social : 14 RUE CHEVRIER 86000 POITIERS<br>
 • Directeur de la publication : M. Manail Benkhaled</p>
 
 <h3 style="color: #0056b3; margin-top: 30px;">2. Hébergement du site</h3>

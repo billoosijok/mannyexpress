@@ -245,4 +245,169 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call once initially just in case static fallback exists
     initializeTestimonialSlider();
 
+    // Formules comparison carousel
+    const fcarScroll = document.getElementById('formulesCarousel');
+    if (fcarScroll) {
+        const fcar = fcarScroll.closest('.fcar');
+        const prevBtn = fcar.querySelector('.fcar-prev');
+        const nextBtn = fcar.querySelector('.fcar-next');
+
+        function fcarStep() {
+            const col = fcarScroll.querySelector('.ft-col');
+            return col ? col.getBoundingClientRect().width : 190;
+        }
+
+        function fcarUpdate() {
+            const fits = fcarScroll.scrollWidth <= fcarScroll.clientWidth + 2;
+            fcar.classList.toggle('fcar-static', fits);
+            const maxScroll = fcarScroll.scrollWidth - fcarScroll.clientWidth;
+            prevBtn.disabled = fcarScroll.scrollLeft <= 2;
+            nextBtn.disabled = fcarScroll.scrollLeft >= maxScroll - 2;
+        }
+
+        prevBtn.addEventListener('click', () => fcarScroll.scrollBy({ left: -fcarStep(), behavior: 'smooth' }));
+        nextBtn.addEventListener('click', () => fcarScroll.scrollBy({ left: fcarStep(), behavior: 'smooth' }));
+        fcarScroll.addEventListener('scroll', fcarUpdate);
+        window.addEventListener('resize', fcarUpdate);
+        fcarUpdate();
+
+        // Global involvement slider (mobile): lever is two-way bound to the scroll
+        const track = document.getElementById('fcarSliderTrack');
+        const thumb = document.getElementById('fcarSliderThumb');
+        const fill = document.getElementById('fcarSliderFill');
+        const curName = document.getElementById('fcarCurName');
+        const vousPct = document.getElementById('fcarVousPct');
+        const nousPct = document.getElementById('fcarNousPct');
+
+        const formules = Array.from(fcarScroll.querySelectorAll('thead .ft-col')).map(col => {
+            const gauge = col.querySelector('.ft-gauge');
+            const pct = gauge ? parseInt(gauge.style.getPropertyValue('--pct'), 10) || 0 : 0;
+            const name = col.querySelector('.ft-name');
+            return { name: name ? name.textContent.trim() : '', pct: pct };
+        });
+
+        if (track && thumb && formules.length > 1) {
+            let dragging = false;
+            let snapTimer;
+
+            const maxScroll = () => Math.max(0, fcarScroll.scrollWidth - fcarScroll.clientWidth);
+            const fraction = () => {
+                const max = maxScroll();
+                return max > 0 ? fcarScroll.scrollLeft / max : 0;
+            };
+
+            function renderSlider() {
+                const frac = fraction();
+                thumb.style.left = (frac * 100) + '%';
+                if (fill) fill.style.width = (frac * 100) + '%';
+                const f = formules[Math.round(frac * (formules.length - 1))];
+                if (f) {
+                    if (curName) curName.textContent = f.name;
+                    if (vousPct) vousPct.textContent = (100 - f.pct) + '%';
+                    if (nousPct) nousPct.textContent = f.pct + '%';
+                }
+            }
+
+            function snapToNearest() {
+                const max = maxScroll();
+                if (max <= 0) return;
+                const idx = Math.round(fraction() * (formules.length - 1));
+                const target = (idx / (formules.length - 1)) * max;
+                if (Math.abs(fcarScroll.scrollLeft - target) > 2) {
+                    fcarScroll.scrollTo({ left: target, behavior: 'smooth' });
+                }
+            }
+
+            function seek(clientX) {
+                const rect = track.getBoundingClientRect();
+                const frac = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                fcarScroll.scrollLeft = frac * maxScroll();
+                renderSlider();
+            }
+
+            thumb.addEventListener('pointerdown', (e) => {
+                dragging = true;
+                thumb.setPointerCapture(e.pointerId);
+                e.preventDefault();
+            });
+            thumb.addEventListener('pointermove', (e) => {
+                if (dragging) seek(e.clientX);
+            });
+            const endDrag = () => {
+                if (!dragging) return;
+                dragging = false;
+                snapToNearest();
+            };
+            thumb.addEventListener('pointerup', endDrag);
+            thumb.addEventListener('pointercancel', endDrag);
+            track.addEventListener('pointerdown', (e) => {
+                if (e.target === thumb) return;
+                seek(e.clientX);
+                snapToNearest();
+            });
+
+            // Keep the slider in sync when the table is swiped, and snap on rest
+            fcarScroll.addEventListener('scroll', () => {
+                renderSlider();
+                if (dragging) return;
+                clearTimeout(snapTimer);
+                snapTimer = setTimeout(snapToNearest, 130);
+            });
+            window.addEventListener('resize', renderSlider);
+            renderSlider();
+        }
+
+        // Sticky cloned header: a <thead> can't stick to the page top from inside a
+        // horizontally-scrolling container, so we clone the scroller and pin the clone
+        // (clipped to the header height) just below the navbar while the table is in view.
+        const stTable = fcarScroll.querySelector('.ftable');
+        const stHead = stTable ? stTable.querySelector('thead') : null;
+        if (stHead) {
+            const wrap = document.createElement('div');
+            wrap.className = 'fcar-sticky-wrap';
+            const clone = fcarScroll.cloneNode(true);
+            clone.removeAttribute('id');
+            wrap.appendChild(clone);
+            document.body.appendChild(wrap);
+
+            const navbar = document.querySelector('.navbar');
+            let syncing = false;
+            fcarScroll.addEventListener('scroll', () => {
+                if (syncing) return;
+                syncing = true;
+                clone.scrollLeft = fcarScroll.scrollLeft;
+                syncing = false;
+            });
+            clone.addEventListener('scroll', () => {
+                if (syncing) return;
+                syncing = true;
+                fcarScroll.scrollLeft = clone.scrollLeft;
+                syncing = false;
+            });
+
+            const cloneHead = clone.querySelector('thead');
+            function stUpdate() {
+                const navBottom = navbar ? navbar.getBoundingClientRect().bottom : 0;
+                const rect = fcarScroll.getBoundingClientRect();
+                const show = rect.top < navBottom && rect.bottom > navBottom + 20;
+                if (show) {
+                    // Make visible first so the clone header (which may show the bars
+                    // that the mobile table hides) can be measured at the right width.
+                    wrap.classList.add('is-visible');
+                    wrap.style.top = navBottom + 'px';
+                    wrap.style.left = rect.left + 'px';
+                    wrap.style.width = rect.width + 'px';
+                    wrap.style.height = cloneHead.getBoundingClientRect().height + 'px';
+                    clone.scrollLeft = fcarScroll.scrollLeft;
+                } else {
+                    wrap.classList.remove('is-visible');
+                }
+            }
+
+            window.addEventListener('scroll', stUpdate, { passive: true });
+            window.addEventListener('resize', stUpdate);
+            stUpdate();
+        }
+    }
+
 });

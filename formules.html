@@ -1,0 +1,200 @@
+---
+layout: default
+title: Nos Formules et Tarifs Déménagement — Manny Express
+description: Découvrez nos formules de déménagement à Narbonne, Montpellier, Toulouse et dans tout le Sud. De l'essentiel au clé en main, comparez ce qui est inclus et obtenez un devis gratuit.
+---
+
+<!-- Page Header -->
+<header class="page-header formules">
+    <div class="page-header-bg"></div>
+    <div class="container page-header-content">
+        <h1 class="page-title">Nos Formules &amp; Tarifs</h1>
+        <p class="page-subtitle">
+            De l'essentiel au clé en main : vous choisissez ce que vous faites, on s'occupe du reste.
+        </p>
+    </div>
+</header>
+
+<!-- Nos Formules (comparison carousel) -->
+<section class="services-section" style="padding: 4rem 0;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Nos Formules</h2>
+            <p style="color: var(--text-gray); max-width: 640px; margin: 0 auto;">
+                Chaque formule répartit le travail entre vous et nous. Faites défiler pour comparer
+                les prestations et les tarifs — et la part prise en charge par Manny Express.
+            </p>
+        </div>
+
+        <!-- TODO: pourcentages d'implication indicatifs — à ajuster -->
+        <div class="fcar">
+            <div class="fcar-slider" aria-hidden="true">
+                <div class="fcar-slider-caption">
+                    <span class="fcar-cur-name" id="fcarCurName">P'tit Express</span>
+                </div>
+                <div class="fcar-slider-track" id="fcarSliderTrack">
+                    <div class="fcar-slider-fill" id="fcarSliderFill"></div>
+                    <button type="button" class="fcar-slider-thumb" id="fcarSliderThumb"
+                        aria-label="Faire défiler les formules"></button>
+                </div>
+                <div class="fcar-slider-ends">
+                    <span class="fcar-end">Vous <b id="fcarVousPct">75%</b></span>
+                    <span class="fcar-end fcar-end-nous">Nous <b id="fcarNousPct">25%</b></span>
+                </div>
+            </div>
+            <div class="fcar-viewport">
+                <button type="button" class="fcar-arrow fcar-prev" aria-label="Formule précédente">‹</button>
+                <button type="button" class="fcar-arrow fcar-next" aria-label="Formule suivante">›</button>
+                <div class="fcar-scroll" id="formulesCarousel">
+                <table class="ftable">
+                    <thead>
+                        <tr>
+                            <th class="ft-label-col">Choisissez vos services</th>
+                            <th class="ft-col">
+                                <span class="ft-name">P'tit Express</span>
+                                <span class="ft-price">À partir de 350 €</span>
+                                <span class="ft-gauge" style="--pct:25">
+                                    <span class="ft-bar"><span class="ft-bar-fill"></span></span>
+                                    <span class="ft-bar-legend"><b>Nous&nbsp;25%</b><span>Vous&nbsp;75%</span></span>
+                                </span>
+                            </th>
+                            <th class="ft-col">
+                                <span class="ft-name">Simple</span>
+                                <span class="ft-price">À partir de 600 €</span>
+                                <span class="ft-gauge" style="--pct:40">
+                                    <span class="ft-bar"><span class="ft-bar-fill"></span></span>
+                                    <span class="ft-bar-legend"><b>Nous&nbsp;40%</b><span>Vous&nbsp;60%</span></span>
+                                </span>
+                            </th>
+                            <th class="ft-col ft-featured">
+                                <span class="ft-badge">POPULAIRE</span>
+                                <span class="ft-name">Standard</span>
+                                <span class="ft-price">À partir de 900 €</span>
+                                <span class="ft-gauge" style="--pct:65">
+                                    <span class="ft-bar"><span class="ft-bar-fill"></span></span>
+                                    <span class="ft-bar-legend"><b>Nous&nbsp;65%</b><span>Vous&nbsp;35%</span></span>
+                                </span>
+                            </th>
+                            <th class="ft-col">
+                                <span class="ft-name">Luxe</span>
+                                <span class="ft-price">À partir de 1 400 €</span>
+                                <span class="ft-gauge" style="--pct:100">
+                                    <span class="ft-bar"><span class="ft-bar-fill"></span></span>
+                                    <span class="ft-bar-legend"><b>Nous&nbsp;100%</b><span>Vous&nbsp;0%</span></span>
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="ft-label-col">Chargement</td>
+                            <td class="yes">✓</td>
+                            <td class="yes">✓</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Transport sécurisé</td>
+                            <td class="yes">✓</td>
+                            <td class="yes">✓</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Déchargement</td>
+                            <td class="yes">✓</td>
+                            <td class="yes">✓</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Protection du mobilier</td>
+                            <td class="no">Vous</td>
+                            <td class="yes">✓</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Démontage des meubles</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Remontage des meubles</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Mise en place des cartons</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured yes">✓</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Fourniture des cartons</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured no">Vous</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Emballage des objets fragiles</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured no">Vous</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Emballage du reste (vaisselle, vêtements…)</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured no">Vous</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                        <tr>
+                            <td class="ft-label-col">Déballage des objets fragiles</td>
+                            <td class="no">Vous</td>
+                            <td class="no">Vous</td>
+                            <td class="ft-featured no">Vous</td>
+                            <td class="yes">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; color: var(--text-gray); font-size: 0.9rem; margin-top: 1.5rem;">
+            <span class="ft-bar-legend-swatch"></span> la part « nous » indique ce que Manny Express prend en charge.
+            <span style="color: var(--accent-blue); font-weight: 700;">✓</span> inclus
+            &nbsp;•&nbsp; « Vous » : à votre charge.
+        </p>
+    </div>
+</section>
+
+<!-- Reassurance + CTA -->
+<section class="services-section" style="background-color: var(--bg-light); padding: 4rem 0;">
+    <div class="container">
+        <div class="services-grid" style="margin-bottom: 3rem;">
+            <div class="service-card" style="text-align: center;">
+                <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Devis gratuit</h3>
+                <p style="color: var(--text-gray);">Une estimation claire et sans engagement, adaptée à votre volume.</p>
+            </div>
+            <div class="service-card" style="text-align: center;">
+                <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Prix fixe, sans surprise</h3>
+                <p style="color: var(--text-gray);">Le tarif convenu est le tarif payé, aucun frais caché le jour J.</p>
+            </div>
+            <div class="service-card" style="text-align: center;">
+                <h3 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Équipe locale du Sud</h3>
+                <p style="color: var(--text-gray);">Des déménageurs de la région, à Narbonne, Montpellier et Toulouse.</p>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <a href="#quote" class="btn btn-primary btn-lg">Obtenir mon devis gratuit</a>
+        </div>
+    </div>
+</section>
