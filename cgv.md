@@ -38,8 +38,8 @@ Vous pouvez également utiliser la plateforme européenne de <strong>Règlement 
 <a href="https://ec.europa.eu/consumers/odr/" target="_blank" style="color: #0056b3;">https://ec.europa.eu/consumers/odr/</a></p>
 
 <div style="margin-top: 50px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #0056b3;">
-    <p style="margin: 0; font-weight: bold; color: #0056b3;">Amouri Express - SIRET : 840 546 097 00014</p>
-    <p style="margin: 5px 0 0 0;">Siège social : 14 RUE CHEVRIER 86000 POITIERS</p>
+    <p style="margin: 0; font-weight: bold; color: #0056b3;">Manny Express - SIRET : 952 589 646 00027</p>
+    <p style="margin: 5px 0 0 0;">Siège social : 1 IMPASSE DE LA DISTILLERIE 11100 NARBONNE</p>
 </div>
 
 </div>
