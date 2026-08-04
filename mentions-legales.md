@@ -10,7 +10,6 @@ title: Mentions Légales
 <h3 style="color: #0056b3; margin-top: 30px;">1. Édition du site</h3>
 <p>Le présent site, accessible à l’URL <strong>mannyexpress.com</strong>, est édité par :</p>
 <p><strong>Manny Express</strong><br>
-• Statut juridique : Entrepreneur individuel<br>
 • SIRET : 952 589 646 00027<br>
 • Siège social : 1 IMPASSE DE LA DISTILLERIE 11100 NARBONNE<br>
 
