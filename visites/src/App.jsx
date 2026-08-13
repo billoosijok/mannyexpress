@@ -46,7 +46,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <header className="sticky top-0 z-30 bg-navy text-white">
+      {/* The web app draws under the system status bar (viewport-fit=cover +
+          black-translucent), so the header has to reserve that height itself —
+          without it the clock and battery sit on top of the logout button. */}
+      <header className="sticky top-0 z-30 bg-navy pt-[env(safe-area-inset-top)] text-white">
         <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
           <Truck size={26} className="shrink-0 text-gold" />
           <div className="min-w-0 flex-1">
@@ -58,7 +61,9 @@ export default function App() {
           <button
             type="button"
             onClick={() => signOut(auth)}
-            className="flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-xs text-white/80"
+            className="-mr-2 flex min-h-[44px] min-w-[44px] shrink-0 items-center
+              justify-center gap-1.5 rounded-lg px-2 text-xs text-white/80
+              active:bg-white/15"
             aria-label="Se déconnecter"
           >
             <span className="hidden max-w-[120px] truncate sm:inline">{user.email}</span>
