@@ -62,18 +62,13 @@ jobs:
             --message "$COMMIT_SHA"
 
       # A collection the rules do not know about is refused outright, so the
-      # rules have to travel with the code that reads it. Deployed after the
+      # rules have to travel with the code that reads them. Deployed after the
       # app rather than with it: should this fail, the app still ships and the
       # failure is visible here.
       #
-      # Firestore only. Deploying storage:rules makes the CLI first ask
-      # serviceusage whether firebasestorage.googleapis.com is enabled, which
-      # the deploy service account is not allowed to do (HTTP 403) — it can
-      # write rules but not read the project's service list. storage.rules is
-      # therefore deployed by hand; see the README.
-      - name: Deploy Firestore rules
-        run: |
-          npx --yes firebase-tools@15 deploy \
-            --only firestore:rules \
-            --project manny-express \
-            --non-interactive
+      # Not through the CLI: `firebase deploy --only firestore:rules` first
+      # asks serviceusage whether the API is enabled, which this service
+      # account may not read (HTTP 403), and the deploy stops there. The
+      # script talks to the Firebase Rules API, which needs no such check.
+      - name: Deploy Firestore and Storage rules
+        run: node scripts/deploy-rules.js
