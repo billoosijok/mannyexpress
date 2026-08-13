@@ -155,6 +155,16 @@ const VISIT_METADATA = [
   "updatedByEmail",
 ];
 
+/** Every photo a sheet points at, wherever it sits in it. */
+export function visitPhotoUrls(visit) {
+  return [
+    ...(visit.objetsValeurPhotoUrls || []),
+    ...(visit.objetsPianoPhotoUrls || []),
+    ...(visit.photosSupplementairesUrls || []),
+    ...(visit.pieces || []).flatMap((piece) => piece.photoUrls || []),
+  ];
+}
+
 /** Turns a saved visit back into something the form can edit. */
 export function visitToForm(visit) {
   const form = emptyVisit();

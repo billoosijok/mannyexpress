@@ -63,11 +63,17 @@ jobs:
 
       # A collection the rules do not know about is refused outright, so the
       # rules have to travel with the code that reads it. Deployed after the
-      # app rather than with it: should the service account turn out to lack
-      # the rights, the app still ships and the failure is visible here.
-      - name: Deploy Firestore and Storage rules
+      # app rather than with it: should this fail, the app still ships and the
+      # failure is visible here.
+      #
+      # Firestore only. Deploying storage:rules makes the CLI first ask
+      # serviceusage whether firebasestorage.googleapis.com is enabled, which
+      # the deploy service account is not allowed to do (HTTP 403) — it can
+      # write rules but not read the project's service list. storage.rules is
+      # therefore deployed by hand; see the README.
+      - name: Deploy Firestore rules
         run: |
           npx --yes firebase-tools@15 deploy \
-            --only firestore:rules,storage:rules \
+            --only firestore:rules \
             --project manny-express \
             --non-interactive

@@ -60,7 +60,7 @@ export function subscribeToVisits(onVisits, onError) {
 }
 
 /** Owner-only. Storage first, so a failure there never orphans the photos. */
-export async function deleteVisit(visitId) {
-  await deleteVisitPhotos(visitId);
-  await deleteDoc(doc(db, VISITS, visitId));
+export async function deleteVisit(visit) {
+  await deleteVisitPhotos(visit);
+  await deleteDoc(doc(db, VISITS, visit.id));
 }

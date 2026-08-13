@@ -1,15 +1,6 @@
-import {
-  deleteObject,
-  getDownloadURL,
-  listAll,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../firebase";
-
-export function visitFolder(visitId) {
-  return `visites/${visitId}`;
-}
+import { visitPhotoUrls } from "../constants";
 
 export function pieceFolder(visitId, pieceId) {
   return `visites/${visitId}/pieces/${pieceId}`;
@@ -42,17 +33,15 @@ export async function deletePhoto(url) {
   }
 }
 
-/** Recursively empties a visit's storage folder. */
-export async function deleteVisitPhotos(visitId) {
-  async function emptyFolder(folderRef) {
-    const listing = await listAll(folderRef);
-    await Promise.all(listing.items.map((item) => deleteObject(item)));
-    await Promise.all(listing.prefixes.map(emptyFolder));
-  }
-
-  try {
-    await emptyFolder(ref(storage, visitFolder(visitId)));
-  } catch (error) {
-    if (error?.code !== "storage/object-not-found") throw error;
-  }
+/**
+ * Deletes the photos a visit points at, one by one.
+ *
+ * Listing the visit's folder instead would need read access to the folder
+ * path itself — `visites/{id}`, which storage.rules does not cover: its rule
+ * starts one segment below. Going by the URLs kept in the sheet asks for
+ * nothing the app is not already allowed to do, and removes exactly the
+ * photos that sheet was showing.
+ */
+export async function deleteVisitPhotos(visit) {
+  await Promise.all(visitPhotoUrls(visit).map(deletePhoto));
 }

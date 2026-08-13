@@ -143,6 +143,24 @@ firebase deploy --only firestore:rules,storage:rules
 > configuration d'hébergement du site vitrine mannyexpress.com se trouve à la
 > racine du dépôt et se déploie séparément.
 
+**En temps normal il n'y a rien à lancer :** l'action GitHub
+`.github/workflows/deploy-visites.yml` construit et déploie l'application **et
+les règles Firestore** à chaque poussée sur `main` touchant `visites/`.
+
+**Sauf `storage.rules`**, qui reste à déployer à la main :
+
+```bash
+cd visites
+firebase deploy --only storage:rules
+```
+
+Le compte de service du déploiement peut écrire les règles mais pas lire la
+liste des services du projet, et la CLI vérifie que
+`firebasestorage.googleapis.com` est activé avant de déployer les règles
+Storage — d'où un refus (HTTP 403). Pour s'en débarrasser : donner le rôle
+**Consommateur Service Usage** au compte de service dans la console Google
+Cloud, puis remettre `storage:rules` dans l'action.
+
 ## 7. Installer l'application sur l'iPhone
 
 Sur chaque téléphone : ouvrir l'adresse dans **Safari** → bouton **Partager** →

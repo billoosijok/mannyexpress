@@ -43,7 +43,7 @@ export default function VisitDetail({
     setError("");
     setDeleting(true);
     try {
-      await deleteVisit(visit.id);
+      await deleteVisit(visit);
       onBack();
     } catch {
       setDeleting(false);
