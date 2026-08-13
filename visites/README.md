@@ -10,6 +10,7 @@ L'interface est entièrement en français ; le code, lui, est en anglais.
 - React 18 + Vite, Tailwind CSS, `lucide-react`
 - Firebase : Authentication (email/mot de passe), Firestore, Storage, Hosting
 - Aucune inscription publique : les 4 comptes sont créés à la main dans la console
+- Application installable (PWA) qui s'ouvre et se remplit sans connexion
 
 Cette application vit dans le dossier `visites/` du dépôt du site
 mannyexpress.com. Elle est indépendante du site vitrine Jekyll : sa propre
@@ -139,13 +140,50 @@ Sur chaque téléphone : ouvrir l'adresse dans **Safari** → bouton **Partager*
 d'accueil et l'application s'ouvre en plein écran, sans la barre de Safari. La
 session reste ouverte : la connexion n'est à faire qu'une fois.
 
+Sur Android, le navigateur propose lui-même « Installer l'application ».
+
 Les icônes se trouvent dans `public/icons/` (`icon-180.png`, `icon-192.png`,
 `icon-512.png`). Elles ont été générées à partir de `assets/img/logo.svg` du
 dépôt. Pour changer le logo, remplacer ces trois fichiers par des **PNG opaques,
 à angles droits, sans transparence** (iOS arrondit lui-même les angles et affiche
 les zones transparentes en noir), puis reconstruire et redéployer.
 
-## 8. Ce que contient une visite
+Le quatrième fichier, `icon-maskable-512.png`, est la version Android : le
+système y découpe lui-même un cercle ou un carré arrondi, le logo y occupe donc
+80 % de l'image, le reste étant du fond. Si le logo change, refaire ce fichier
+aussi, sinon Android rognera dans le dessin.
+
+## 8. Fonctionnement hors connexion
+
+L'application est une PWA complète : une fois installée, elle s'ouvre et
+s'utilise sans réseau — dans une cage d'escalier, une cave, un sous-sol.
+
+- **L'application elle-même** est gardée sur le téléphone par un *service
+  worker* (`sw-template.js`, transformé en `dist/sw.js` au moment du build par
+  un petit plugin déclaré dans `vite.config.js`). Elle s'ouvre donc même sans
+  réseau, au lieu d'afficher l'écran d'erreur du navigateur.
+- **Les visites et les rendez-vous déjà consultés** sont conservés par
+  Firestore sur le téléphone : les listes et l'agenda s'affichent hors
+  connexion.
+- **Une fiche ou un rendez-vous enregistré sans réseau** est gardé sur le
+  téléphone et part tout seul dès que la connexion revient. Le bouton le dit :
+  « Enregistrée — envoi au retour du réseau ».
+- **Les photos, elles, ont besoin d'une connexion** : elles partent vers
+  Storage au moment où elles sont prises. Un bandeau orange le rappelle dès que
+  le téléphone perd le réseau. Une fiche remplie hors connexion doit donc être
+  complétée en photos une fois le réseau revenu, ou remplie à nouveau.
+
+**Les mises à jour** ne s'installent jamais toutes seules pendant la saisie :
+recharger la page en plein milieu d'une fiche la ferait perdre. Quand une
+nouvelle version est en ligne, un bandeau « Nouvelle version disponible »
+apparaît en bas et attend d'être touché. Sans cela, la nouvelle version prend la
+main à la prochaine ouverture de l'application.
+
+En développement (`npm run dev`) le service worker n'est pas enregistré : il ne
+sert qu'à la version construite, pour ne pas servir un ancien fichier pendant
+qu'on travaille.
+
+## 9. Ce que contient une visite
 
 Une visite = un document dans la collection Firestore `visites`, et un dossier
 de photos dans Storage sous `visites/{id}/`. Les photos sont réduites à 1000 px
@@ -156,7 +194,7 @@ connexion faible. Seules les URL des photos sont stockées dans le document.
 Supprimer une visite (gérant uniquement) efface le document **et** le dossier de
 photos correspondant.
 
-## 9. L'agenda
+## 10. L'agenda
 
 L'onglet **Agenda** est le planning partagé de l'équipe : tout le monde y voit
 la même chose, en temps réel.
@@ -188,7 +226,7 @@ aucun lien automatique entre un rendez-vous et la fiche remplie ensuite : ce
 sont deux choses séparées, le rendez-vous restant le plan et la fiche le
 relevé.
 
-## 10. Structure du code
+## 11. Structure du code
 
 ```
 src/
@@ -204,6 +242,8 @@ src/
     AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous
     PhotoPicker.jsx       prise de photo, compression, envoi
     PhotoGallery.jsx      vignettes en lecture seule
+    OfflineNotice.jsx     bandeau « hors connexion »
+    UpdateBanner.jsx      enregistre le service worker, propose la mise à jour
     ui.jsx                champs, en-têtes de section, spinner
   lib/
     visits.js             lecture/écriture Firestore des fiches
@@ -212,6 +252,9 @@ src/
     compress.js           compression via canvas
     calendar.js           clés de jour "AAAA-MM-JJ" et grille du mois
     format.js             affichage des dates
+    offline.js            écriture qui n'attend pas le serveur quand il n'y a plus de réseau
+    pwa.js                enregistrement et mise à jour du service worker
+sw-template.js            le service worker, avant que le build y inscrive sa version
 ```
 
 Une visite enregistrée ne se modifie pas depuis l'application : en cas d'erreur,

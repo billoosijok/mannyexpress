@@ -9,6 +9,7 @@ import {
   totalVolume,
 } from "../constants";
 import { newVisitId, saveVisit } from "../lib/visits";
+import { commit } from "../lib/offline";
 import {
   objetsPianoFolder,
   objetsValeurFolder,
@@ -23,7 +24,7 @@ export default function VisitForm({ user }) {
   // their final storage folder.
   const [visitId, setVisitId] = useState(newVisitId);
   const [form, setForm] = useState(emptyVisit);
-  const [status, setStatus] = useState("idle"); // idle | saving | success
+  const [status, setStatus] = useState("idle"); // idle | saving | envoye | en-attente
   const [error, setError] = useState("");
 
   const volumeTotal = useMemo(() => totalVolume(form.pieces), [form.pieces]);
@@ -85,8 +86,7 @@ export default function VisitForm({ user }) {
     setError("");
     setStatus("saving");
     try {
-      await saveVisit(visitId, form, user);
-      setStatus("success");
+      setStatus(await commit(saveVisit(visitId, form, user)));
       setTimeout(() => {
         setForm(emptyVisit());
         setVisitId(newVisitId());
@@ -357,25 +357,25 @@ function LogementCard({ number, title, prefix, form, setValue }) {
 
 function SubmitBar({ status }) {
   const saving = status === "saving";
-  const success = status === "success";
+  const done = status === "envoye" || status === "en-attente";
 
   return (
     <div className="fixed inset-x-0 bottom-16 z-20 border-t border-line bg-cream/95 px-4 py-3 backdrop-blur">
       <div className="mx-auto max-w-md">
         <button
           type="submit"
-          disabled={saving || success}
+          disabled={saving || done}
           className={`flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl text-base font-semibold text-white transition ${
-            success ? "bg-green-600" : "bg-gold"
+            done ? "bg-green-600" : "bg-gold"
           } ${saving ? "opacity-70" : ""}`}
         >
           {saving && <Spinner />}
-          {success && <Check size={20} />}
-          {saving
-            ? "Enregistrement..."
-            : success
-              ? "Visite enregistrée"
-              : "Enregistrer la visite"}
+          {done && <Check size={20} />}
+          {saving && "Enregistrement..."}
+          {status === "envoye" && "Visite enregistrée"}
+          {/* Saved on the phone: the sheet is safe, it just has not left yet. */}
+          {status === "en-attente" && "Enregistrée — envoi au retour du réseau"}
+          {status === "idle" && "Enregistrer la visite"}
         </button>
       </div>
     </div>

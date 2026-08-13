@@ -7,6 +7,8 @@ import VisitForm from "./components/VisitForm";
 import VisitsList from "./components/VisitsList";
 import VisitDetail from "./components/VisitDetail";
 import AgendaView from "./components/AgendaView";
+import OfflineNotice from "./components/OfflineNotice";
+import UpdateBanner from "./components/UpdateBanner";
 import { Spinner } from "./components/ui";
 
 export default function App() {
@@ -43,7 +45,14 @@ export default function App() {
     );
   }
 
-  if (!user) return <LoginScreen />;
+  if (!user) {
+    return (
+      <>
+        <LoginScreen />
+        <UpdateBanner warnAboutDraft={false} />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -71,6 +80,7 @@ export default function App() {
             <LogOut size={18} />
           </button>
         </div>
+        <OfflineNotice />
       </header>
 
       {/* Bottom padding clears the sticky submit bar and the tab bar. */}
@@ -128,6 +138,8 @@ export default function App() {
           />
         </div>
       </nav>
+
+      <UpdateBanner />
     </div>
   );
 }

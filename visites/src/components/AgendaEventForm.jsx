@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, Trash2, X } from "lucide-react";
 import { AGENDA_TYPES } from "../constants";
 import { createEvent, deleteEvent, updateEvent } from "../lib/agenda";
+import { commit } from "../lib/offline";
 import { formatDayLabel } from "../lib/format";
 import { ErrorNote, Field, Spinner, TextArea, TextInput } from "./ui";
 
@@ -31,11 +32,9 @@ export default function AgendaEventForm({ eventId, initial, canDelete, user, onC
     setError("");
     setStatus("saving");
     try {
-      if (eventId) {
-        await updateEvent(eventId, form);
-      } else {
-        await createEvent(form, user);
-      }
+      // The calendar behind reads the same local cache, so the entry shows up
+      // straight away whether or not the write has reached the server yet.
+      await commit(eventId ? updateEvent(eventId, form) : createEvent(form, user));
       onClose();
     } catch {
       setStatus("idle");
@@ -52,7 +51,7 @@ export default function AgendaEventForm({ eventId, initial, canDelete, user, onC
     setError("");
     setStatus("deleting");
     try {
-      await deleteEvent(eventId);
+      await commit(deleteEvent(eventId));
       onClose();
     } catch {
       setStatus("idle");
