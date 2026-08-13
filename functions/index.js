@@ -80,3 +80,95 @@ exports.sendQuoteEmail = functions.https.onRequest((req, res) => {
         }
     });
 });
+
+// ---------------------------------------------------------------------------
+// Fiches de visite : prévenir l'équipe
+//
+// Three people share the app; a sheet or an appointment recorded by one is
+// news for the other two. Each phone that accepted notifications has a
+// document in `tokens`, keyed by its push token — written by the app, read
+// only here.
+//
+// Deployed in the region the Firestore database lives in: a 1st-gen Firestore
+// trigger has to sit next to its database.
+// ---------------------------------------------------------------------------
+
+const REGION = "europe-west1";
+const TOKENS = "tokens";
+
+async function notifyTeam({ title, body, tag, authorUid }) {
+    const snapshot = await admin.firestore().collection(TOKENS).get();
+    // Whoever recorded it already knows.
+    const targets = snapshot.docs.filter((entry) => entry.get("uid") !== authorUid);
+    if (targets.length === 0) return;
+
+    const response = await admin.messaging().sendEachForMulticast({
+        tokens: targets.map((entry) => entry.id),
+        notification: { title, body },
+        data: { tag },
+        webpush: {
+            fcmOptions: { link: "https://manny-express.web.app/" },
+        },
+    });
+
+    // A phone that reinstalled the app leaves behind a token nobody answers
+    // to; keeping it would mean a failure on every notification from now on.
+    const stale = [];
+    response.responses.forEach((result, index) => {
+        const code = result.error && result.error.code;
+        if (
+            code === "messaging/registration-token-not-registered" ||
+            code === "messaging/invalid-registration-token" ||
+            code === "messaging/invalid-argument"
+        ) {
+            stale.push(targets[index].ref.delete());
+        }
+    });
+    await Promise.all(stale);
+
+    functions.logger.info("Notification envoyée", {
+        title,
+        sent: response.successCount,
+        failed: response.failureCount,
+        removed: stale.length,
+    });
+}
+
+function author(data) {
+    return data.createdByEmail || "Un collègue";
+}
+
+/** Days are stored as "2026-08-21"; nobody reads a date that way out loud. */
+function frenchDay(date) {
+    const parts = String(date || "").split("-");
+    return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : date;
+}
+
+exports.notifyOnVisit = functions
+    .region(REGION)
+    .firestore.document("visites/{visitId}")
+    .onCreate(async (snapshot) => {
+        const visit = snapshot.data();
+        await notifyTeam({
+            title: "Nouvelle fiche de visite",
+            body: `${author(visit)} a enregistré la visite de ${visit.clientNom || "client sans nom"}.`,
+            tag: `visite-${snapshot.id}`,
+            authorUid: visit.createdBy,
+        });
+    });
+
+exports.notifyOnAgenda = functions
+    .region(REGION)
+    .firestore.document("agenda/{eventId}")
+    .onCreate(async (snapshot) => {
+        const event = snapshot.data();
+        const kind = event.type === "demenagement" ? "Déménagement" : "Visite";
+        const day = frenchDay(event.date);
+        const when = event.heure ? `${day} à ${event.heure}` : day;
+        await notifyTeam({
+            title: `${kind} ajouté à l'agenda`,
+            body: `${author(event)} a prévu ${event.clientNom || "un rendez-vous"} le ${when}.`,
+            tag: `agenda-${snapshot.id}`,
+            authorUid: event.createdBy,
+        });
+    });

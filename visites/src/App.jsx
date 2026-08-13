@@ -10,6 +10,7 @@ import VisitDetail from "./components/VisitDetail";
 import AgendaView from "./components/AgendaView";
 import OfflineNotice from "./components/OfflineNotice";
 import UpdateBanner from "./components/UpdateBanner";
+import NotificationToggle from "./components/NotificationToggle";
 import { Spinner } from "./components/ui";
 
 export default function App() {
@@ -73,7 +74,7 @@ export default function App() {
           black-translucent), so the header has to reserve that height itself —
           without it the clock and battery sit on top of the logout button. */}
       <header className="sticky top-0 z-30 bg-navy pt-[env(safe-area-inset-top)] text-white">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-md flex-wrap items-center gap-3 px-4 py-3">
           <Truck size={26} className="shrink-0 text-gold" />
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold leading-tight tracking-wide">
@@ -81,6 +82,7 @@ export default function App() {
             </p>
             <p className="truncate text-xs text-white/70">Fiches de visite terrain</p>
           </div>
+          <NotificationToggle user={user} />
           <button
             type="button"
             onClick={() => signOut(auth)}

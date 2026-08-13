@@ -238,7 +238,49 @@ Côté hébergement, `sw.js` et `index.html` sont servis en `no-cache` : sans ce
 le navigateur pourrait garder l'ancienne version jusqu'à une heure et le
 déploiement n'arriverait pas.
 
-## 10. Ce que contient une visite
+## 10. Les notifications
+
+Quand quelqu'un enregistre une fiche de visite ou ajoute un rendez-vous à
+l'agenda, **les autres téléphones reçoivent une notification** — y compris
+application fermée. Celui qui vient de l'enregistrer n'est pas prévenu : il le
+sait déjà.
+
+**Sur chaque téléphone, une fois :** ouvrir l'application (celle de l'écran
+d'accueil, pas Safari), toucher la **cloche** en haut à droite, accepter. La
+cloche devient dorée. Sur iPhone, l'application **doit** être installée sur
+l'écran d'accueil (section 7) : Safari refuse les notifications à un simple
+onglet. iOS 16.4 minimum.
+
+Chaque téléphone qui a accepté a un document dans la collection `tokens`,
+identifié par son jeton d'envoi. L'application l'écrit, seule la Cloud Function
+le lit (par le SDK admin, auquel les règles ne s'appliquent pas) : personne ne
+peut lister les téléphones de l'équipe depuis l'application. Un téléphone
+réinstallé change de jeton ; l'ancien est effacé au premier envoi qui échoue.
+
+Deux déclencheurs dans `functions/index.js` : `notifyOnVisit` sur la création
+d'une fiche, `notifyOnAgenda` sur celle d'un rendez-vous. Ils sont déployés
+dans `europe-west1`, la région de la base — un déclencheur Firestore de 1ʳᵉ
+génération doit être dans la même région qu'elle. Si la base est ailleurs,
+changer `REGION` en tête de la section, sinon le déploiement est refusé.
+
+**Le déploiement des fonctions se fait à la main**, il n'est pas dans l'action
+GitHub (le compte de service du déploiement n'a pas les droits nécessaires) :
+
+```bash
+cd functions
+npm install
+firebase deploy --only functions
+```
+
+Tant que cette commande n'a pas été lancée, la cloche s'active sans erreur mais
+aucune notification ne part : c'est la fonction qui les envoie.
+
+`VITE_FIREBASE_VAPID_KEY` est **facultative** : sans elle, le SDK utilise la clé
+par défaut de Firebase. Pour avoir la sienne : Console Firebase → **Cloud
+Messaging** → **Certificats push Web** → **Générer une paire de clés**, puis
+recopier la clé publique dans `.env.production`.
+
+## 11. Ce que contient une visite
 
 Chaque bloc photo offre deux entrées : **Photo** ouvre l'appareil photo,
 **Galerie** ouvre les photos déjà prises sur le téléphone — utile quand le
@@ -269,7 +311,7 @@ droit est réservé au gérant et vient du « custom claim » posé sur son comp
 (section 5) : sans lui, le bouton rouge « Supprimer la visite » reste invisible,
 y compris pour le gérant.
 
-## 11. L'agenda
+## 12. L'agenda
 
 L'onglet **Agenda** est le planning partagé de l'équipe : tout le monde y voit
 la même chose, en temps réel.
@@ -301,7 +343,7 @@ aucun lien automatique entre un rendez-vous et la fiche remplie ensuite : ce
 sont deux choses séparées, le rendez-vous restant le plan et la fiche le
 relevé.
 
-## 12. Structure du code
+## 13. Structure du code
 
 ```
 src/
@@ -317,6 +359,7 @@ src/
     AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous
     PhotoPicker.jsx       prise de photo, compression, envoi
     PhotoGallery.jsx      vignettes en lecture seule
+    NotificationToggle.jsx la cloche : demande la permission, inscrit le téléphone
     OfflineNotice.jsx     bandeau « hors connexion »
     UpdateBanner.jsx      enregistre le service worker, propose la mise à jour
     ui.jsx                champs, en-têtes de section, spinner
@@ -329,6 +372,7 @@ src/
     format.js             affichage des dates
     offline.js            écriture qui n'attend pas le serveur quand il n'y a plus de réseau
     draft.js              la fiche en cours, gardée sur le téléphone
+    notifications.js      jeton d'envoi du téléphone
     updates.js            détection des déploiements et bascule de version
 sw-template.js            le service worker, avant que le build y inscrive sa version
 ```

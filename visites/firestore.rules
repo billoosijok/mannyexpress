@@ -25,6 +25,15 @@ service cloud.firestore {
                     && (request.auth.uid == resource.data.createdBy || isOwner());
     }
 
+    // One document per phone that accepted notifications, keyed by its push
+    // token. Only the Cloud Function reads them, through the admin SDK, which
+    // rules do not apply to — so nobody here can enumerate the team's phones.
+    match /tokens/{token} {
+      allow create, update: if request.auth != null
+                            && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

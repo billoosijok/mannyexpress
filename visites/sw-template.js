@@ -29,6 +29,42 @@ self.addEventListener("message", (event) => {
   if (event.data === "skip-waiting") self.skipWaiting();
 });
 
+// Pushes are shown by this worker rather than by a second one from the
+// messaging SDK: two workers would fight over the same scope.
+self.addEventListener("push", (event) => {
+  let payload = {};
+  try {
+    payload = event.data?.json() ?? {};
+  } catch {
+    payload = {};
+  }
+  const notification = payload.notification || {};
+
+  event.waitUntil(
+    self.registration.showNotification(notification.title || "Manny Express", {
+      body: notification.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      // One per subject: a second visit recorded replaces the first notice
+      // instead of stacking up on the lock screen.
+      tag: payload.data?.tag || "manny-express",
+      data: payload.data || {},
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  // Bring the app forward if it is already open; only open a window if not.
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      const open = clients.find((client) => client.url.startsWith(self.location.origin));
+      if (open) return open.focus();
+      return self.clients.openWindow("/");
+    })
+  );
+});
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
