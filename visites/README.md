@@ -87,8 +87,17 @@ se fait dans la console.
 
 ## 5. Le compte gérant (droit de suppression)
 
-Seul le gérant peut supprimer une visite. Ce droit vient d'un « custom claim »
-posé une fois sur son compte.
+Seul le gérant peut supprimer une visite, et supprimer un rendez-vous qu'il n'a
+pas créé lui-même. Ce droit s'obtient de deux façons ; **la première suffit**.
+
+**Par l'adresse e-mail.** Les adresses listées dans `OWNER_EMAILS`
+(`src/constants.js`) ont le droit, sans rien à installer. La même liste est
+répétée dans `firestore.rules`, qui est ce qui l'applique réellement : les deux
+doivent rester identiques. Pour changer de gérant, modifier les deux fichiers,
+puis redéployer (l'action GitHub s'en charge à la poussée sur `main`).
+
+**Par un « custom claim ».** Le mécanisme d'origine, plus discret que le code
+source, mais qui demande une clé de compte de service :
 
 1. Console Firebase → **Paramètres du projet → Comptes de service** →
    **Générer une nouvelle clé privée**. Enregistrer le fichier sous
@@ -107,8 +116,9 @@ posé une fois sur son compte.
    reste invisible.
 5. Supprimer `serviceAccountKey.json` de la machine une fois l'opération faite.
 
-Les employés ne voient jamais le bouton de suppression, et une tentative de
-suppression envoyée directement à la base est refusée par `firestore.rules`.
+Par l'une ou l'autre voie, les employés ne voient jamais le bouton de
+suppression, et une tentative envoyée directement à la base est refusée par
+`firestore.rules`.
 
 ## 6. Construire et déployer
 
@@ -211,6 +221,12 @@ le navigateur pourrait garder l'ancienne version jusqu'à une heure et le
 déploiement n'arriverait pas.
 
 ## 10. Ce que contient une visite
+
+Chaque bloc photo offre deux entrées : **Photo** ouvre l'appareil photo,
+**Galerie** ouvre les photos déjà prises sur le téléphone — utile quand le
+client a envoyé ses propres photos, ou quand la visite a été photographiée
+avant d'ouvrir l'application. Les deux acceptent plusieurs photos à la fois et
+passent par la même compression.
 
 Une visite = un document dans la collection Firestore `visites`, et un dossier
 de photos dans Storage sous `visites/{id}/`. Les photos sont réduites à 1000 px

@@ -1,20 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // The manager. Either mechanism grants it: the "owner" custom claim, or
+    // simply signing in with one of these addresses. The claim needs a
+    // service-account key and a script run, which is why the address is here
+    // too — keep this list in step with OWNER_EMAILS in src/constants.js.
+    function isOwner() {
+      return request.auth != null
+             && (request.auth.token.role == "owner"
+                 || request.auth.token.email in ["elgarbimohamed.m@gmail.com"]);
+    }
+
     match /visites/{visitId} {
       allow read, create, update: if request.auth != null;
-      allow delete: if request.auth != null
-                    && request.auth.token.role == "owner";
+      allow delete: if isOwner();
     }
+
     // Appointments: everyone signed in keeps the shared calendar up to date.
-    // Cancelling one is routine work, so it does not wait for the owner — but
-    // an employee can only remove an entry they created themselves.
+    // Cancelling one is routine work, so it does not wait for the manager —
+    // but an employee can only remove an entry they created themselves.
     match /agenda/{eventId} {
       allow read, create, update: if request.auth != null;
       allow delete: if request.auth != null
-                    && (request.auth.uid == resource.data.createdBy
-                        || request.auth.token.role == "owner");
+                    && (request.auth.uid == resource.data.createdBy || isOwner());
     }
+
     match /{document=**} {
       allow read, write: if false;
     }

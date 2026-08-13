@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { CalendarDays, ClipboardList, LogOut, Plus, Truck } from "lucide-react";
 import { auth } from "./firebase";
+import { isOwnerEmail } from "./constants";
 import LoginScreen from "./components/LoginScreen";
 import VisitForm from "./components/VisitForm";
 import VisitsList from "./components/VisitsList";
@@ -30,11 +31,14 @@ export default function App() {
     return onAuthStateChanged(auth, async (nextUser) => {
       setUser(nextUser);
       if (nextUser) {
+        // The claim is the original mechanism; the address is the one that
+        // works without a script having been run first.
+        const byEmail = isOwnerEmail(nextUser.email);
         try {
           const token = await nextUser.getIdTokenResult();
-          setIsOwner(token.claims.role === "owner");
+          setIsOwner(byEmail || token.claims.role === "owner");
         } catch {
-          setIsOwner(false);
+          setIsOwner(byEmail);
         }
       } else {
         setIsOwner(false);

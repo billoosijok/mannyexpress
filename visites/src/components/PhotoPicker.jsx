@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, X } from "lucide-react";
+import { Camera, Images, X } from "lucide-react";
 import { compressImage } from "../lib/compress";
 import { deletePhoto, uploadPhoto } from "../lib/photos";
 import { blockUpdates } from "../lib/updates";
@@ -15,7 +15,11 @@ import { ErrorNote, Spinner } from "./ui";
  * one after another and each one must build on the list as it stands then.
  */
 export default function PhotoPicker({ folder, urls = [], onChange, label = "Ajouter des photos" }) {
-  const inputRef = useRef(null);
+  // Two inputs rather than one: `capture` sends iOS straight to the camera,
+  // and without it the same button would open the library instead. A photo
+  // taken before the surveyor arrived has to be reachable too.
+  const cameraRef = useRef(null);
+  const libraryRef = useRef(null);
   const [pending, setPending] = useState(0);
   const [error, setError] = useState("");
 
@@ -90,16 +94,25 @@ export default function PhotoPicker({ folder, urls = [], onChange, label = "Ajou
 
         <button
           type="button"
-          onClick={() => inputRef.current?.click()}
+          onClick={() => cameraRef.current?.click()}
           className="flex h-16 w-16 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-gold/60 bg-gold/5 text-gold"
         >
           <Camera size={20} />
           <span className="text-[10px] leading-none">Photo</span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => libraryRef.current?.click()}
+          className="flex h-16 w-16 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-navy/40 bg-navy/5 text-navy"
+        >
+          <Images size={20} />
+          <span className="text-[10px] leading-none">Galerie</span>
+        </button>
       </div>
 
       <input
-        ref={inputRef}
+        ref={cameraRef}
         type="file"
         accept="image/*"
         capture="environment"
@@ -107,6 +120,15 @@ export default function PhotoPicker({ folder, urls = [], onChange, label = "Ajou
         onChange={handleFiles}
         className="hidden"
         aria-label={label}
+      />
+      <input
+        ref={libraryRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handleFiles}
+        className="hidden"
+        aria-label={`${label} depuis la galerie`}
       />
 
       {error && (

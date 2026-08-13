@@ -6,6 +6,19 @@ export const BORDER = "#E4E1D8";
 export const TEXT = "#2B2E33";
 export const MUTED = "#767b85";
 
+/**
+ * Who may delete a visit or anyone's appointment. The "owner" custom claim
+ * does it (see the README), but posting that claim needs a service-account
+ * key and a script run; naming the address here gives the same right with
+ * nothing to install. The list is repeated in firestore.rules, which is what
+ * actually enforces it — this one only decides whether the button is shown.
+ */
+export const OWNER_EMAILS = ["elgarbimohamed.m@gmail.com"];
+
+export function isOwnerEmail(email) {
+  return OWNER_EMAILS.includes(String(email || "").toLowerCase());
+}
+
 export const PRESTATIONS = [
   "Emballage par nos soins",
   "Fourniture de cartons",
