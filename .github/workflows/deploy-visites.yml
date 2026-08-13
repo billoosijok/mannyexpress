@@ -1,0 +1,62 @@
+name: Deploy visites
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'visites/**'
+      - '.github/workflows/deploy-visites.yml'
+  workflow_dispatch:
+
+# Never let two deploys race; queue them instead of cancelling, so the last
+# commit on main is always the one that ends up live.
+concurrency:
+  group: deploy-visites
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: visites
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: visites/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # Firebase web config comes from the committed visites/.env.production.
+      # These values ship in the client bundle anyway, so they are not secrets.
+      - name: Build
+        run: npm run build
+
+      - name: Authenticate to Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-sa.json" >> "$GITHUB_ENV"
+
+      - name: Deploy to Firebase Hosting
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          npx --yes firebase-tools@15 deploy \
+            --only hosting \
+            --project manny-express \
+            --non-interactive \
+            --message "$COMMIT_SHA"
