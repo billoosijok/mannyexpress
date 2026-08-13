@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { ClipboardList, LogOut, Plus, Truck } from "lucide-react";
+import { CalendarDays, ClipboardList, LogOut, Plus, Truck } from "lucide-react";
 import { auth } from "./firebase";
 import LoginScreen from "./components/LoginScreen";
 import VisitForm from "./components/VisitForm";
 import VisitsList from "./components/VisitsList";
 import VisitDetail from "./components/VisitDetail";
+import AgendaView from "./components/AgendaView";
 import { Spinner } from "./components/ui";
 
 export default function App() {
@@ -83,10 +84,14 @@ export default function App() {
         <div className={tab === "visites" && !selectedVisit ? "" : "hidden"}>
           <VisitsList onSelect={setSelectedVisit} />
         </div>
+        <div className={tab === "agenda" && !selectedVisit ? "" : "hidden"}>
+          <AgendaView user={user} isOwner={isOwner} onSelectVisit={setSelectedVisit} />
+        </div>
         {selectedVisit && (
           <VisitDetail
             visit={selectedVisit}
             isOwner={isOwner}
+            backLabel={tab === "agenda" ? "Retour à l'agenda" : "Retour aux visites"}
             onBack={() => setSelectedVisit(null)}
           />
         )}
@@ -95,22 +100,31 @@ export default function App() {
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white">
         <div className="mx-auto flex max-w-md">
           <TabButton
-            active={tab === "nouvelle" && !selectedVisit}
+            active={tab === "nouvelle"}
             onClick={() => {
               setSelectedVisit(null);
               setTab("nouvelle");
             }}
             icon={<Plus size={20} />}
-            label="Nouvelle visite"
+            label="Nouvelle"
           />
           <TabButton
-            active={tab === "visites" || Boolean(selectedVisit)}
+            active={tab === "visites"}
             onClick={() => {
               setSelectedVisit(null);
               setTab("visites");
             }}
             icon={<ClipboardList size={20} />}
             label="Visites"
+          />
+          <TabButton
+            active={tab === "agenda"}
+            onClick={() => {
+              setSelectedVisit(null);
+              setTab("agenda");
+            }}
+            icon={<CalendarDays size={20} />}
+            label="Agenda"
           />
         </div>
       </nav>
@@ -123,7 +137,7 @@ function TabButton({ active, onClick, icon, label }) {
     <button
       type="button"
       onClick={onClick}
-      className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium ${
+      className={`flex flex-1 flex-col items-center gap-0.5 whitespace-nowrap py-2.5 text-xs font-medium ${
         active ? "text-gold" : "text-muted"
       }`}
     >

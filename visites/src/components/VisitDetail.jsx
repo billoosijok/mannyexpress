@@ -22,7 +22,12 @@ function Line({ label, value }) {
   );
 }
 
-export default function VisitDetail({ visit, isOwner, onBack }) {
+export default function VisitDetail({
+  visit,
+  isOwner,
+  onBack,
+  backLabel = "Retour aux visites",
+}) {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
@@ -52,7 +57,7 @@ export default function VisitDetail({ visit, isOwner, onBack }) {
         onClick={onBack}
         className="mb-4 flex min-h-[44px] items-center gap-2 text-sm font-medium text-navy"
       >
-        <ArrowLeft size={18} /> Retour aux visites
+        <ArrowLeft size={18} /> {backLabel}
       </button>
 
       {error && (

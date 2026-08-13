@@ -2,7 +2,8 @@
 
 Application web mobile qui remplace la fiche de visite papier. Trois employés
 remplissent la fiche chez le client (avec photos), le gérant la consulte ensuite
-pour chiffrer le devis.
+pour chiffrer le devis. Un agenda partagé rassemble les prochaines visites et
+les prochains déménagements.
 
 L'interface est entièrement en français ; le code, lui, est en anglais.
 
@@ -155,25 +156,61 @@ connexion faible. Seules les URL des photos sont stockées dans le document.
 Supprimer une visite (gérant uniquement) efface le document **et** le dossier de
 photos correspondant.
 
-## 9. Structure du code
+## 9. L'agenda
+
+L'onglet **Agenda** est le planning partagé de l'équipe : tout le monde y voit
+la même chose, en temps réel.
+
+- **Ajouter** : choisir un jour dans le calendrier puis « Ajouter ». Un
+  rendez-vous est soit une **visite** (repérage chez le client), soit un
+  **déménagement**. Seule la date est obligatoire : l'heure, le client, le
+  téléphone, l'adresse et les notes peuvent être complétés plus tard.
+- **Modifier / déplacer** : toucher le rendez-vous pour rouvrir le formulaire.
+  Contrairement à une fiche de visite, un rendez-vous reste modifiable, les
+  dates changeant souvent.
+- **Supprimer** : possible pour la personne qui a créé le rendez-vous, et pour
+  le gérant.
+- **Appeler** : l'icône téléphone au bout d'une ligne lance l'appel quand un
+  numéro a été saisi.
+- Les deux vues : **Mois** (calendrier + la journée choisie en dessous) et
+  **À venir** (tout ce qui arrive à partir d'aujourd'hui, à la suite).
+
+Les **fiches de visite déjà enregistrées** apparaissent aussi dans le calendrier,
+en gris, à leur date de visite : toucher la ligne ouvre la fiche complète. Le
+calendrier montre donc à la fois ce qui est prévu et ce qui a déjà été fait.
+
+Les couleurs : **doré** pour une visite, **bleu marine** pour un déménagement,
+**gris** pour une fiche déjà remplie. Un point sous le jour signale chaque
+rendez-vous (trois au maximum).
+
+Un rendez-vous = un document dans la collection Firestore `agenda`. Il n'y a
+aucun lien automatique entre un rendez-vous et la fiche remplie ensuite : ce
+sont deux choses séparées, le rendez-vous restant le plan et la fiche le
+relevé.
+
+## 10. Structure du code
 
 ```
 src/
-  App.jsx                 écran de connexion ou coquille de l'app (en-tête + 2 onglets)
+  App.jsx                 écran de connexion ou coquille de l'app (en-tête + 3 onglets)
   firebase.js             initialisation du SDK
-  constants.js            couleurs, prestations, formulaire vierge, calcul du volume
+  constants.js            couleurs, prestations, types de rendez-vous, formulaires vierges
   components/
     LoginScreen.jsx       connexion (aucune inscription)
     VisitForm.jsx         le formulaire, sections 1 à 9
     VisitsList.jsx        liste temps réel des visites
     VisitDetail.jsx       consultation d'une visite + suppression (gérant)
+    AgendaView.jsx        calendrier du mois, journée choisie, liste « à venir »
+    AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous
     PhotoPicker.jsx       prise de photo, compression, envoi
     PhotoGallery.jsx      vignettes en lecture seule
     ui.jsx                champs, en-têtes de section, spinner
   lib/
-    visits.js             lecture/écriture Firestore
+    visits.js             lecture/écriture Firestore des fiches
+    agenda.js             lecture/écriture Firestore des rendez-vous
     photos.js             envoi/suppression Storage
     compress.js           compression via canvas
+    calendar.js           clés de jour "AAAA-MM-JJ" et grille du mois
     format.js             affichage des dates
 ```
 

@@ -6,6 +6,15 @@ service cloud.firestore {
       allow delete: if request.auth != null
                     && request.auth.token.role == "owner";
     }
+    // Appointments: everyone signed in keeps the shared calendar up to date.
+    // Cancelling one is routine work, so it does not wait for the owner — but
+    // an employee can only remove an entry they created themselves.
+    match /agenda/{eventId} {
+      allow read, create, update: if request.auth != null;
+      allow delete: if request.auth != null
+                    && (request.auth.uid == resource.data.createdBy
+                        || request.auth.token.role == "owner");
+    }
     match /{document=**} {
       allow read, write: if false;
     }

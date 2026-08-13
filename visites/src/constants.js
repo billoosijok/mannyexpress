@@ -39,6 +39,43 @@ export const CONTRAINTES_FIELDS = [
   { key: "contraintesCopro", label: "Contraintes copropriété / horaires" },
 ];
 
+// The two things the agenda holds: the appointment to go and survey a home,
+// and the moving day itself. Each carries the classes that colour it in the
+// calendar so a day's dots and its cards always agree.
+export const AGENDA_TYPES = [
+  {
+    value: "visite",
+    label: "Visite",
+    dot: "bg-gold",
+    bar: "bg-gold",
+    chip: "border-gold bg-gold/10 text-navy",
+  },
+  {
+    value: "demenagement",
+    label: "Déménagement",
+    dot: "bg-navy",
+    bar: "bg-navy",
+    chip: "border-navy bg-navy/10 text-navy",
+  },
+];
+
+/** Falls back to "visite" so an unknown type still renders. */
+export function agendaType(value) {
+  return AGENDA_TYPES.find((type) => type.value === value) || AGENDA_TYPES[0];
+}
+
+export function emptyEvent(date = "") {
+  return {
+    type: "visite",
+    date,
+    heure: "",
+    clientNom: "",
+    clientTel: "",
+    adresse: "",
+    notes: "",
+  };
+}
+
 // crypto.randomUUID() is unavailable outside secure contexts, which happens
 // when the app is opened over plain http on the local network for testing.
 export function uid() {
