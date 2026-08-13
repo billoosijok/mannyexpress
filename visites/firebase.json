@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "manny-express-visites",
+    "site": "manny-express",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [{ "source": "**", "destination": "/index.html" }]
