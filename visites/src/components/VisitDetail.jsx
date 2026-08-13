@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { ArrowLeft, Package, Trash2 } from "lucide-react";
+import { ArrowLeft, Package, Pencil, Trash2 } from "lucide-react";
 import { CONTRAINTES_FIELDS, LOGEMENT_FIELDS } from "../constants";
 import { deleteVisit } from "../lib/visits";
-import { formatVisitDate } from "../lib/format";
+import { formatVisitDate, formatVisitUpdate } from "../lib/format";
 import PhotoGallery from "./PhotoGallery";
 import { Card, ErrorNote, SectionHeader, Spinner } from "./ui";
 
@@ -26,6 +26,7 @@ export default function VisitDetail({
   visit,
   isOwner,
   onBack,
+  onEdit,
   backLabel = "Retour aux visites",
 }) {
   const [deleting, setDeleting] = useState(false);
@@ -52,13 +53,22 @@ export default function VisitDetail({
 
   return (
     <div className="pb-4">
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-4 flex min-h-[44px] items-center gap-2 text-sm font-medium text-navy"
-      >
-        <ArrowLeft size={18} /> {backLabel}
-      </button>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={onBack}
+          className="flex min-h-[44px] items-center gap-2 text-sm font-medium text-navy"
+        >
+          <ArrowLeft size={18} /> {backLabel}
+        </button>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg border border-navy px-3 text-sm font-medium text-navy"
+        >
+          <Pencil size={16} /> Modifier
+        </button>
+      </div>
 
       {error && (
         <div className="mb-4">
@@ -73,6 +83,7 @@ export default function VisitDetail({
         <Line label="Email" value={visit.clientEmail} />
         <Line label="Date de visite" value={formatVisitDate(visit)} />
         <Line label="Réalisée par" value={visit.visiteur || visit.createdByEmail} />
+        <Line label="Dernière modification" value={formatVisitUpdate(visit)} />
       </Card>
 
       <LogementSection number="2" title="Logement de départ" prefix="depart" visit={visit} />

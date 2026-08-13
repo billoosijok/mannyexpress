@@ -7,6 +7,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { totalVolume } from "../constants";
@@ -30,6 +31,21 @@ export async function saveVisit(visitId, form, user) {
     createdAt: serverTimestamp(),
     createdBy: user.uid,
     createdByEmail: user.email || "",
+  });
+}
+
+/**
+ * Corrects a sheet already saved. The authorship stamps are left alone —
+ * updateDoc only touches the keys it is given — and who corrected it, and
+ * when, is recorded next to them.
+ */
+export async function updateVisit(visitId, form, user) {
+  await updateDoc(doc(db, VISITS, visitId), {
+    ...form,
+    volumeTotal: totalVolume(form.pieces),
+    updatedAt: serverTimestamp(),
+    updatedBy: user.uid,
+    updatedByEmail: user.email || "",
   });
 }
 

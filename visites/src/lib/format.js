@@ -16,6 +16,17 @@ export function formatVisitDate(visit) {
   return created ? created.toLocaleDateString("fr-FR") : "";
 }
 
+/** When a saved sheet was last corrected, and by whom. Empty if never. */
+export function formatVisitUpdate(visit) {
+  const updated = visit.updatedAt?.toDate?.();
+  if (!updated) return "";
+  const when = `${updated.toLocaleDateString("fr-FR")} à ${updated.toLocaleTimeString(
+    "fr-FR",
+    { hour: "2-digit", minute: "2-digit" }
+  )}`;
+  return visit.updatedByEmail ? `${when} — ${visit.updatedByEmail}` : when;
+}
+
 /** Calendar title: "Août 2026". */
 export function formatMonthLabel(monthStart) {
   return capitalize(

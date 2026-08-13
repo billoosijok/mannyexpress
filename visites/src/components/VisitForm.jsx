@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Package, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Check, Package, Plus, Trash2 } from "lucide-react";
 import {
   CONTRAINTES_FIELDS,
   LOGEMENT_FIELDS,
@@ -8,11 +8,12 @@ import {
   emptyVisit,
   totalVolume,
   visitHasContent,
+  visitToForm,
 } from "../constants";
-import { newVisitId, saveVisit } from "../lib/visits";
+import { newVisitId, saveVisit, updateVisit } from "../lib/visits";
 import { commit } from "../lib/offline";
 import { clearDraft, readDraft, writeDraft } from "../lib/draft";
-import { deferUpdates, settleUpdates } from "../lib/updates";
+import { blockUpdates, deferUpdates, settleUpdates } from "../lib/updates";
 import {
   objetsPianoFolder,
   objetsValeurFolder,
@@ -22,20 +23,30 @@ import {
 import PhotoPicker from "./PhotoPicker";
 import { Card, ErrorNote, Field, SectionHeader, Spinner, TextArea, TextInput } from "./ui";
 
-export default function VisitForm({ user }) {
+/**
+ * The blank sheet, and the same sheet reopened to be corrected. Passing an
+ * already saved `visit` switches it to correction: same fields, same photos,
+ * an update instead of a creation.
+ */
+export default function VisitForm({ user, visit = null, onDone, onCancel }) {
+  const editing = Boolean(visit);
   // A sheet left half-filled comes back as it was, whatever ended the last
-  // session — a version taking over, a crash, a phone shutting down.
-  const [restored] = useState(readDraft);
+  // session — a version taking over, a crash, a phone shutting down. Only the
+  // blank sheet is kept that way; a correction is never half-remembered.
+  const [restored] = useState(() => (editing ? null : readDraft()));
   // The id is reserved up front so photos taken during the draft already know
   // their final storage folder.
-  const [visitId, setVisitId] = useState(() => restored?.visitId ?? newVisitId());
-  const [form, setForm] = useState(() => restored?.form ?? emptyVisit());
+  const [visitId, setVisitId] = useState(() => visit?.id ?? restored?.visitId ?? newVisitId());
+  const [form, setForm] = useState(
+    () => (visit ? visitToForm(visit) : restored?.form) ?? emptyVisit()
+  );
   const [status, setStatus] = useState("idle"); // idle | saving | envoye | en-attente
   const [error, setError] = useState("");
 
   const volumeTotal = useMemo(() => totalVolume(form.pieces), [form.pieces]);
 
   useEffect(() => {
+    if (editing) return undefined;
     // Debounced: this runs on every keystroke.
     const timer = setTimeout(() => {
       if (visitHasContent(form)) writeDraft(visitId, form);
@@ -46,13 +57,18 @@ export default function VisitForm({ user }) {
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [visitId, form]);
+  }, [editing, visitId, form]);
 
   // Read through a ref so the guard itself never changes: registering a new
   // one on every keystroke would leave a gap where nothing holds the update.
   const formRef = useRef(form);
   formRef.current = form;
-  useEffect(() => deferUpdates(() => visitHasContent(formRef.current)), []);
+  useEffect(() => {
+    // A correction is not written down anywhere, so a new version of the app
+    // waits until it is finished; a draft is, so it only waits while watched.
+    if (editing) return blockUpdates(() => true);
+    return deferUpdates(() => visitHasContent(formRef.current));
+  }, [editing]);
 
   const setValue = (key) => (value) =>
     setForm((previous) => ({ ...previous, [key]: value }));
@@ -111,6 +127,13 @@ export default function VisitForm({ user }) {
     setError("");
     setStatus("saving");
     try {
+      if (editing) {
+        await commit(updateVisit(visitId, form, user));
+        // The corrected sheet is already in the local cache, so the list it
+        // returns to shows the new version straight away.
+        onDone();
+        return;
+      }
       setStatus(await commit(saveVisit(visitId, form, user)));
       // The sheet is in Firestore now, on the phone at the very least: the
       // copy kept for a reload has done its job.
@@ -129,6 +152,16 @@ export default function VisitForm({ user }) {
 
   return (
     <form onSubmit={handleSubmit} className="pb-4">
+      {editing && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="mb-4 flex min-h-[44px] items-center gap-2 text-sm font-medium text-navy"
+        >
+          <ArrowLeft size={18} /> Annuler la modification
+        </button>
+      )}
+
       {error && (
         <div className="mb-4">
           <ErrorNote>{error}</ErrorNote>
@@ -362,7 +395,7 @@ export default function VisitForm({ user }) {
         <TextArea value={form.notes} onChange={setValue("notes")} rows={4} />
       </Card>
 
-      <SubmitBar status={status} />
+      <SubmitBar status={status} editing={editing} />
     </form>
   );
 }
@@ -383,7 +416,7 @@ function LogementCard({ number, title, prefix, form, setValue }) {
   );
 }
 
-function SubmitBar({ status }) {
+function SubmitBar({ status, editing }) {
   const saving = status === "saving";
   const done = status === "envoye" || status === "en-attente";
 
@@ -403,7 +436,8 @@ function SubmitBar({ status }) {
           {status === "envoye" && "Visite enregistrée"}
           {/* Saved on the phone: the sheet is safe, it just has not left yet. */}
           {status === "en-attente" && "Enregistrée — envoi au retour du réseau"}
-          {status === "idle" && "Enregistrer la visite"}
+          {status === "idle" &&
+            (editing ? "Enregistrer les modifications" : "Enregistrer la visite")}
         </button>
       </div>
     </div>

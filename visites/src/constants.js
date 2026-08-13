@@ -129,6 +129,32 @@ export function emptyVisit() {
   };
 }
 
+// Written alongside the form, never part of it: these must not travel back
+// into the fields when a saved sheet is reopened for correction.
+const VISIT_METADATA = [
+  "id",
+  "volumeTotal",
+  "createdAt",
+  "createdBy",
+  "createdByEmail",
+  "updatedAt",
+  "updatedBy",
+  "updatedByEmail",
+];
+
+/** Turns a saved visit back into something the form can edit. */
+export function visitToForm(visit) {
+  const form = emptyVisit();
+  for (const [key, value] of Object.entries(visit)) {
+    if (!VISIT_METADATA.includes(key)) form[key] = value;
+  }
+  // A sheet saved before a field existed simply keeps the empty one, and a
+  // piece saved without an id gets one: the form keys its rows on it.
+  const pieces = visit.pieces?.length ? visit.pieces : form.pieces;
+  form.pieces = pieces.map((piece) => ({ ...emptyPiece(), ...piece }));
+  return form;
+}
+
 function isBlank(value) {
   if (Array.isArray(value)) return value.length === 0;
   return String(value ?? "").trim() === "";

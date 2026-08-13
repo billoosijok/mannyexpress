@@ -17,6 +17,14 @@ export default function App() {
   const [authResolved, setAuthResolved] = useState(false);
   const [tab, setTab] = useState("nouvelle");
   const [selectedVisit, setSelectedVisit] = useState(null);
+  // The sheet open for correction, in the form rather than in read-only.
+  const [editedVisit, setEditedVisit] = useState(null);
+
+  // Leaving a sheet always leaves its correction too.
+  function closeVisit() {
+    setEditedVisit(null);
+    setSelectedVisit(null);
+  }
 
   useEffect(() => {
     return onAuthStateChanged(auth, async (nextUser) => {
@@ -30,6 +38,7 @@ export default function App() {
         }
       } else {
         setIsOwner(false);
+        setEditedVisit(null);
         setSelectedVisit(null);
       }
       setAuthResolved(true);
@@ -97,12 +106,22 @@ export default function App() {
         <div className={tab === "agenda" && !selectedVisit ? "" : "hidden"}>
           <AgendaView user={user} isOwner={isOwner} onSelectVisit={setSelectedVisit} />
         </div>
-        {selectedVisit && (
+        {selectedVisit && !editedVisit && (
           <VisitDetail
             visit={selectedVisit}
             isOwner={isOwner}
             backLabel={tab === "agenda" ? "Retour à l'agenda" : "Retour aux visites"}
-            onBack={() => setSelectedVisit(null)}
+            onBack={closeVisit}
+            onEdit={() => setEditedVisit(selectedVisit)}
+          />
+        )}
+        {editedVisit && (
+          <VisitForm
+            key={editedVisit.id}
+            user={user}
+            visit={editedVisit}
+            onDone={closeVisit}
+            onCancel={() => setEditedVisit(null)}
           />
         )}
       </main>
@@ -112,7 +131,7 @@ export default function App() {
           <TabButton
             active={tab === "nouvelle"}
             onClick={() => {
-              setSelectedVisit(null);
+              closeVisit();
               setTab("nouvelle");
             }}
             icon={<Plus size={20} />}
@@ -121,7 +140,7 @@ export default function App() {
           <TabButton
             active={tab === "visites"}
             onClick={() => {
-              setSelectedVisit(null);
+              closeVisit();
               setTab("visites");
             }}
             icon={<ClipboardList size={20} />}
@@ -130,7 +149,7 @@ export default function App() {
           <TabButton
             active={tab === "agenda"}
             onClick={() => {
-              setSelectedVisit(null);
+              closeVisit();
               setTab("agenda");
             }}
             icon={<CalendarDays size={20} />}

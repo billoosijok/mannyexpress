@@ -218,8 +218,22 @@ et ré-encodées en JPEG qualité 0,6 avant l'envoi (une photo de 4 Mo tombe aut
 de 150 Ko), ce qui rend l'envoi possible depuis chez le client avec une
 connexion faible. Seules les URL des photos sont stockées dans le document.
 
-Supprimer une visite (gérant uniquement) efface le document **et** le dossier de
-photos correspondant.
+**Corriger une fiche déjà enregistrée** : l'ouvrir depuis l'onglet Visites, puis
+« Modifier » en haut à droite. Le formulaire se rouvre tel qu'il a été
+enregistré, photos comprises, et « Enregistrer les modifications » remplace la
+fiche. Qui a corrigé, et quand, s'affiche ensuite en haut de la fiche
+(« Dernière modification »). Tout le monde peut corriger une fiche : à quatre,
+c'est le plus souvent celui qui l'a remplie qui repère sa faute de frappe.
+
+Deux choses à savoir en modifiant : retirer une photo la supprime tout de suite
+de Storage, même si la modification est ensuite annulée ; et une correction
+n'est pas conservée en cas de rechargement, contrairement à une fiche neuve —
+c'est pour cela qu'une mise à jour de l'application attend qu'elle soit finie.
+
+**Supprimer une visite** efface le document **et** le dossier de photos. Ce
+droit est réservé au gérant et vient du « custom claim » posé sur son compte
+(section 5) : sans lui, le bouton rouge « Supprimer la visite » reste invisible,
+y compris pour le gérant.
 
 ## 11. L'agenda
 
@@ -262,9 +276,9 @@ src/
   constants.js            couleurs, prestations, types de rendez-vous, formulaires vierges
   components/
     LoginScreen.jsx       connexion (aucune inscription)
-    VisitForm.jsx         le formulaire, sections 1 à 9
+    VisitForm.jsx         le formulaire, sections 1 à 9 (fiche neuve ou correction)
     VisitsList.jsx        liste temps réel des visites
-    VisitDetail.jsx       consultation d'une visite + suppression (gérant)
+    VisitDetail.jsx       consultation d'une visite, modification, suppression (gérant)
     AgendaView.jsx        calendrier du mois, journée choisie, liste « à venir »
     AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous
     PhotoPicker.jsx       prise de photo, compression, envoi
@@ -285,5 +299,5 @@ src/
 sw-template.js            le service worker, avant que le build y inscrive sa version
 ```
 
-Une visite enregistrée ne se modifie pas depuis l'application : en cas d'erreur,
-refaire une fiche.
+Une fiche enregistrée reste modifiable : `VisitForm` sert aussi bien à la
+remplir qu'à la corriger, selon qu'on lui passe une visite ou non.
