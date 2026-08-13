@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Package, Plus, Trash2 } from "lucide-react";
 import {
   CONTRAINTES_FIELDS,
@@ -7,9 +7,12 @@ import {
   emptyPiece,
   emptyVisit,
   totalVolume,
+  visitHasContent,
 } from "../constants";
 import { newVisitId, saveVisit } from "../lib/visits";
 import { commit } from "../lib/offline";
+import { clearDraft, readDraft, writeDraft } from "../lib/draft";
+import { deferUpdates, settleUpdates } from "../lib/updates";
 import {
   objetsPianoFolder,
   objetsValeurFolder,
@@ -20,14 +23,36 @@ import PhotoPicker from "./PhotoPicker";
 import { Card, ErrorNote, Field, SectionHeader, Spinner, TextArea, TextInput } from "./ui";
 
 export default function VisitForm({ user }) {
+  // A sheet left half-filled comes back as it was, whatever ended the last
+  // session — a version taking over, a crash, a phone shutting down.
+  const [restored] = useState(readDraft);
   // The id is reserved up front so photos taken during the draft already know
   // their final storage folder.
-  const [visitId, setVisitId] = useState(newVisitId);
-  const [form, setForm] = useState(emptyVisit);
+  const [visitId, setVisitId] = useState(() => restored?.visitId ?? newVisitId());
+  const [form, setForm] = useState(() => restored?.form ?? emptyVisit());
   const [status, setStatus] = useState("idle"); // idle | saving | envoye | en-attente
   const [error, setError] = useState("");
 
   const volumeTotal = useMemo(() => totalVolume(form.pieces), [form.pieces]);
+
+  useEffect(() => {
+    // Debounced: this runs on every keystroke.
+    const timer = setTimeout(() => {
+      if (visitHasContent(form)) writeDraft(visitId, form);
+      else {
+        clearDraft();
+        // Nothing in progress any more: a version waiting its turn can go in.
+        settleUpdates();
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [visitId, form]);
+
+  // Read through a ref so the guard itself never changes: registering a new
+  // one on every keystroke would leave a gap where nothing holds the update.
+  const formRef = useRef(form);
+  formRef.current = form;
+  useEffect(() => deferUpdates(() => visitHasContent(formRef.current)), []);
 
   const setValue = (key) => (value) =>
     setForm((previous) => ({ ...previous, [key]: value }));
@@ -87,6 +112,9 @@ export default function VisitForm({ user }) {
     setStatus("saving");
     try {
       setStatus(await commit(saveVisit(visitId, form, user)));
+      // The sheet is in Firestore now, on the phone at the very least: the
+      // copy kept for a reload has done its job.
+      clearDraft();
       setTimeout(() => {
         setForm(emptyVisit());
         setVisitId(newVisitId());

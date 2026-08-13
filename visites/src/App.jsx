@@ -49,7 +49,7 @@ export default function App() {
     return (
       <>
         <LoginScreen />
-        <UpdateBanner warnAboutDraft={false} />
+        <UpdateBanner />
       </>
     );
   }

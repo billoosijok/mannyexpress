@@ -173,17 +173,44 @@ s'utilise sans réseau — dans une cage d'escalier, une cave, un sous-sol.
   le téléphone perd le réseau. Une fiche remplie hors connexion doit donc être
   complétée en photos une fois le réseau revenu, ou remplie à nouveau.
 
-**Les mises à jour** ne s'installent jamais toutes seules pendant la saisie :
-recharger la page en plein milieu d'une fiche la ferait perdre. Quand une
-nouvelle version est en ligne, un bandeau « Nouvelle version disponible »
-apparaît en bas et attend d'être touché. Sans cela, la nouvelle version prend la
-main à la prochaine ouverture de l'application.
-
 En développement (`npm run dev`) le service worker n'est pas enregistré : il ne
 sert qu'à la version construite, pour ne pas servir un ancien fichier pendant
 qu'on travaille.
 
-## 9. Ce que contient une visite
+## 9. Les mises à jour
+
+**Un déploiement arrive tout seul sur les téléphones, sans rien toucher.**
+L'application cherche une nouvelle version au retour au premier plan, au retour
+du réseau, et une fois par minute tant qu'elle est ouverte. En pratique une
+mise en ligne est prise en compte dans la minute.
+
+Prendre une nouvelle version veut dire recharger la page. C'est fait tout seul
+dès que cela ne dérange personne :
+
+| Ce qui se passe sur le téléphone | Ce que fait la mise à jour |
+| --- | --- |
+| Rien en cours (liste, agenda, formulaire vide) | Elle s'installe immédiatement, sans rien afficher |
+| Application en arrière-plan | Elle s'installe hors de vue ; au retour, la nouvelle version est déjà là |
+| Une fiche est en cours de saisie | Elle attend, et propose un bandeau « Mettre à jour » |
+| Une photo est en cours d'envoi, ou un rendez-vous ouvert | Elle attend la fin, puis s'installe |
+
+**La fiche en cours n'est jamais perdue.** Elle est écrite sur le téléphone à
+chaque frappe (`lib/draft.js`) et revient telle quelle après tout rechargement
+— mise à jour, plantage, batterie vide, onglet fermé par erreur. C'est ce qui
+permet à une mise à jour de s'installer sans prévenir. Elle est effacée dès que
+la fiche est enregistrée.
+
+Deux garde-fous dans `lib/updates.js` : ce qu'un rechargement **perdrait** (une
+photo en route vers Storage, le formulaire de rendez-vous qui n'est écrit nulle
+part) bloque la mise à jour jusqu'au bout ; ce qu'il ne ferait qu'**interrompre**
+(la fiche, sauvegardée au fil de la frappe) la retient seulement tant que
+quelqu'un regarde l'écran.
+
+Côté hébergement, `sw.js` et `index.html` sont servis en `no-cache` : sans cela
+le navigateur pourrait garder l'ancienne version jusqu'à une heure et le
+déploiement n'arriverait pas.
+
+## 10. Ce que contient une visite
 
 Une visite = un document dans la collection Firestore `visites`, et un dossier
 de photos dans Storage sous `visites/{id}/`. Les photos sont réduites à 1000 px
@@ -194,7 +221,7 @@ connexion faible. Seules les URL des photos sont stockées dans le document.
 Supprimer une visite (gérant uniquement) efface le document **et** le dossier de
 photos correspondant.
 
-## 10. L'agenda
+## 11. L'agenda
 
 L'onglet **Agenda** est le planning partagé de l'équipe : tout le monde y voit
 la même chose, en temps réel.
@@ -226,7 +253,7 @@ aucun lien automatique entre un rendez-vous et la fiche remplie ensuite : ce
 sont deux choses séparées, le rendez-vous restant le plan et la fiche le
 relevé.
 
-## 11. Structure du code
+## 12. Structure du code
 
 ```
 src/
@@ -253,7 +280,8 @@ src/
     calendar.js           clés de jour "AAAA-MM-JJ" et grille du mois
     format.js             affichage des dates
     offline.js            écriture qui n'attend pas le serveur quand il n'y a plus de réseau
-    pwa.js                enregistrement et mise à jour du service worker
+    draft.js              la fiche en cours, gardée sur le téléphone
+    updates.js            détection des déploiements et bascule de version
 sw-template.js            le service worker, avant que le build y inscrive sa version
 ```
 

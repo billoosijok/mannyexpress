@@ -129,6 +129,24 @@ export function emptyVisit() {
   };
 }
 
+function isBlank(value) {
+  if (Array.isArray(value)) return value.length === 0;
+  return String(value ?? "").trim() === "";
+}
+
+/**
+ * Whether anything has been typed into a visit sheet. Comparing against a
+ * fresh emptyVisit() would not do: every piece carries a random id.
+ */
+export function visitHasContent(form) {
+  return Object.entries(form).some(([key, value]) => {
+    if (key !== "pieces") return !isBlank(value);
+    return value.some(({ id: _id, ...fields }) =>
+      Object.values(fields).some((field) => !isBlank(field))
+    );
+  });
+}
+
 // Surveyors type French decimals ("12,5"); anything unreadable counts as 0.
 export function parseVolume(value) {
   const parsed = Number.parseFloat(String(value ?? "").replace(",", "."));

@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Camera, X } from "lucide-react";
 import { compressImage } from "../lib/compress";
 import { deletePhoto, uploadPhoto } from "../lib/photos";
+import { blockUpdates } from "../lib/updates";
 import { uid } from "../constants";
 import { ErrorNote, Spinner } from "./ui";
 
@@ -17,6 +18,12 @@ export default function PhotoPicker({ folder, urls = [], onChange, label = "Ajou
   const inputRef = useRef(null);
   const [pending, setPending] = useState(0);
   const [error, setError] = useState("");
+
+  // A photo on its way to Storage does not survive a reload, so a new version
+  // of the app waits for it.
+  const pendingRef = useRef(0);
+  pendingRef.current = pending;
+  useEffect(() => blockUpdates(() => pendingRef.current > 0), []);
 
   async function handleFiles(event) {
     const files = Array.from(event.target.files || []);

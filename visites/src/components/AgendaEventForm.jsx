@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Trash2, X } from "lucide-react";
 import { AGENDA_TYPES } from "../constants";
 import { createEvent, deleteEvent, updateEvent } from "../lib/agenda";
 import { commit } from "../lib/offline";
+import { blockUpdates } from "../lib/updates";
 import { formatDayLabel } from "../lib/format";
 import { ErrorNote, Field, Spinner, TextArea, TextInput } from "./ui";
 
@@ -14,6 +15,10 @@ export default function AgendaEventForm({ eventId, initial, canDelete, user, onC
   const [form, setForm] = useState(initial);
   const [status, setStatus] = useState("idle"); // idle | saving | deleting
   const [error, setError] = useState("");
+
+  // Unlike the visit sheet, this short-lived form is not kept anywhere: a new
+  // version of the app waits until it is closed.
+  useEffect(() => blockUpdates(() => true), []);
 
   const busy = status !== "idle";
 
