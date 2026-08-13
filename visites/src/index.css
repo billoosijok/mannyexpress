@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Keeps the layout clear of the iPhone home indicator / notch. */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream text-ink antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* iOS zooms the page when a focused input is under 16px. */
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px;
+  }
+}
+
+@layer components {
+  .field-input {
+    @apply w-full min-h-[44px] rounded-lg border border-line bg-white px-3 py-2
+      text-ink placeholder:text-muted/70 outline-none transition
+      focus:border-gold focus:ring-4 focus:ring-gold/20;
+  }
+}

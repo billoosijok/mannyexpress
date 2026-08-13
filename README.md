@@ -45,6 +45,14 @@ mannyexpress/
 │       └── hero.webp
 └── README.md
 
+## 📋 Field visit app (`visites/`)
+
+The `visites/` folder holds a separate mobile web app used by the team on site:
+it replaces the paper visit sheet (survey form + photos) and is reviewed by the
+owner to price a quote. It is a React + Vite app on Firebase Auth, Firestore and
+Storage, deployed to its own Hosting site, and it does not affect this website
+or its deployment. See [`visites/README.md`](visites/README.md).
+
 ## 🌟 Features
 
 - **Fully Responsive** - Works on all devices
