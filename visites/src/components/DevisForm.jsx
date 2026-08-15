@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, ExternalLink, Printer } from "lucide-react";
-import { FORMULES } from "../constants";
+import { ArrowLeft, Check, ExternalLink, Printer, RotateCcw } from "lucide-react";
+import { FORMULES, formuleByValue } from "../constants";
 import {
   chargeText,
   devisFileName,
@@ -32,10 +32,20 @@ const FORMULE_OPTIONS = FORMULES.map(({ value, label, aPartirDe }) => ({
   label: `${label} — à partir de ${aPartirDe} €`,
 }));
 
+/** Si les listes enregistrées disent autre chose que la formule choisie. */
+function listesRetouchees(devis) {
+  if (!devis) return false;
+  return (
+    devis.prestations !== prestationsText(devis.formule) ||
+    devis.charge !== chargeText(devis.formule)
+  );
+}
+
 /**
  * Le devis d'une fiche de visite. Tout ce que la visite a relevé y est déjà —
  * client, adresses, étages, volume — il ne reste qu'à choisir la formule et à
- * taper le prix. L'aperçu en bas est exactement ce qui s'imprime.
+ * taper le prix. Tout y reste modifiable, à tout moment : un devis rouvert
+ * s'ouvre sur son prix, et « Enregistrer » remplace celui d'avant.
  */
 export default function DevisForm({ visit, user, onBack, onSaved }) {
   const [devis, setDevis] = useState(() => devisToForm(visit));
@@ -43,11 +53,16 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
   const [error, setError] = useState("");
   const frameRef = useRef(null);
 
+  const editing = Boolean(visit.devis);
+
   // Ce que le gérant a lui-même écrit n'est plus jamais remplacé : ni le
-  // numéro par celui que la base propose, ni les prestations par celles de la
-  // formule suivante.
+  // numéro par celui que la base propose, ni les listes par celles de la
+  // formule suivante. Sur un devis rouvert, « écrit à la main » ne veut pas
+  // dire « déjà enregistré » — sans quoi changer de formule ne remettrait
+  // plus jamais les listes à jour : c'est écrit ce que la formule choisie ne
+  // donne pas.
   const numeroEdited = useRef(Boolean(visit.devis?.numero));
-  const prestationsEdited = useRef(Boolean(visit.devis?.prestations));
+  const prestationsEdited = useRef(listesRetouchees(visit.devis));
 
   useEffect(() => {
     if (numeroEdited.current) return undefined;
@@ -78,6 +93,18 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
     }));
   }
 
+  // Remet les deux listes telles que la formule les donne, quand elles ont
+  // été retouchées puis regrettées.
+  function resetListes() {
+    prestationsEdited.current = false;
+    setDevis((previous) => ({
+      ...previous,
+      prestations: prestationsText(previous.formule),
+      charge: chargeText(previous.formule),
+    }));
+  }
+
+  const formule = formuleByValue(devis.formule);
   const montant = useMemo(() => devisMontant(devis), [devis]);
   const fileName = devisFileName(devis);
 
@@ -111,9 +138,38 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
         </div>
       )}
 
-      <Card>
+      {/* Le prix d'abord, seul, en haut : c'est la seule chose que l'écran
+          attende vraiment, et la première qu'on revienne changer. */}
+      <Card className="border-l-4 border-l-gold">
         <SectionHeader
           number="1"
+          title="Prix du devis"
+          subtitle={
+            editing
+              ? "Modifiable à tout moment — le devis est réimprimé avec le nouveau prix"
+              : `Formule ${formule.label} : à partir de ${formule.aPartirDe} €`
+          }
+        />
+        <label className="block">
+          <span className="mb-1 block text-sm font-medium text-ink">
+            Prix total à régler (€)
+          </span>
+          <input
+            className="field-input h-16 text-center text-3xl font-semibold text-navy"
+            inputMode="decimal"
+            value={devis.prixTTC ?? ""}
+            onChange={(event) => setValue("prixTTC")(event.target.value)}
+            placeholder="2480"
+          />
+        </label>
+        <p className="mt-2 text-center text-sm text-muted">
+          {formatEuros(montant)} sur le devis — micro-entreprise, pas de TVA
+        </p>
+      </Card>
+
+      <Card>
+        <SectionHeader
+          number="2"
           title="Devis"
           subtitle="Rempli avec ce que la visite a relevé"
         />
@@ -157,28 +213,10 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             onChange={setValue("volume")}
           />
         </Field>
-
-        <div className="rounded-lg border-l-4 border-gold bg-gold/10 p-3">
-          <Field
-            label="Prix total TTC (€)"
-            hint="Micro-entreprise : pas de TVA, ce prix est celui que le client règle"
-          >
-            <TextInput
-              inputMode="decimal"
-              value={devis.prixTTC}
-              onChange={setValue("prixTTC")}
-              placeholder="Ex : 2480"
-            />
-          </Field>
-          <div className="flex items-center justify-between border-t border-gold/40 pt-2 text-sm text-navy">
-            <span>Sur le devis</span>
-            <span className="font-semibold">{formatEuros(montant)}</span>
-          </div>
-        </div>
       </Card>
 
       <Card>
-        <SectionHeader number="2" title="Client" />
+        <SectionHeader number="3" title="Client" />
         <Field label="Nom / prénom">
           <TextInput value={devis.clientNom} onChange={setValue("clientNom")} />
         </Field>
@@ -195,14 +233,14 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <EtapeCard
-        number="3"
+        number="4"
         title="Chargement"
         prefix="chargement"
         devis={devis}
         setValue={setValue}
       />
       <EtapeCard
-        number="4"
+        number="5"
         title="Déchargement"
         prefix="dechargement"
         devis={devis}
@@ -211,7 +249,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
 
       <Card>
         <SectionHeader
-          number="5"
+          number="6"
           title="Ce que comprend la formule"
           subtitle="Repris du tableau des formules du site, une ligne par prestation"
         />
@@ -234,10 +272,17 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
           }}
           rows={5}
         />
+        <button
+          type="button"
+          onClick={resetListes}
+          className="mt-2 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-line text-sm font-medium text-navy"
+        >
+          <RotateCcw size={16} /> Remettre les listes de la formule {formule.label}
+        </button>
       </Card>
 
       <Card>
-        <SectionHeader number="6" title="Conditions" />
+        <SectionHeader number="7" title="Conditions" />
         <TextArea
           value={devis.conditions}
           onChange={setValue("conditions")}
@@ -246,7 +291,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <Card>
-        <SectionHeader number="7" title="Aperçu du devis" />
+        <SectionHeader number="8" title="Aperçu du devis" />
         <div className="mb-3 flex flex-wrap gap-2">
           <button
             type="button"
@@ -286,7 +331,8 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             {status === "saving" && "Enregistrement..."}
             {status === "envoye" && "Devis enregistré"}
             {status === "en-attente" && "Enregistré — envoi au retour du réseau"}
-            {status === "idle" && "Enregistrer le devis"}
+            {status === "idle" &&
+              (editing ? "Enregistrer les modifications" : "Enregistrer le devis")}
           </button>
         </div>
       </div>
@@ -297,6 +343,8 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
 /** Chargement et déchargement : mêmes champs, préfixe différent. */
 function EtapeCard({ number, title, prefix, devis, setValue }) {
   const fields = [
+    // L'intitulé est la ligne en gras du devis : « Chargement des meubles ».
+    { suffix: "Titre", label: "Intitulé sur le devis" },
     { suffix: "Date", label: "Date", type: "date" },
     { suffix: "Adresse", label: "Adresse complète" },
     { suffix: "Etage", label: "Étage" },

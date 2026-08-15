@@ -86,7 +86,7 @@ export default function DevisDocument({ devis, frameRef }) {
 
   const etapes = [
     {
-      titre: "Chargement des meubles",
+      titre: devis.chargementTitre || "Chargement des meubles",
       date: devis.chargementDate,
       adresse: devis.chargementAdresse,
       etage: devis.chargementEtage,
@@ -94,14 +94,18 @@ export default function DevisDocument({ devis, frameRef }) {
       surface: devis.chargementSurface,
     },
     {
-      titre: "Déchargement des meubles",
+      titre: devis.dechargementTitre || "Déchargement des meubles",
       date: devis.dechargementDate,
       adresse: devis.dechargementAdresse,
       etage: devis.dechargementEtage,
       ascenseur: devis.dechargementAscenseur,
       surface: devis.dechargementSurface,
     },
-  ].filter((etape) => Object.values(etape).some((value) => String(value ?? "").trim()));
+    // L'intitulé ne compte pas : il est toujours rempli. Une étape sans date
+    // ni adresse ni accès ne s'imprime pas, plutôt qu'un titre tout seul.
+  ].filter(({ titre: _titre, ...details }) =>
+    Object.values(details).some((value) => String(value ?? "").trim())
+  );
 
   return (
     <div

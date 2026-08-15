@@ -336,7 +336,16 @@ prix.**
 - **Le prix est le montant que le client règle.** Manny Express est une
   micro-entreprise : pas de TVA, donc pas de ligne HT ni de taux à saisir. Le
   devis porte un seul total et la mention « TVA non applicable, art. 293 B du
-  CGI ».
+  CGI ». Il est **en tête de l'écran, seul dans son encadré** : c'est ce qu'on
+  vient taper la première fois, et ce qu'on revient changer ensuite.
+- **Tout se change, à tout moment**, et pas seulement le prix : le numéro, les
+  deux dates, le client, les adresses et les accès, l'intitulé des deux étapes
+  (« Chargement des meubles »), le volume, les deux listes, les conditions.
+  Rouvrir un devis enregistré rouvre le même écran ; « Enregistrer les
+  modifications » remplace le devis, qui se réimprime avec le nouveau prix.
+  Changer de formule sur un devis déjà enregistré remet bien les deux listes à
+  jour — sauf si elles ont été retouchées à la main, et le bouton « Remettre
+  les listes de la formule » les rétablit alors.
 - **Les dates de chargement et de déchargement** sont les seules choses que la
   fiche ne sait pas : elles se saisissent ici.
 - **L'aperçu en bas de l'écran est exactement ce qui s'imprime.** Rien n'y est
