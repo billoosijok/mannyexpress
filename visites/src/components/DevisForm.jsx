@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, ExternalLink, Printer, RotateCcw } from "lucide-react";
-import { FORMULES, formuleByValue } from "../constants";
+import { ArrowLeft, Check, ExternalLink, Mail, Printer, RotateCcw } from "lucide-react";
+import { FORMULES, MAIL_DEVIS, formuleByValue } from "../constants";
 import {
   chargeText,
   devisFileName,
+  devisMailObjet,
+  devisMailto,
   devisMontant,
   devisToForm,
   formatEuros,
@@ -327,14 +329,18 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <Card>
-        <SectionHeader number="9" title="Aperçu du devis" />
-        <div className="mb-3 flex flex-wrap gap-2">
+        <SectionHeader
+          number="9"
+          title="Enregistrer en PDF et envoyer"
+          subtitle="La feuille sort au format A4, une page, coupée à la bonne taille"
+        />
+        <div className="mb-2 flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => printNode(frameRef.current, fileName)}
             className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg bg-navy px-3 text-sm font-medium text-white"
           >
-            <Printer size={18} /> Imprimer / PDF
+            <Printer size={18} /> Enregistrer en PDF
           </button>
           <button
             type="button"
@@ -344,11 +350,48 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             <ExternalLink size={18} /> Ouvrir dans le navigateur
           </button>
         </div>
-        <p className="mb-3 text-xs text-muted">
-          Sur iPhone, « Imprimer » propose « Enregistrer au format PDF » ; si la
-          boîte d'impression ne s'ouvre pas depuis l'application installée,
-          passer par « Ouvrir dans le navigateur », puis le bouton Partager.
+        <p className="mb-4 text-xs text-muted">
+          Sur iPhone : « Enregistrer en PDF » ouvre la boîte d'impression →
+          Options → <b>A4</b> → Partager → « Enregistrer dans Fichiers », ou
+          directement « Mail » qui joint le PDF tout seul. Si la boîte ne
+          s'ouvre pas depuis l'application installée, passer par « Ouvrir dans
+          le navigateur », puis le bouton Partager.
         </p>
+
+        {/* Le mail part de l'application de messagerie du téléphone, déjà
+            écrit. La pièce jointe s'y ajoute à la main : une page web n'a pas
+            le droit d'attacher un fichier à un mail qu'elle n'envoie pas. */}
+        <div className="rounded-lg border border-line bg-cream/60 p-3">
+          <p className="mb-1 text-sm font-semibold text-navy">Mail au client</p>
+          <p className="mb-2 text-xs text-muted">
+            {devis.clientEmail ? (
+              <>
+                À : {devis.clientEmail} — objet « {devisMailObjet(devis)} »
+              </>
+            ) : (
+              "Aucun email pour ce client : ajoutez-le en section 4."
+            )}
+          </p>
+          <p className="mb-3 whitespace-pre-wrap rounded border border-line bg-white p-2 text-xs text-ink">
+            {MAIL_DEVIS.corps}
+          </p>
+          <a
+            href={devisMailto(devis)}
+            className={`flex min-h-[48px] w-full items-center justify-center gap-2 rounded-lg bg-gold text-sm font-semibold text-white ${
+              devis.clientEmail ? "" : "pointer-events-none opacity-50"
+            }`}
+          >
+            <Mail size={18} /> Écrire le mail au client
+          </a>
+          <p className="mt-2 text-xs text-muted">
+            Le message s'ouvre déjà écrit ; il ne reste qu'à joindre le PDF
+            enregistré juste avant, puis à envoyer.
+          </p>
+        </div>
+      </Card>
+
+      <Card>
+        <SectionHeader number="10" title="Aperçu du devis" />
         <DevisDocument devis={devis} frameRef={frameRef} />
       </Card>
 

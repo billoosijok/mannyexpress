@@ -353,12 +353,34 @@ prix.**
 - **L'aperçu en bas de l'écran est exactement ce qui s'imprime.** Rien n'y est
   masqué ni ajouté.
 
-**Imprimer ou envoyer.** Le bouton **« Imprimer / PDF »** ouvre la boîte
-d'impression du téléphone, qui sait aussi « Enregistrer au format PDF » et
-partager le fichier — par mail, par WhatsApp. Si elle ne s'ouvre pas depuis
+**Enregistrer en PDF.** Le bouton **« Enregistrer en PDF »** ouvre la boîte
+d'impression du téléphone, qui sait « Enregistrer au format PDF » et partager
+le fichier — par mail, par WhatsApp. Si elle ne s'ouvre pas depuis
 l'application installée sur l'écran d'accueil (iOS le refuse selon les
 versions), **« Ouvrir dans le navigateur »** affiche le même devis dans un
 onglet Safari, d'où le bouton Partager fait la même chose.
+
+**La feuille est une A4, à la taille réelle** : `.devis-page` fait 210 × 297 mm
+et porte ses propres marges de 12 mm, la page d'impression n'en ajoutant
+aucune (`@page { margin: 0 }`). Le navigateur n'a donc rien à remettre à
+l'échelle et la coupe tombe juste, sans page blanche derrière. À l'écran,
+c'est `transform: scale()` qui réduit la feuille à la largeur du téléphone —
+mesurée sur la feuille elle-même, jamais devinée. Les quatre formules tiennent
+sur une page ; en rallonger les listes peut la faire passer à deux.
+
+**Le mail au client.** Le bouton **« Écrire le mail au client »** ouvre
+l'application de messagerie du téléphone avec le destinataire, l'objet
+(« Devis N° 368 — Manny Express ») et le message déjà écrits — le même texte
+pour tous les clients, dans `MAIL_DEVIS` (`src/constants.js`). L'écran
+l'affiche tel qu'il partira.
+
+**Le PDF s'y joint à la main**, et ce n'est pas un oubli : une page web ne
+peut pas attacher un fichier à un mail qu'elle n'envoie pas elle-même. Deux
+chemins, au choix : enregistrer le PDF puis le joindre au mail ouvert, ou
+partager le PDF directement vers Mail depuis la boîte d'impression — iOS le
+joint alors tout seul, mais sans le message. Un envoi complet et automatique
+demanderait une Cloud Function qui fabrique le PDF et l'expédie par un service
+d'envoi (identifiants à fournir) : rien de tel n'existe pour l'instant.
 
 **Le devis est enregistré dans la fiche** (clé `devis` du document, écrite par
 son seul écran : corriger la fiche ne l'écrase pas, et l'écrire ne touche pas
@@ -370,8 +392,6 @@ Ce que le devis imprime vient de trois endroits : l'en-tête et le pied de page
 (adresse, téléphones, SIRET, mention de TVA) de `ENTREPRISE` dans
 `src/constants.js`, le contenu des formules de `TABLEAU_FORMULES` dans le même
 fichier, et la mise en page de `src/devis.css`. Le logo est `public/logo.png`.
-Le devis tient sur une page dans les quatre formules ; en rallonger les listes
-peut le faire passer à deux.
 
 ## 13. L'agenda
 

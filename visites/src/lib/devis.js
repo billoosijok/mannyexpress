@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { formuleACharge, formulePrestations } from "../constants";
+import { MAIL_DEVIS, formuleACharge, formulePrestations } from "../constants";
 import { VISITS } from "./visits";
 
 /**
@@ -155,6 +155,30 @@ export async function saveDevis(visitId, devis, user) {
   };
   await updateDoc(doc(db, VISITS, visitId), { devis: stored });
   return stored;
+}
+
+/** L'objet du mail, avec le numéro du devis dedans. */
+export function devisMailObjet(devis) {
+  return MAIL_DEVIS.objet.replace("{numero}", devis.numero || "");
+}
+
+/**
+ * L'adresse « mailto: » qui ouvre l'application de messagerie du téléphone
+ * avec le destinataire, l'objet et le message déjà écrits. Le PDF s'y joint
+ * ensuite : le navigateur n'a pas le droit d'attacher un fichier lui-même.
+ */
+export function devisMailto(devis) {
+  const params = new URLSearchParams({
+    subject: devisMailObjet(devis),
+    body: MAIL_DEVIS.corps,
+  });
+  // Deux précautions : l'adresse reste telle quelle — encodée, son « @ »
+  // dérange certaines applications de messagerie — et l'espace du message
+  // s'écrit « %20 », le « + » d'URLSearchParams se retrouvant tel quel dans
+  // le texte reçu.
+  return `mailto:${String(devis.clientEmail || "").trim()}?${params
+    .toString()
+    .replace(/\+/g, "%20")}`;
 }
 
 /** Le titre du document imprimé : c'est lui que l'iPhone propose comme nom. */

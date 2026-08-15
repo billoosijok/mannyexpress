@@ -5,8 +5,17 @@
  * quelle avec `?raw`). Toute classe utilitaire ici serait absente là-bas.
  */
 
+/*
+ * La feuille est dessinée à la taille réelle d'une page A4 — 210 × 297 mm,
+ * marges comprises — et non à une largeur en pixels étirée au moment
+ * d'imprimer. C'est ce qui garantit la coupe : ce qui est à l'écran occupe
+ * exactement la page, sans que le navigateur ait à remettre quoi que ce soit
+ * à l'échelle. À l'écran, c'est `transform: scale()` qui la réduit à la
+ * largeur du téléphone.
+ */
 .devis-page {
-  width: 760px;
+  width: 210mm;
+  min-height: 297mm;
   box-sizing: border-box;
   background: #fff;
   color: #2b2e33;
@@ -14,7 +23,7 @@
     "Helvetica Neue", Arial, sans-serif;
   font-size: 13px;
   line-height: 1.45;
-  padding-bottom: 26px;
+  padding-bottom: 12mm;
 }
 
 .devis-page * {
@@ -27,7 +36,7 @@
 }
 
 .devis-body {
-  padding: 20px 40px 0;
+  padding: 6mm 12mm 0;
 }
 
 /* En-tête : logo et raison sociale à gauche, coordonnées à droite. */
@@ -320,7 +329,7 @@
 }
 
 .devis-legal {
-  margin: 16px 40px 0;
+  margin: 16px 12mm 0;
   padding-top: 8px;
   border-top: 1px solid #e4e1d8;
   font-size: 10px;
@@ -344,9 +353,11 @@
 }
 
 @media print {
+  /* La feuille porte déjà ses marges : une marge de page les doublerait et
+     ferait déborder le devis sur une seconde page. */
   @page {
     size: A4;
-    margin: 9mm;
+    margin: 0;
   }
 
   body {
@@ -382,7 +393,6 @@
   }
 
   .devis-page {
-    width: 100% !important;
     transform: none !important;
     box-shadow: none;
   }

@@ -38,6 +38,24 @@ export const ENTREPRISE = {
   mentionTva: "TVA non applicable, art. 293 B du CGI.",
 };
 
+/**
+ * Le mail qui accompagne le devis. Le même texte pour tous les clients, mot
+ * pour mot : c'est celui que le gérant a écrit. Le devis lui-même s'y joint à
+ * la main depuis le téléphone — un site web ne peut pas attacher un fichier
+ * à un mail qu'il n'envoie pas lui-même.
+ */
+export const MAIL_DEVIS = {
+  objet: "Devis N° {numero} — Manny Express",
+  corps: `Bonjour,
+
+Veuillez trouver ci-joint le devis comme convenu.
+
+Je reste à votre disposition pour toute question et dans l'attente de votre retour afin de pouvoir vous bloquer une date.
+
+Cordialement,
+Manny Express`,
+};
+
 export const FORMULES = [
   { value: "ptit-express", label: "P'tit Express", aPartirDe: 350 },
   { value: "simple", label: "Simple", aPartirDe: 600 },

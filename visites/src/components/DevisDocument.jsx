@@ -3,11 +3,6 @@ import { ENTREPRISE, formuleByValue } from "../constants";
 import { devisMontant, formatDateFr, formatEuros } from "../lib/devis";
 import "../devis.css";
 
-// La largeur de la feuille, en pixels, telle que le CSS la dessine. À l'écran
-// elle est réduite pour tenir dans la colonne ; à l'impression elle disparaît
-// au profit de la largeur de la page A4.
-const DEVIS_WIDTH = 760;
-
 function Etape({ titre, date, adresse, etage, ascenseur, surface }) {
   return (
     <>
@@ -55,11 +50,15 @@ export default function DevisDocument({ devis, frameRef }) {
     const frame = frameRef?.current || page?.parentElement;
     if (!page || !frame) return undefined;
 
+    // La largeur de la feuille est celle d'une A4, en millimètres : elle est
+    // mesurée plutôt que devinée, la conversion en pixels appartenant au
+    // navigateur. `offsetWidth` ignore la mise à l'échelle déjà posée.
     function measure() {
-      const available = frame.clientWidth || DEVIS_WIDTH;
-      const next = Math.min(1, available / DEVIS_WIDTH);
+      const sheet = page.offsetWidth;
+      if (!sheet) return;
+      const next = Math.min(1, (frame.clientWidth || sheet) / sheet);
       setScale(next);
-      setFrameHeight(page.scrollHeight * next);
+      setFrameHeight(page.offsetHeight * next);
     }
 
     measure();
