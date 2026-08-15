@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, FileText, Package, Pencil, Trash2 } from "lucide-react";
 import { CONTRAINTES_FIELDS, LOGEMENT_FIELDS } from "../constants";
 import { deleteVisit } from "../lib/visits";
-import { devisTotals, formatDateFr, formatEuros } from "../lib/devis";
+import { devisMontant, formatDateFr, formatEuros } from "../lib/devis";
 import { formatVisitDate, formatVisitUpdate } from "../lib/format";
 import PhotoGallery from "./PhotoGallery";
 import { Card, ErrorNote, SectionHeader, Spinner } from "./ui";
@@ -233,7 +233,7 @@ function DevisButton({ visit, onDevis }) {
       <FileText size={20} className="shrink-0 text-gold" />
       <span className="min-w-0 flex-1">
         <span className="block font-semibold text-navy">
-          Devis N° {devis.numero} — {formatEuros(devisTotals(devis).ttc)}
+          Devis N° {devis.numero} — {formatEuros(devisMontant(devis))}
         </span>
         <span className="block text-xs text-muted">
           Établi le {formatDateFr(devis.date)} — toucher pour modifier ou imprimer

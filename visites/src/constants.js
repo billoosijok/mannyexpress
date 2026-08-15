@@ -33,67 +33,60 @@ export const ENTREPRISE = {
   ville: "Narbonne",
   siret: "952 589 646 00027",
   siege: "1 impasse de la Distillerie, 11100 Narbonne",
-  // Franchise en base : le devis papier porte une TVA à 0,00 €.
-  mentionTva: "TVA non applicable, art. 293 B du code général des impôts.",
+  // Micro-entreprise : pas de TVA, et la mention qui doit alors figurer sur
+  // le devis. C'est elle qui remplace la ligne « TVA » du modèle papier.
+  mentionTva: "TVA non applicable, art. 293 B du CGI.",
 };
 
-// Ce que chaque formule comprend, dans l'ordre où le devis les imprime. Les
-// listes reprennent le tableau des formules de mannyexpress.com et se
-// cumulent : chacune ajoute ses lignes à la précédente. Le devis les recopie
-// dans un champ libre, où elles restent modifiables ligne à ligne.
-const PRESTATIONS_COMMUNES = [
-  "Chargement, transport en camion capitonné et déchargement",
-  "Manutention par personnel qualifié",
-  "Équipe professionnelle",
-  "Transport sécurisé et assuré",
+export const FORMULES = [
+  { value: "ptit-express", label: "P'tit Express", aPartirDe: 350 },
+  { value: "simple", label: "Simple", aPartirDe: 600 },
+  { value: "standard", label: "Standard", aPartirDe: 900 },
+  { value: "luxe", label: "Luxe", aPartirDe: 1400 },
 ];
 
-export const FORMULES = [
+/**
+ * Le tableau des formules de mannyexpress.com, ligne par ligne, dans l'ordre
+ * où la page les présente : pour chaque prestation, les formules qui la
+ * prennent en charge. Le reste est marqué « Vous » sur le site, donc à la
+ * charge du client sur le devis — et le devis le dit, plutôt que de le taire.
+ *
+ * C'est la seule source : ce que le site promet et ce que le devis engage ne
+ * peuvent pas diverger. Si la page change, cette liste change avec elle.
+ */
+const TABLEAU_FORMULES = [
+  { label: "Chargement", formules: ["ptit-express", "simple", "standard", "luxe"] },
   {
-    value: "ptit-express",
-    label: "P'tit Express",
-    prestations: PRESTATIONS_COMMUNES,
+    label: "Transport sécurisé",
+    formules: ["ptit-express", "simple", "standard", "luxe"],
   },
-  {
-    value: "simple",
-    label: "Simple",
-    prestations: [
-      ...PRESTATIONS_COMMUNES,
-      "Protection du mobilier incluse",
-      "Vérification de la stabilité du mobilier",
-    ],
-  },
-  {
-    value: "standard",
-    label: "Standard",
-    prestations: [
-      ...PRESTATIONS_COMMUNES,
-      "Protection du mobilier incluse",
-      "Vérification de la stabilité du mobilier",
-      "Démontage et remontage des meubles",
-      "Déconnexion et sécurisation de l'électroménager",
-      "Mise en place des cartons dans les pièces",
-    ],
-  },
-  {
-    value: "luxe",
-    label: "Luxe",
-    prestations: [
-      ...PRESTATIONS_COMMUNES,
-      "Protection du mobilier incluse",
-      "Vérification de la stabilité du mobilier",
-      "Démontage et remontage des meubles",
-      "Déconnexion et sécurisation de l'électroménager",
-      "Mise en place des cartons dans les pièces",
-      "Fourniture des cartons",
-      "Emballage complet (fragiles, vaisselle, vêtements)",
-      "Déballage des objets fragiles",
-    ],
-  },
+  { label: "Déchargement", formules: ["ptit-express", "simple", "standard", "luxe"] },
+  { label: "Protection du mobilier", formules: ["simple", "standard", "luxe"] },
+  { label: "Démontage des meubles", formules: ["standard", "luxe"] },
+  { label: "Remontage des meubles", formules: ["standard", "luxe"] },
+  { label: "Mise en place des cartons", formules: ["standard", "luxe"] },
+  { label: "Fourniture des cartons", formules: ["luxe"] },
+  { label: "Emballage des objets fragiles", formules: ["luxe"] },
+  { label: "Emballage du reste (vaisselle, vêtements…)", formules: ["luxe"] },
+  { label: "Déballage des objets fragiles", formules: ["luxe"] },
 ];
 
 export function formuleByValue(value) {
   return FORMULES.find((formule) => formule.value === value) || FORMULES[1];
+}
+
+/** Ce que la formule comprend. */
+export function formulePrestations(value) {
+  return TABLEAU_FORMULES.filter(({ formules }) => formules.includes(value)).map(
+    ({ label }) => label
+  );
+}
+
+/** Ce qu'elle ne comprend pas, et qui reste au client. */
+export function formuleACharge(value) {
+  return TABLEAU_FORMULES.filter(({ formules }) => !formules.includes(value)).map(
+    ({ label }) => label
+  );
 }
 
 export const PRESTATIONS = [

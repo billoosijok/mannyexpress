@@ -324,13 +324,19 @@ prix.**
 - **Le numéro** est proposé tout seul : le plus grand déjà attribué, plus un.
   Les devis d'avant l'application s'arrêtant à 367, le premier proposé est 368
   (`DEVIS_START_NUMBER` dans `lib/devis.js`). Il reste modifiable à la main.
-- **La formule** (P'tit Express, Simple, Standard, Luxe) remplit la liste des
-  prestations avec ce qu'elle comprend, telle que le site l'annonce. La liste
-  est un champ libre : une ligne par prestation, à corriger comme on veut. Une
-  fois qu'elle a été retouchée, changer de formule ne l'écrase plus.
-- **Le prix se saisit en TTC**, celui que le client paie. Le HT s'en déduit
-  selon le taux de TVA, laissé à 0 (franchise en base, art. 293 B) : à ce taux,
-  HT et TTC sont égaux, comme sur le devis papier.
+- **La formule** (P'tit Express, Simple, Standard, Luxe) remplit **deux
+  listes** : ce qu'elle comprend, et ce qu'elle laisse au client. Les deux
+  s'impriment côte à côte sur le devis — dit d'avance, ce n'est pas discuté le
+  jour du déménagement. Elles sortent du tableau des formules de
+  mannyexpress.com, recopié dans `TABLEAU_FORMULES` (`src/constants.js`) : le
+  site et le devis ne peuvent pas se contredire. Les deux listes sont des
+  champs libres ; une fois retouchées, changer de formule ne les écrase plus.
+  Le tarif de départ annoncé par le site s'affiche à côté de chaque formule
+  pour situer le prix — il ne s'imprime pas.
+- **Le prix est le montant que le client règle.** Manny Express est une
+  micro-entreprise : pas de TVA, donc pas de ligne HT ni de taux à saisir. Le
+  devis porte un seul total et la mention « TVA non applicable, art. 293 B du
+  CGI ».
 - **Les dates de chargement et de déchargement** sont les seules choses que la
   fiche ne sait pas : elles se saisissent ici.
 - **L'aperçu en bas de l'écran est exactement ce qui s'imprime.** Rien n'y est
@@ -351,8 +357,10 @@ réseau part au retour de la connexion, comme une fiche.
 
 Ce que le devis imprime vient de trois endroits : l'en-tête et le pied de page
 (adresse, téléphones, SIRET, mention de TVA) de `ENTREPRISE` dans
-`src/constants.js`, le contenu des formules de `FORMULES` dans le même fichier,
-et la mise en page de `src/devis.css`. Le logo est `public/logo.png`.
+`src/constants.js`, le contenu des formules de `TABLEAU_FORMULES` dans le même
+fichier, et la mise en page de `src/devis.css`. Le logo est `public/logo.png`.
+Le devis tient sur une page dans les quatre formules ; en rallonger les listes
+peut le faire passer à deux.
 
 ## 13. L'agenda
 

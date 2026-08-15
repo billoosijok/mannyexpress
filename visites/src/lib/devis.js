@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import { formuleByValue } from "../constants";
+import { formuleACharge, formulePrestations } from "../constants";
 import { VISITS } from "./visits";
 
 /**
@@ -42,19 +42,21 @@ export function todayKey() {
 }
 
 /**
- * Le prix saisi est celui que le client paie (TTC), comme sur le devis papier.
- * Le HT s'en déduit ; à 0 % de TVA — le cas courant — les deux sont égaux.
+ * Le montant du devis. Manny Express est une micro-entreprise : pas de TVA,
+ * donc pas de HT à côté du TTC — un seul prix, celui que le client paie.
  */
-export function devisTotals(devis) {
-  const ttc = parseMontant(devis.prixTTC);
-  const taux = parseMontant(devis.tauxTva) / 100;
-  const ht = taux > 0 ? ttc / (1 + taux) : ttc;
-  return { ht, tva: ttc - ht, ttc };
+export function devisMontant(devis) {
+  return parseMontant(devis.prixTTC);
 }
 
-/** Le texte des prestations d'une formule, une par ligne, prêt à corriger. */
+/** Ce que la formule comprend, une ligne par prestation, prêt à corriger. */
 export function prestationsText(formuleValue) {
-  return formuleByValue(formuleValue).prestations.join("\n");
+  return formulePrestations(formuleValue).join("\n");
+}
+
+/** Ce qu'elle laisse au client, écrit noir sur blanc plutôt que sous-entendu. */
+export function chargeText(formuleValue) {
+  return formuleACharge(formuleValue).join("\n");
 }
 
 /** Le paragraphe sous les prestations. Le volume vient du relevé de la visite. */
@@ -94,7 +96,6 @@ export function emptyDevis(visit, numero = DEVIS_START_NUMBER) {
     formule,
     volume,
     prixTTC: "",
-    tauxTva: "0",
     chargementDate: "",
     chargementAdresse: visit.departAdresse || "",
     chargementEtage: visit.departEtage || "",
@@ -106,6 +107,7 @@ export function emptyDevis(visit, numero = DEVIS_START_NUMBER) {
     dechargementAscenseur: visit.arriveeAscenseur || "",
     dechargementSurface: visit.arriveeSurface || "",
     prestations: prestationsText(formule),
+    charge: chargeText(formule),
     conditions: conditionsText(volume),
   };
 }

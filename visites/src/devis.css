@@ -204,16 +204,56 @@
   color: #2b2e33;
 }
 
+/* Ce qui est compris, et ce qui ne l'est pas, côte à côte. */
+.devis-listes {
+  display: flex;
+  gap: 28px;
+}
+
+.devis-listes > div {
+  flex: 1;
+}
+
+/* La formule Luxe ne laisse rien au client : sa liste, seule, prend toute la
+   largeur sur deux colonnes plutôt que de laisser la moitié droite vide. */
+.devis-listes-seule ul {
+  column-count: 2;
+  column-gap: 28px;
+}
+
+.devis-liste-titre {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #767b85;
+}
+
 .devis-formule ul {
   margin: 0;
   padding: 0;
   list-style: none;
   font-size: 12.5px;
+}
+
+.devis-inclus li {
   font-weight: 600;
 }
 
-.devis-formule li::before {
-  content: "- ";
+.devis-inclus li::before {
+  content: "✓ ";
+  color: #1f3864;
+  font-weight: 700;
+}
+
+.devis-charge li {
+  color: #4a4f57;
+}
+
+.devis-charge li::before {
+  content: "— ";
+  color: #767b85;
 }
 
 .devis-conditions {
@@ -253,30 +293,30 @@
 }
 
 .devis-totaux {
-  width: 260px;
-  border-collapse: collapse;
+  width: 280px;
 }
 
-.devis-totaux td {
-  padding: 6px 0;
-  font-size: 12.5px;
-  color: #4a4f57;
+.devis-total-fort {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  background: #1f3864;
+  color: #fff;
+  font-size: 14px;
 }
 
-.devis-totaux td:last-child {
-  text-align: right;
+.devis-total-fort span:last-child {
+  font-size: 17px;
   font-weight: 700;
-  color: #2b2e33;
 }
 
-.devis-total-fort td {
-  border-top: 1px solid #d8d5cc;
-  font-size: 13.5px;
-  color: #1f3864;
-}
-
-.devis-total-fort td:last-child {
-  color: #1f3864;
+.devis-total-mention {
+  margin: 6px 0 0;
+  font-size: 10.5px;
+  color: #767b85;
+  text-align: right;
 }
 
 .devis-legal {

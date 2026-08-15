@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ENTREPRISE, formuleByValue } from "../constants";
-import { devisTotals, formatDateFr, formatEuros, parseMontant } from "../lib/devis";
+import { devisMontant, formatDateFr, formatEuros } from "../lib/devis";
 import "../devis.css";
 
 // La largeur de la feuille, en pixels, telle que le CSS la dessine. À l'écran
@@ -75,11 +75,14 @@ export default function DevisDocument({ devis, frameRef }) {
   }, [frameRef, devis]);
 
   const formule = formuleByValue(devis.formule);
-  const { ht, tva, ttc } = devisTotals(devis);
-  const prestations = String(devis.prestations || "")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  const montant = devisMontant(devis);
+  const lignes = (text) =>
+    String(text || "")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+  const prestations = lignes(devis.prestations);
+  const charge = lignes(devis.charge);
 
   const etapes = [
     {
@@ -180,7 +183,7 @@ export default function DevisDocument({ devis, frameRef }) {
                   {/* Une seule prestation, chiffrée d'un bloc : la quantité et
                       le prix sont portés par la première ligne. */}
                   <td className="devis-qte">{index === 0 ? "1" : ""}</td>
-                  <td className="devis-prix">{index === 0 ? formatEuros(ttc) : ""}</td>
+                  <td className="devis-prix">{index === 0 ? formatEuros(montant) : ""}</td>
                 </tr>
               ))}
             </tbody>
@@ -188,14 +191,33 @@ export default function DevisDocument({ devis, frameRef }) {
 
           <section className="devis-formule">
             <h3>
-              Prestation complète — Formule {formule.label}
-              {devis.volume ? ` ${devis.volume} m³` : ""}
+              Formule {formule.label}
+              {devis.volume ? ` — ${devis.volume} m³` : ""}
             </h3>
-            <ul>
-              {prestations.map((ligne, index) => (
-                <li key={`${index}-${ligne}`}>{ligne}</li>
-              ))}
-            </ul>
+            <div
+              className={`devis-listes${charge.length === 0 ? " devis-listes-seule" : ""}`}
+            >
+              <div>
+                <p className="devis-liste-titre">Compris dans la formule</p>
+                <ul className="devis-inclus">
+                  {prestations.map((ligne, index) => (
+                    <li key={`${index}-${ligne}`}>{ligne}</li>
+                  ))}
+                </ul>
+              </div>
+              {/* La formule Luxe ne laisse rien au client : la colonne
+                  disparaît alors au lieu de s'afficher vide. */}
+              {charge.length > 0 && (
+                <div>
+                  <p className="devis-liste-titre">Non compris, à votre charge</p>
+                  <ul className="devis-charge">
+                    {charge.map((ligne, index) => (
+                      <li key={`${index}-${ligne}`}>{ligne}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             {devis.conditions && <p className="devis-conditions">{devis.conditions}</p>}
           </section>
 
@@ -212,22 +234,15 @@ export default function DevisDocument({ devis, frameRef }) {
                 Bon pour accord
               </div>
             </div>
-            <table className="devis-totaux">
-              <tbody>
-                <tr>
-                  <td>Total HT</td>
-                  <td>{formatEuros(ht)}</td>
-                </tr>
-                <tr>
-                  <td>TVA</td>
-                  <td>{formatEuros(tva)}</td>
-                </tr>
-                <tr className="devis-total-fort">
-                  <td>Total (TTC)</td>
-                  <td>{formatEuros(ttc)}</td>
-                </tr>
-              </tbody>
-            </table>
+            {/* Micro-entreprise : un seul montant, et la mention qui tient
+                lieu de ligne de TVA. */}
+            <div className="devis-totaux">
+              <div className="devis-total-fort">
+                <span>Total à régler</span>
+                <span>{formatEuros(montant)}</span>
+              </div>
+              <p className="devis-total-mention">{ENTREPRISE.mentionTva}</p>
+            </div>
           </div>
         </div>
 
@@ -235,7 +250,6 @@ export default function DevisDocument({ devis, frameRef }) {
           {ENTREPRISE.nom} — SIRET {ENTREPRISE.siret} — Siège social :{" "}
           {ENTREPRISE.siege}
           <br />
-          {parseMontant(devis.tauxTva) === 0 && `${ENTREPRISE.mentionTva} `}
           Devis gratuit, valable 30 jours à compter de sa date d'émission.
         </p>
       </div>

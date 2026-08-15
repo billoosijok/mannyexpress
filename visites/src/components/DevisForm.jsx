@@ -2,9 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, ExternalLink, Printer } from "lucide-react";
 import { FORMULES } from "../constants";
 import {
+  chargeText,
   devisFileName,
+  devisMontant,
   devisToForm,
-  devisTotals,
   formatEuros,
   nextDevisNumber,
   prestationsText,
@@ -24,7 +25,12 @@ import {
   TextInput,
 } from "./ui";
 
-const FORMULE_OPTIONS = FORMULES.map(({ value, label }) => ({ value, label }));
+// Le tarif de départ du site accompagne chaque formule : c'est le repère du
+// prix à taper, il ne s'imprime jamais sur le devis.
+const FORMULE_OPTIONS = FORMULES.map(({ value, label, aPartirDe }) => ({
+  value,
+  label: `${label} — à partir de ${aPartirDe} €`,
+}));
 
 /**
  * Le devis d'une fiche de visite. Tout ce que la visite a relevé y est déjà —
@@ -58,6 +64,9 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
   const setValue = (key) => (value) =>
     setDevis((previous) => ({ ...previous, [key]: value }));
 
+  // Changer de formule réécrit les deux listes — ce qu'elle comprend et ce
+  // qu'elle laisse au client — tant qu'elles n'ont pas été retouchées à la
+  // main. Après, elles appartiennent au gérant.
   function setFormule(value) {
     setDevis((previous) => ({
       ...previous,
@@ -65,10 +74,11 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       prestations: prestationsEdited.current
         ? previous.prestations
         : prestationsText(value),
+      charge: prestationsEdited.current ? previous.charge : chargeText(value),
     }));
   }
 
-  const totals = useMemo(() => devisTotals(devis), [devis]);
+  const montant = useMemo(() => devisMontant(devis), [devis]);
   const fileName = devisFileName(devis);
 
   async function handleSave() {
@@ -149,7 +159,10 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
         </Field>
 
         <div className="rounded-lg border-l-4 border-gold bg-gold/10 p-3">
-          <Field label="Prix total TTC (€)">
+          <Field
+            label="Prix total TTC (€)"
+            hint="Micro-entreprise : pas de TVA, ce prix est celui que le client règle"
+          >
             <TextInput
               inputMode="decimal"
               value={devis.prixTTC}
@@ -157,16 +170,9 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
               placeholder="Ex : 2480"
             />
           </Field>
-          <Field label="TVA (%)" hint="0 en franchise en base (art. 293 B)">
-            <TextInput
-              inputMode="decimal"
-              value={devis.tauxTva}
-              onChange={setValue("tauxTva")}
-            />
-          </Field>
           <div className="flex items-center justify-between border-t border-gold/40 pt-2 text-sm text-navy">
-            <span>Total HT {formatEuros(totals.ht)}</span>
-            <span className="font-semibold">TTC {formatEuros(totals.ttc)}</span>
+            <span>Sur le devis</span>
+            <span className="font-semibold">{formatEuros(montant)}</span>
           </div>
         </div>
       </Card>
@@ -206,8 +212,8 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       <Card>
         <SectionHeader
           number="5"
-          title="Prestations incluses"
-          subtitle="Une ligne par prestation, telles qu'elles s'impriment"
+          title="Ce que comprend la formule"
+          subtitle="Repris du tableau des formules du site, une ligne par prestation"
         />
         <TextArea
           value={devis.prestations}
@@ -215,7 +221,18 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             prestationsEdited.current = true;
             setValue("prestations")(value);
           }}
-          rows={9}
+          rows={7}
+        />
+        <p className="mb-3 mt-1 text-xs text-muted">
+          Ce qui reste au client, imprimé à côté sur le devis :
+        </p>
+        <TextArea
+          value={devis.charge}
+          onChange={(value) => {
+            prestationsEdited.current = true;
+            setValue("charge")(value);
+          }}
+          rows={5}
         />
       </Card>
 
