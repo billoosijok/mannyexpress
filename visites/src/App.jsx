@@ -7,6 +7,7 @@ import LoginScreen from "./components/LoginScreen";
 import VisitForm from "./components/VisitForm";
 import VisitsList from "./components/VisitsList";
 import VisitDetail from "./components/VisitDetail";
+import DevisForm from "./components/DevisForm";
 import AgendaView from "./components/AgendaView";
 import OfflineNotice from "./components/OfflineNotice";
 import UpdateBanner from "./components/UpdateBanner";
@@ -21,10 +22,13 @@ export default function App() {
   const [selectedVisit, setSelectedVisit] = useState(null);
   // The sheet open for correction, in the form rather than in read-only.
   const [editedVisit, setEditedVisit] = useState(null);
+  // Whether the quote screen of the selected sheet is open.
+  const [quoting, setQuoting] = useState(false);
 
-  // Leaving a sheet always leaves its correction too.
+  // Leaving a sheet always leaves its correction and its quote too.
   function closeVisit() {
     setEditedVisit(null);
+    setQuoting(false);
     setSelectedVisit(null);
   }
 
@@ -112,13 +116,27 @@ export default function App() {
         <div className={tab === "agenda" && !selectedVisit ? "" : "hidden"}>
           <AgendaView user={user} isOwner={isOwner} onSelectVisit={setSelectedVisit} />
         </div>
-        {selectedVisit && !editedVisit && (
+        {selectedVisit && !editedVisit && !quoting && (
           <VisitDetail
             visit={selectedVisit}
             isOwner={isOwner}
             backLabel={tab === "agenda" ? "Retour à l'agenda" : "Retour aux visites"}
             onBack={closeVisit}
             onEdit={() => setEditedVisit(selectedVisit)}
+            onDevis={() => setQuoting(true)}
+          />
+        )}
+        {selectedVisit && quoting && (
+          <DevisForm
+            key={selectedVisit.id}
+            visit={selectedVisit}
+            user={user}
+            onBack={() => setQuoting(false)}
+            // The list behind is live, but the copy held here is a snapshot:
+            // without this the sheet would come back without its new quote.
+            onSaved={(devis) =>
+              setSelectedVisit((previous) => ({ ...previous, devis }))
+            }
           />
         )}
         {editedVisit && (

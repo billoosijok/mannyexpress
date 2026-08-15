@@ -19,6 +19,83 @@ export function isOwnerEmail(email) {
   return OWNER_EMAILS.includes(String(email || "").toLowerCase());
 }
 
+/**
+ * L'en-tête et le pied du devis. L'adresse et les téléphones sont ceux du
+ * devis papier ; le SIRET et le siège social viennent des mentions légales du
+ * site, qu'un devis doit porter.
+ */
+export const ENTREPRISE = {
+  nom: "Manny Express",
+  activite: "(Déménagement & Transport)",
+  adresse: ["36 A Rue Gounod", "11100 NARBONNE"],
+  telephones: ["07 51 16 85 03", "06 66 18 19 15"],
+  email: "mannyexpress11@gmail.com",
+  ville: "Narbonne",
+  siret: "952 589 646 00027",
+  siege: "1 impasse de la Distillerie, 11100 Narbonne",
+  // Franchise en base : le devis papier porte une TVA à 0,00 €.
+  mentionTva: "TVA non applicable, art. 293 B du code général des impôts.",
+};
+
+// Ce que chaque formule comprend, dans l'ordre où le devis les imprime. Les
+// listes reprennent le tableau des formules de mannyexpress.com et se
+// cumulent : chacune ajoute ses lignes à la précédente. Le devis les recopie
+// dans un champ libre, où elles restent modifiables ligne à ligne.
+const PRESTATIONS_COMMUNES = [
+  "Chargement, transport en camion capitonné et déchargement",
+  "Manutention par personnel qualifié",
+  "Équipe professionnelle",
+  "Transport sécurisé et assuré",
+];
+
+export const FORMULES = [
+  {
+    value: "ptit-express",
+    label: "P'tit Express",
+    prestations: PRESTATIONS_COMMUNES,
+  },
+  {
+    value: "simple",
+    label: "Simple",
+    prestations: [
+      ...PRESTATIONS_COMMUNES,
+      "Protection du mobilier incluse",
+      "Vérification de la stabilité du mobilier",
+    ],
+  },
+  {
+    value: "standard",
+    label: "Standard",
+    prestations: [
+      ...PRESTATIONS_COMMUNES,
+      "Protection du mobilier incluse",
+      "Vérification de la stabilité du mobilier",
+      "Démontage et remontage des meubles",
+      "Déconnexion et sécurisation de l'électroménager",
+      "Mise en place des cartons dans les pièces",
+    ],
+  },
+  {
+    value: "luxe",
+    label: "Luxe",
+    prestations: [
+      ...PRESTATIONS_COMMUNES,
+      "Protection du mobilier incluse",
+      "Vérification de la stabilité du mobilier",
+      "Démontage et remontage des meubles",
+      "Déconnexion et sécurisation de l'électroménager",
+      "Mise en place des cartons dans les pièces",
+      "Fourniture des cartons",
+      "Emballage complet (fragiles, vaisselle, vêtements)",
+      "Déballage des objets fragiles",
+    ],
+  },
+];
+
+export function formuleByValue(value) {
+  return FORMULES.find((formule) => formule.value === value) || FORMULES[1];
+}
+
 export const PRESTATIONS = [
   "Emballage par nos soins",
   "Fourniture de cartons",
@@ -34,6 +111,8 @@ export const PRESTATIONS = [
 export const LOGEMENT_FIELDS = [
   { suffix: "Adresse", label: "Adresse complète" },
   { suffix: "Type", label: "Type de logement" },
+  // Reprise telle quelle sur le devis, comme sur le devis papier.
+  { suffix: "Surface", label: "Surface (m²)" },
   { suffix: "Etage", label: "Étage" },
   { suffix: "Ascenseur", label: "Ascenseur" },
   { suffix: "Escalier", label: "Escalier" },
@@ -147,6 +226,9 @@ export function emptyVisit() {
 const VISIT_METADATA = [
   "id",
   "volumeTotal",
+  // Le devis est écrit à côté de la fiche, par son propre écran : il ne doit
+  // ni s'afficher dans le formulaire ni être réécrit quand on corrige la fiche.
+  "devis",
   "createdAt",
   "createdBy",
   "createdByEmail",

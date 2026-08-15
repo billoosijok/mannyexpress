@@ -1,9 +1,10 @@
 # Manny Express — Fiches de visite
 
 Application web mobile qui remplace la fiche de visite papier. Trois employés
-remplissent la fiche chez le client (avec photos), le gérant la consulte ensuite
-pour chiffrer le devis. Un agenda partagé rassemble les prochaines visites et
-les prochains déménagements.
+remplissent la fiche chez le client (avec photos), et le devis se fait depuis
+cette fiche en un bouton : tout ce qu'il demande y est déjà, il ne reste que le
+prix à taper. Un agenda partagé rassemble les prochaines visites et les
+prochains déménagements.
 
 L'interface est entièrement en français ; le code, lui, est en anglais.
 
@@ -311,7 +312,49 @@ droit est réservé au gérant et vient du « custom claim » posé sur son comp
 (section 5) : sans lui, le bouton rouge « Supprimer la visite » reste invisible,
 y compris pour le gérant.
 
-## 12. L'agenda
+## 12. Le devis
+
+**Le devis se fait depuis la fiche de visite, en un bouton.** Ouvrir la fiche
+(onglet Visites ou depuis l'agenda) puis **« Faire le devis »** : l'écran
+s'ouvre déjà rempli avec tout ce que la visite a relevé — le client et ses
+coordonnées, l'adresse, l'étage, l'ascenseur et la surface des deux logements,
+le volume total des pièces. **Il ne reste qu'à choisir la formule et à taper le
+prix.**
+
+- **Le numéro** est proposé tout seul : le plus grand déjà attribué, plus un.
+  Les devis d'avant l'application s'arrêtant à 367, le premier proposé est 368
+  (`DEVIS_START_NUMBER` dans `lib/devis.js`). Il reste modifiable à la main.
+- **La formule** (P'tit Express, Simple, Standard, Luxe) remplit la liste des
+  prestations avec ce qu'elle comprend, telle que le site l'annonce. La liste
+  est un champ libre : une ligne par prestation, à corriger comme on veut. Une
+  fois qu'elle a été retouchée, changer de formule ne l'écrase plus.
+- **Le prix se saisit en TTC**, celui que le client paie. Le HT s'en déduit
+  selon le taux de TVA, laissé à 0 (franchise en base, art. 293 B) : à ce taux,
+  HT et TTC sont égaux, comme sur le devis papier.
+- **Les dates de chargement et de déchargement** sont les seules choses que la
+  fiche ne sait pas : elles se saisissent ici.
+- **L'aperçu en bas de l'écran est exactement ce qui s'imprime.** Rien n'y est
+  masqué ni ajouté.
+
+**Imprimer ou envoyer.** Le bouton **« Imprimer / PDF »** ouvre la boîte
+d'impression du téléphone, qui sait aussi « Enregistrer au format PDF » et
+partager le fichier — par mail, par WhatsApp. Si elle ne s'ouvre pas depuis
+l'application installée sur l'écran d'accueil (iOS le refuse selon les
+versions), **« Ouvrir dans le navigateur »** affiche le même devis dans un
+onglet Safari, d'où le bouton Partager fait la même chose.
+
+**Le devis est enregistré dans la fiche** (clé `devis` du document, écrite par
+son seul écran : corriger la fiche ne l'écrase pas, et l'écrire ne touche pas
+la fiche). La fiche affiche ensuite son numéro et son montant en haut, et le
+toucher rouvre l'écran pour le corriger ou le réimprimer. Un devis établi sans
+réseau part au retour de la connexion, comme une fiche.
+
+Ce que le devis imprime vient de trois endroits : l'en-tête et le pied de page
+(adresse, téléphones, SIRET, mention de TVA) de `ENTREPRISE` dans
+`src/constants.js`, le contenu des formules de `FORMULES` dans le même fichier,
+et la mise en page de `src/devis.css`. Le logo est `public/logo.png`.
+
+## 13. L'agenda
 
 L'onglet **Agenda** est le planning partagé de l'équipe : tout le monde y voit
 la même chose, en temps réel.
@@ -343,18 +386,21 @@ aucun lien automatique entre un rendez-vous et la fiche remplie ensuite : ce
 sont deux choses séparées, le rendez-vous restant le plan et la fiche le
 relevé.
 
-## 13. Structure du code
+## 14. Structure du code
 
 ```
 src/
   App.jsx                 écran de connexion ou coquille de l'app (en-tête + 3 onglets)
   firebase.js             initialisation du SDK
-  constants.js            couleurs, prestations, types de rendez-vous, formulaires vierges
+  constants.js            couleurs, prestations, formules, entreprise, formulaires vierges
+  devis.css               la feuille de devis : mise en page écran et impression
   components/
     LoginScreen.jsx       connexion (aucune inscription)
     VisitForm.jsx         le formulaire, sections 1 à 9 (fiche neuve ou correction)
     VisitsList.jsx        liste temps réel des visites
     VisitDetail.jsx       consultation d'une visite, modification, suppression (gérant)
+    DevisForm.jsx         le devis d'une visite : pré-rempli, aperçu, impression
+    DevisDocument.jsx     la feuille A4 telle qu'elle s'imprime
     AgendaView.jsx        calendrier du mois, journée choisie, liste « à venir »
     AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous
     PhotoPicker.jsx       prise de photo, compression, envoi
@@ -365,6 +411,8 @@ src/
     ui.jsx                champs, en-têtes de section, spinner
   lib/
     visits.js             lecture/écriture Firestore des fiches
+    devis.js              le devis : pré-remplissage, numérotation, montants, écriture
+    print.js              impression de la feuille et ouverture dans le navigateur
     agenda.js             lecture/écriture Firestore des rendez-vous
     photos.js             envoi/suppression Storage
     compress.js           compression via canvas

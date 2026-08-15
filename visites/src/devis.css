@@ -1,0 +1,349 @@
+/*
+ * Le devis imprimé. Écrit en CSS ordinaire, sans Tailwind, pour une raison :
+ * la même feuille sert à l'aperçu dans l'application et à la page autonome
+ * ouverte dans le navigateur pour imprimer (lib/print.js la recopie telle
+ * quelle avec `?raw`). Toute classe utilitaire ici serait absente là-bas.
+ */
+
+.devis-page {
+  width: 760px;
+  box-sizing: border-box;
+  background: #fff;
+  color: #2b2e33;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  padding-bottom: 26px;
+}
+
+.devis-page * {
+  box-sizing: border-box;
+}
+
+.devis-bar {
+  height: 10px;
+  background: #1f3864;
+}
+
+.devis-body {
+  padding: 20px 40px 0;
+}
+
+/* En-tête : logo et raison sociale à gauche, coordonnées à droite. */
+.devis-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.devis-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.devis-logo {
+  width: 66px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.devis-nom {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: #1f3864;
+}
+
+.devis-activite {
+  margin: 0;
+  font-size: 12px;
+  color: #4a4f57;
+}
+
+.devis-contact {
+  font-style: normal;
+  text-align: right;
+  font-size: 11.5px;
+  color: #4a4f57;
+  line-height: 1.6;
+}
+
+.devis-titre {
+  margin: 16px 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f3864;
+}
+
+/* Client à gauche, dates à droite, comme sur le devis papier. */
+.devis-parties {
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 14px;
+}
+
+.devis-parties > div {
+  flex: 1;
+}
+
+.devis-dates {
+  max-width: 250px;
+}
+
+.devis-etiquette {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2b2e33;
+}
+
+.devis-ligne {
+  margin: 0;
+  font-size: 12.5px;
+  color: #4a4f57;
+}
+
+.devis-date-bloc {
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #d8d5cc;
+}
+
+.devis-date-bloc:last-child {
+  margin-bottom: 0;
+}
+
+/* Le tableau des prestations. */
+.devis-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.devis-table th {
+  text-align: left;
+  font-size: 13px;
+  color: #1f3864;
+  border-bottom: 1px solid #1f3864;
+  padding-bottom: 6px;
+}
+
+.devis-col-qte {
+  width: 70px;
+  text-align: center;
+}
+
+.devis-col-prix {
+  width: 150px;
+  text-align: right;
+}
+
+.devis-ttc {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #767b85;
+}
+
+.devis-table td {
+  padding: 10px;
+  vertical-align: middle;
+  background: #f4f3ef;
+  border-bottom: 4px solid #fff;
+}
+
+.devis-table td:first-child {
+  padding-left: 14px;
+}
+
+.devis-etape {
+  margin: 0 0 4px;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.devis-details {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  color: #4a4f57;
+}
+
+.devis-details li::before {
+  content: "- ";
+}
+
+.devis-details b {
+  color: #2b2e33;
+}
+
+.devis-qte {
+  text-align: center;
+  font-size: 13px;
+}
+
+.devis-prix {
+  text-align: right;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* Ce que la formule comprend, puis les conditions. */
+.devis-formule {
+  margin-top: 16px;
+}
+
+.devis-formule h3 {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #2b2e33;
+}
+
+.devis-formule ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.devis-formule li::before {
+  content: "- ";
+}
+
+.devis-conditions {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  color: #4a4f57;
+  text-align: justify;
+  white-space: pre-wrap;
+}
+
+/* Signatures à gauche, totaux à droite. */
+.devis-pied {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 18px;
+  /* L'impression ne doit pas séparer les totaux de la signature. */
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.devis-signatures {
+  flex: 1;
+  display: flex;
+  gap: 24px;
+  background: #f4f3ef;
+  padding: 14px;
+  min-height: 96px;
+  font-size: 12px;
+  color: #4a4f57;
+}
+
+.devis-signatures > div {
+  flex: 1;
+  text-align: center;
+}
+
+.devis-totaux {
+  width: 260px;
+  border-collapse: collapse;
+}
+
+.devis-totaux td {
+  padding: 6px 0;
+  font-size: 12.5px;
+  color: #4a4f57;
+}
+
+.devis-totaux td:last-child {
+  text-align: right;
+  font-weight: 700;
+  color: #2b2e33;
+}
+
+.devis-total-fort td {
+  border-top: 1px solid #d8d5cc;
+  font-size: 13.5px;
+  color: #1f3864;
+}
+
+.devis-total-fort td:last-child {
+  color: #1f3864;
+}
+
+.devis-legal {
+  margin: 16px 40px 0;
+  padding-top: 8px;
+  border-top: 1px solid #e4e1d8;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #767b85;
+  text-align: center;
+}
+
+/*
+ * À l'écran la feuille A4 est réduite pour tenir dans la largeur du téléphone :
+ * l'échelle est posée sur `.devis-page` et la hauteur rendue sur son cadre,
+ * qui sinon garderait celle de la feuille en taille réelle.
+ */
+.devis-cadre {
+  overflow: hidden;
+}
+
+.devis-page {
+  transform-origin: top left;
+  box-shadow: 0 1px 12px rgba(31, 56, 100, 0.14);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 9mm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  /*
+   * Seule la feuille s'imprime. Ce qui l'entoure est retiré de la page — pas
+   * seulement rendu invisible : invisible, il occuperait encore sa place et
+   * l'imprimante sortirait trois pages blanches derrière le devis. Les deux
+   * classes sont posées puis retirées par lib/print.js, le temps de
+   * l'impression ; l'écran, lui, n'est jamais démonté.
+   */
+  .devis-masque {
+    display: none !important;
+  }
+
+  /* Les blocs qui contiennent la feuille : plus de carte, plus de marges. */
+  .devis-parent-impression {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  .devis-cadre {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .devis-page {
+    width: 100% !important;
+    transform: none !important;
+    box-shadow: none;
+  }
+}

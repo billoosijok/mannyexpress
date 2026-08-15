@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ArrowLeft, Package, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, FileText, Package, Pencil, Trash2 } from "lucide-react";
 import { CONTRAINTES_FIELDS, LOGEMENT_FIELDS } from "../constants";
 import { deleteVisit } from "../lib/visits";
+import { devisTotals, formatDateFr, formatEuros } from "../lib/devis";
 import { formatVisitDate, formatVisitUpdate } from "../lib/format";
 import PhotoGallery from "./PhotoGallery";
 import { Card, ErrorNote, SectionHeader, Spinner } from "./ui";
@@ -27,6 +28,7 @@ export default function VisitDetail({
   isOwner,
   onBack,
   onEdit,
+  onDevis,
   backLabel = "Retour aux visites",
 }) {
   const [deleting, setDeleting] = useState(false);
@@ -75,6 +77,9 @@ export default function VisitDetail({
           <ErrorNote>{error}</ErrorNote>
         </div>
       )}
+
+      {/* Le devis part de la fiche : tout ce qu'il demande est déjà là. */}
+      <DevisButton visit={visit} onDevis={onDevis} />
 
       <Card>
         <SectionHeader number="1" title="Client" />
@@ -195,6 +200,46 @@ export default function VisitDetail({
         </button>
       )}
     </div>
+  );
+}
+
+/**
+ * Le raccourci vers le devis. Tant qu'il n'y en a pas, il invite à le faire ;
+ * une fois établi, il en rappelle le numéro et le montant et rouvre l'écran
+ * pour le corriger ou le réimprimer.
+ */
+function DevisButton({ visit, onDevis }) {
+  if (!onDevis) return null;
+  const devis = visit.devis;
+
+  if (!devis) {
+    return (
+      <button
+        type="button"
+        onClick={onDevis}
+        className="mb-5 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl bg-gold text-base font-semibold text-white"
+      >
+        <FileText size={20} /> Faire le devis
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onDevis}
+      className="mb-5 flex w-full items-center gap-3 rounded-xl border border-gold bg-gold/10 p-4 text-left"
+    >
+      <FileText size={20} className="shrink-0 text-gold" />
+      <span className="min-w-0 flex-1">
+        <span className="block font-semibold text-navy">
+          Devis N° {devis.numero} — {formatEuros(devisTotals(devis).ttc)}
+        </span>
+        <span className="block text-xs text-muted">
+          Établi le {formatDateFr(devis.date)} — toucher pour modifier ou imprimer
+        </span>
+      </span>
+    </button>
   );
 }
 
