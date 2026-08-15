@@ -19,18 +19,17 @@ import {
   ErrorNote,
   Field,
   SectionHeader,
-  SelectInput,
   Spinner,
   TextArea,
   TextInput,
 } from "./ui";
 
-// Le tarif de départ du site accompagne chaque formule : c'est le repère du
-// prix à taper, il ne s'imprime jamais sur le devis.
-const FORMULE_OPTIONS = FORMULES.map(({ value, label, aPartirDe }) => ({
-  value,
-  label: `${label} — à partir de ${aPartirDe} €`,
-}));
+/** Les lignes non vides d'un des deux champs de prestations. */
+function countLignes(text) {
+  return String(text || "")
+    .split("\n")
+    .filter((line) => line.trim());
+}
 
 /** Si les listes enregistrées disent autre chose que la formule choisie. */
 function listesRetouchees(devis) {
@@ -105,6 +104,10 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
   }
 
   const formule = formuleByValue(devis.formule);
+  // Comptées sur les listes du devis, pas sur celles de la formule : c'est ce
+  // qui s'imprime, retouches comprises, que le compte doit annoncer.
+  const comprises = countLignes(devis.prestations);
+  const aCharge = countLignes(devis.charge);
   const montant = useMemo(() => devisMontant(devis), [devis]);
   const fileName = devisFileName(devis);
 
@@ -138,15 +141,55 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
         </div>
       )}
 
-      {/* Le prix d'abord, seul, en haut : c'est la seule chose que l'écran
-          attende vraiment, et la première qu'on revienne changer. */}
-      <Card className="border-l-4 border-l-gold">
+      {/* Le devis se fait dans cet ordre : la formule d'abord, elle décide de
+          ce qui est compris ; le prix ensuite ; le reste se corrige après. */}
+      <Card>
         <SectionHeader
           number="1"
-          title="Prix du devis"
+          title="Formule"
+          subtitle="Elle remplit ce que le devis comprend, et ce qu'il ne comprend pas"
+        />
+        <div className="mb-2 grid grid-cols-2 gap-2">
+          {FORMULES.map(({ value, label, aPartirDe }) => {
+            const selected = devis.formule === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setFormule(value)}
+                className={`min-h-[64px] rounded-lg border px-3 py-2 text-left transition ${
+                  selected
+                    ? "border-gold bg-gold text-white"
+                    : "border-line bg-white text-ink"
+                }`}
+              >
+                <span className="block text-sm font-semibold">{label}</span>
+                <span
+                  className={`block text-xs ${selected ? "text-white/80" : "text-muted"}`}
+                >
+                  à partir de {aPartirDe} €
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="text-xs text-muted">
+          {comprises.length} prestation{comprises.length > 1 ? "s" : ""} comprise
+          {comprises.length > 1 ? "s" : ""}
+          {aCharge.length > 0
+            ? `, ${aCharge.length} à la charge du client`
+            : ", rien à la charge du client"}{" "}
+          — la liste complète est en section 7, modifiable.
+        </p>
+      </Card>
+
+      <Card className="border-l-4 border-l-gold">
+        <SectionHeader
+          number="2"
+          title="Prix"
           subtitle={
             editing
-              ? "Modifiable à tout moment — le devis est réimprimé avec le nouveau prix"
+              ? "Modifiable à tout moment — le devis se réimprime avec le nouveau prix"
               : `Formule ${formule.label} : à partir de ${formule.aPartirDe} €`
           }
         />
@@ -169,7 +212,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
 
       <Card>
         <SectionHeader
-          number="2"
+          number="3"
           title="Devis"
           subtitle="Rempli avec ce que la visite a relevé"
         />
@@ -199,13 +242,6 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             onChange={setValue("envoyeeLe")}
           />
         </Field>
-        <Field label="Formule">
-          <SelectInput
-            value={devis.formule}
-            onChange={setFormule}
-            options={FORMULE_OPTIONS}
-          />
-        </Field>
         <Field label="Volume (m³)" hint="Relevé sur la fiche, corrigeable ici">
           <TextInput
             inputMode="decimal"
@@ -216,7 +252,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <Card>
-        <SectionHeader number="3" title="Client" />
+        <SectionHeader number="4" title="Client" />
         <Field label="Nom / prénom">
           <TextInput value={devis.clientNom} onChange={setValue("clientNom")} />
         </Field>
@@ -233,14 +269,14 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <EtapeCard
-        number="4"
+        number="5"
         title="Chargement"
         prefix="chargement"
         devis={devis}
         setValue={setValue}
       />
       <EtapeCard
-        number="5"
+        number="6"
         title="Déchargement"
         prefix="dechargement"
         devis={devis}
@@ -249,7 +285,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
 
       <Card>
         <SectionHeader
-          number="6"
+          number="7"
           title="Ce que comprend la formule"
           subtitle="Repris du tableau des formules du site, une ligne par prestation"
         />
@@ -282,7 +318,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <Card>
-        <SectionHeader number="7" title="Conditions" />
+        <SectionHeader number="8" title="Conditions" />
         <TextArea
           value={devis.conditions}
           onChange={setValue("conditions")}
@@ -291,7 +327,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
       </Card>
 
       <Card>
-        <SectionHeader number="8" title="Aperçu du devis" />
+        <SectionHeader number="9" title="Aperçu du devis" />
         <div className="mb-3 flex flex-wrap gap-2">
           <button
             type="button"

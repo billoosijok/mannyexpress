@@ -324,8 +324,11 @@ prix.**
 - **Le numéro** est proposé tout seul : le plus grand déjà attribué, plus un.
   Les devis d'avant l'application s'arrêtant à 367, le premier proposé est 368
   (`DEVIS_START_NUMBER` dans `lib/devis.js`). Il reste modifiable à la main.
-- **La formule** (P'tit Express, Simple, Standard, Luxe) remplit **deux
-  listes** : ce qu'elle comprend, et ce qu'elle laisse au client. Les deux
+- **La formule se choisit en premier**, en tête de l'écran : les quatre
+  (P'tit Express, Simple, Standard, Luxe) s'y touchent du doigt, chacune avec
+  le tarif de départ annoncé par le site. **Le prix vient juste après**, dans
+  son encadré doré. Le reste de l'écran ne fait que se corriger.
+- La formule remplit **deux listes** : ce qu'elle comprend, et ce qu'elle laisse au client. Les deux
   s'impriment côte à côte sur le devis — dit d'avance, ce n'est pas discuté le
   jour du déménagement. Elles sortent du tableau des formules de
   mannyexpress.com, recopié dans `TABLEAU_FORMULES` (`src/constants.js`) : le
@@ -336,8 +339,7 @@ prix.**
 - **Le prix est le montant que le client règle.** Manny Express est une
   micro-entreprise : pas de TVA, donc pas de ligne HT ni de taux à saisir. Le
   devis porte un seul total et la mention « TVA non applicable, art. 293 B du
-  CGI ». Il est **en tête de l'écran, seul dans son encadré** : c'est ce qu'on
-  vient taper la première fois, et ce qu'on revient changer ensuite.
+  CGI ».
 - **Tout se change, à tout moment**, et pas seulement le prix : le numéro, les
   deux dates, le client, les adresses et les accès, l'intitulé des deux étapes
   (« Chargement des meubles »), le volume, les deux listes, les conditions.

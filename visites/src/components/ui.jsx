@@ -58,23 +58,6 @@ export function TextArea({ value, onChange, rows = 3, ...props }) {
   );
 }
 
-export function SelectInput({ value, onChange, options, ...props }) {
-  return (
-    <select
-      className="field-input"
-      value={value ?? ""}
-      onChange={(event) => onChange(event.target.value)}
-      {...props}
-    >
-      {options.map(({ value: optionValue, label }) => (
-        <option key={optionValue} value={optionValue}>
-          {label}
-        </option>
-      ))}
-    </select>
-  );
-}
-
 export function Spinner({ className = "h-5 w-5" }) {
   return (
     <span
