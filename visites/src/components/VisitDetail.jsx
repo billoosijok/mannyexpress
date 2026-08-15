@@ -78,9 +78,6 @@ export default function VisitDetail({
         </div>
       )}
 
-      {/* Le devis part de la fiche : tout ce qu'il demande est déjà là. */}
-      <DevisButton visit={visit} onDevis={onDevis} />
-
       <Card>
         <SectionHeader number="1" title="Client" />
         <Line label="Nom / prénom du client" value={visit.clientNom} />
@@ -187,6 +184,10 @@ export default function VisitDetail({
           <p className="whitespace-pre-wrap text-ink">{visit.notes}</p>
         </Card>
       )}
+
+      {/* Le devis se fait au bout de la fiche : on la relit, puis on chiffre.
+          Tout ce qu'il demande vient de ce qui précède. */}
+      <DevisButton visit={visit} onDevis={onDevis} />
 
       {isOwner && (
         <button
