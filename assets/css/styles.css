@@ -562,6 +562,22 @@ a {
   gap: 0.75rem;
 }
 
+/* Cartes de réassurance : même carte, sans image ni lien. Centrées, et la
+   description ne pousse rien vers le bas puisqu'elle finit la carte. */
+.reassurance-grid .service-content {
+  align-items: center;
+  text-align: center;
+}
+
+.reassurance-grid .service-title {
+  color: var(--primary-blue);
+}
+
+.reassurance-grid .service-description {
+  margin-bottom: 0;
+  flex-grow: 0;
+}
+
 /* Testimonials Slider */
 .testimonials-section {
   padding: 3rem 0;
