@@ -1,4 +1,4 @@
-<section class="services-section" style="background-color: var(--bg-light); padding: 4rem 0;">
+<section class="services-section tiers-section" style="background-color: var(--bg-light); padding: 4rem 0;">
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Nos Formules</h2>
@@ -6,77 +6,74 @@
                 Choisissez la formule qui correspond le mieux à vos besoins.
             </p>
         </div>
-        <div class="pricing-grid">
+        <div class="pcar">
+            <button type="button" class="pcar-arrow pcar-prev" aria-label="Formule précédente">‹</button>
+            <button type="button" class="pcar-arrow pcar-next" aria-label="Formule suivante">›</button>
+            <div class="pricing-grid">
 
-            <!-- P'TIT EXPRESS -->
-            <div class="pricing-card">
-                <h3 class="pricing-title">P'TIT EXPRESS</h3>
-                <!-- TODO: ajuster le prix -->
-                <p class="pricing-price">À partir de 350 €</p>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">Studio ou petit volume : vous emballez,
-                    on transporte.</p>
-                <ul class="pricing-features">
-                    <li>Chargement</li>
-                    <li>Transport sécurisé</li>
-                    <li>Déchargement</li>
-                </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir P'tit Express</a>
+                <!-- P'TIT EXPRESS -->
+                <div class="pricing-card">
+                    <h3 class="pricing-title">P'TIT EXPRESS</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">Vous déménagez vous-même : on fournit
+                        les cartons et on les transporte.</p>
+                    <ul class="pricing-features">
+                        <li>10 cartons standards</li>
+                        <li>10 m de papier bulle + 2 adhésifs</li>
+                        <li>Transport des cartons</li>
+                    </ul>
+                    <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir P'tit Express</a>
+                </div>
+
+                <!-- SIMPLE -->
+                <div class="pricing-card">
+                    <h3 class="pricing-title">SIMPLE</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">L'essentiel pour un déménagement
+                        économique : vous emballez, on déménage.</p>
+                    <ul class="pricing-features">
+                        <li>Chargement</li>
+                        <li>Transport sécurisé</li>
+                        <li>Déchargement</li>
+                        <li>Protection du mobilier</li>
+                        <li>Cartons et fournitures en option</li>
+                    </ul>
+                    <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Simple</a>
+                </div>
+
+                <!-- STANDARD -->
+                <div class="pricing-card featured">
+                    <div
+                        style="background: var(--accent-blue); color: white; padding: 0.25rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; align-self: center; margin-bottom: 1rem;">
+                        POPULAIRE</div>
+                    <h3 class="pricing-title">STANDARD</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">Le parfait équilibre entre service et
+                        budget.</p>
+                    <ul class="pricing-features">
+                        <li>Tout de la formule Simple</li>
+                        <li>Démontage des meubles</li>
+                        <li>Remontage des meubles</li>
+                        <li>Mise en place des cartons</li>
+                    </ul>
+                    <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Standard</a>
+                </div>
+
+                <!-- COMPLET -->
+                <div class="pricing-card">
+                    <h3 class="pricing-title">COMPLET</h3>
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">Service clé en main pour une tranquillité
+                        totale.</p>
+                    <ul class="pricing-features">
+                        <li>Tout de la formule Standard</li>
+                        <li>Fourniture des cartons</li>
+                        <li>Emballage complet (vaisselle, vêtements…)</li>
+                        <li>Déballage des objets fragiles</li>
+                    </ul>
+                    <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Complet</a>
+                </div>
+
             </div>
-
-            <!-- SIMPLE -->
-            <div class="pricing-card">
-                <h3 class="pricing-title">SIMPLE</h3>
-                <!-- TODO: ajuster le prix -->
-                <p class="pricing-price">À partir de 600 €</p>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">L'essentiel pour un déménagement
-                    économique.</p>
-                <ul class="pricing-features">
-                    <li>Chargement</li>
-                    <li>Transport sécurisé</li>
-                    <li>Déchargement</li>
-                    <li>Protection du mobilier</li>
-                </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Simple</a>
-            </div>
-
-            <!-- STANDARD -->
-            <div class="pricing-card featured">
-                <div
-                    style="background: var(--accent-blue); color: white; padding: 0.25rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; align-self: center; margin-bottom: 1rem;">
-                    POPULAIRE</div>
-                <h3 class="pricing-title">STANDARD</h3>
-                <!-- TODO: ajuster le prix -->
-                <p class="pricing-price">À partir de 900 €</p>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">Le parfait équilibre entre service et
-                    budget.</p>
-                <ul class="pricing-features">
-                    <li>Tout de la formule Simple</li>
-                    <li>Démontage des meubles</li>
-                    <li>Remontage des meubles</li>
-                    <li>Mise en place des cartons</li>
-                </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Standard</a>
-            </div>
-
-            <!-- LUXE -->
-            <div class="pricing-card">
-                <h3 class="pricing-title">LUXE</h3>
-                <!-- TODO: ajuster le prix -->
-                <p class="pricing-price">À partir de 1 400 €</p>
-                <p style="color: var(--text-gray); margin-bottom: 1rem;">Service clé en main pour une tranquillité
-                    totale.</p>
-                <ul class="pricing-features">
-                    <li>Tout de la formule Standard</li>
-                    <li>Emballage complet (vaisselle, vêtements...)</li>
-                    <li>Fourniture des cartons</li>
-                    <li>Déballage des objets fragiles</li>
-                </ul>
-                <a href="#quote" class="btn btn-primary" style="width: 100%;">Choisir Luxe</a>
-            </div>
-
         </div>
         <p style="text-align: center; color: var(--text-gray); font-size: 0.9rem; margin-top: 2rem;">
-            Prix indicatifs « à partir de », selon volume, distance et accès. Devis gratuit et personnalisé.
+            Le tarif dépend du volume, de la distance et des accès. Devis gratuit et personnalisé.
         </p>
         {% unless page.url == '/formules.html' %}
         <div style="text-align: center; margin-top: 1.5rem;">

@@ -56,37 +56,92 @@ Cordialement,
 Manny Express`,
 };
 
+// TODO(manny): la P'tit Express ne comprend plus le déménagement lui-même, mais
+// les fournitures et le transport des cartons. Son « à partir de 350 € » date de
+// l'ancienne formule et n'a pas été revu. Donner le vrai prix plancher.
 export const FORMULES = [
   { value: "ptit-express", label: "P'tit Express", aPartirDe: 350 },
   { value: "simple", label: "Simple", aPartirDe: 600 },
   { value: "standard", label: "Standard", aPartirDe: 900 },
-  { value: "luxe", label: "Luxe", aPartirDe: 1400 },
+  // La formule s'appelle Complet sur le site depuis la refonte du tableau. La
+  // valeur reste `luxe` : les devis déjà enregistrés la portent.
+  { value: "luxe", label: "Complet", aPartirDe: 1400 },
 ];
 
 /**
- * Le tableau des formules de mannyexpress.com, ligne par ligne, dans l'ordre
- * où la page les présente : pour chaque prestation, les formules qui la
- * prennent en charge. Le reste est marqué « Vous » sur le site, donc à la
- * charge du client sur le devis — et le devis le dit, plutôt que de le taire.
+ * Le tableau des formules de mannyexpress.com, ligne par ligne et colonne par
+ * colonne, dans l'ordre où la page les présente. Chaque case porte l'un des
+ * quatre états du tableau : INCLUS (le ✓ bleu), OPTION (« en option » : sur
+ * demande et facturé en plus), VOUS (à la charge du client, et le devis le dit
+ * plutôt que de le taire) et SANS_OBJET (le tiret : la ligne ne veut rien dire
+ * pour cette formule, elle ne figure donc ni dans les prestations ni dans ce
+ * qui reste à faire).
  *
  * C'est la seule source : ce que le site promet et ce que le devis engage ne
  * peuvent pas diverger. Si la page change, cette liste change avec elle.
  */
+const INCLUS = "inclus";
+const OPTION = "option";
+const VOUS = "vous";
+const SANS_OBJET = "sans-objet";
+
 const TABLEAU_FORMULES = [
-  { label: "Chargement", formules: ["ptit-express", "simple", "standard", "luxe"] },
+  {
+    label: "10 cartons standards",
+    etats: { "ptit-express": INCLUS, simple: OPTION, standard: SANS_OBJET, luxe: SANS_OBJET },
+  },
+  {
+    label: "10 m de papier bulle + 2 adhésifs",
+    etats: { "ptit-express": INCLUS, simple: OPTION, standard: SANS_OBJET, luxe: SANS_OBJET },
+  },
+  {
+    label: "Transport des cartons",
+    etats: { "ptit-express": INCLUS, simple: OPTION, standard: SANS_OBJET, luxe: SANS_OBJET },
+  },
+  {
+    label: "Chargement",
+    etats: { "ptit-express": VOUS, simple: INCLUS, standard: INCLUS, luxe: INCLUS },
+  },
   {
     label: "Transport sécurisé",
-    formules: ["ptit-express", "simple", "standard", "luxe"],
+    etats: { "ptit-express": VOUS, simple: INCLUS, standard: INCLUS, luxe: INCLUS },
   },
-  { label: "Déchargement", formules: ["ptit-express", "simple", "standard", "luxe"] },
-  { label: "Protection du mobilier", formules: ["simple", "standard", "luxe"] },
-  { label: "Démontage des meubles", formules: ["standard", "luxe"] },
-  { label: "Remontage des meubles", formules: ["standard", "luxe"] },
-  { label: "Mise en place des cartons", formules: ["standard", "luxe"] },
-  { label: "Fourniture des cartons", formules: ["luxe"] },
-  { label: "Emballage des objets fragiles", formules: ["luxe"] },
-  { label: "Emballage du reste (vaisselle, vêtements…)", formules: ["luxe"] },
-  { label: "Déballage des objets fragiles", formules: ["luxe"] },
+  {
+    label: "Déchargement",
+    etats: { "ptit-express": VOUS, simple: INCLUS, standard: INCLUS, luxe: INCLUS },
+  },
+  {
+    label: "Protection du mobilier",
+    etats: { "ptit-express": VOUS, simple: INCLUS, standard: INCLUS, luxe: INCLUS },
+  },
+  {
+    label: "Démontage des meubles",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: INCLUS, luxe: INCLUS },
+  },
+  {
+    label: "Remontage des meubles",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: INCLUS, luxe: INCLUS },
+  },
+  {
+    label: "Mise en place des cartons",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: INCLUS, luxe: INCLUS },
+  },
+  {
+    label: "Fourniture des cartons",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: VOUS, luxe: INCLUS },
+  },
+  {
+    label: "Emballage des objets fragiles",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: VOUS, luxe: INCLUS },
+  },
+  {
+    label: "Emballage du reste (vaisselle, vêtements…)",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: VOUS, luxe: INCLUS },
+  },
+  {
+    label: "Déballage des objets fragiles",
+    etats: { "ptit-express": VOUS, simple: VOUS, standard: VOUS, luxe: INCLUS },
+  },
 ];
 
 export function formuleByValue(value) {
@@ -95,15 +150,21 @@ export function formuleByValue(value) {
 
 /** Ce que la formule comprend. */
 export function formulePrestations(value) {
-  return TABLEAU_FORMULES.filter(({ formules }) => formules.includes(value)).map(
+  return TABLEAU_FORMULES.filter(({ etats }) => etats[value] === INCLUS).map(
     ({ label }) => label
   );
 }
 
-/** Ce qu'elle ne comprend pas, et qui reste au client. */
+/**
+ * Ce qu'elle ne comprend pas, et qui reste au client. Une prestation en option
+ * y figure aussi, marquée comme telle : tant qu'elle n'est pas commandée elle
+ * est bien à la charge du client, et le dire lui apprend qu'il peut l'ajouter.
+ */
 export function formuleACharge(value) {
-  return TABLEAU_FORMULES.filter(({ formules }) => !formules.includes(value)).map(
-    ({ label }) => label
+  return TABLEAU_FORMULES.filter(
+    ({ etats }) => etats[value] === VOUS || etats[value] === OPTION
+  ).map(({ label, etats }) =>
+    etats[value] === OPTION ? `${label} (en option, sur devis)` : label
   );
 }
 

@@ -410,4 +410,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Carrousel des cartes de formules. Le défilement lui-même est en CSS ; les
+    // flèches ne font qu'avancer d'une carte et se désactiver aux extrémités.
+    document.querySelectorAll('.pcar').forEach(function (pcar) {
+        const track = pcar.querySelector('.pricing-grid');
+        const prevBtn = pcar.querySelector('.pcar-prev');
+        const nextBtn = pcar.querySelector('.pcar-next');
+        if (!track || !prevBtn || !nextBtn) return;
+
+        function pcarStep() {
+            const card = track.querySelector('.pricing-card');
+            if (!card) return 320;
+            const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+            return card.getBoundingClientRect().width + gap;
+        }
+
+        function pcarUpdate() {
+            const maxScroll = track.scrollWidth - track.clientWidth;
+            const atStart = track.scrollLeft <= 2;
+            const atEnd = track.scrollLeft >= maxScroll - 2;
+            pcar.classList.toggle('pcar-static', maxScroll <= 2);
+            // Les mêmes deux états servent aux flèches et au fondu des bords : une
+            // extrémité atteinte n'a plus rien à annoncer de ce côté.
+            pcar.classList.toggle('pcar-at-start', atStart);
+            pcar.classList.toggle('pcar-at-end', atEnd);
+            prevBtn.disabled = atStart;
+            nextBtn.disabled = atEnd;
+        }
+
+        prevBtn.addEventListener('click', () => track.scrollBy({ left: -pcarStep(), behavior: 'smooth' }));
+        nextBtn.addEventListener('click', () => track.scrollBy({ left: pcarStep(), behavior: 'smooth' }));
+        track.addEventListener('scroll', pcarUpdate);
+        window.addEventListener('resize', pcarUpdate);
+        pcarUpdate();
+    });
+
 });
