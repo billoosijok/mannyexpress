@@ -49,7 +49,17 @@ function serviceWorker() {
   };
 }
 
+// The three libraries jsPDF loads on demand for its own HTML and SVG paths,
+// which the quote never takes: it hands jsPDF a finished image. Left in, they
+// are 380 kB of never-run code that the service worker faithfully caches on
+// every phone at every deploy. See src/lib/jspdf-extras-absent.js.
+const jspdfExtras = ["html2canvas", "canvg", "dompurify"].map((name) => ({
+  find: new RegExp(`^${name}$`),
+  replacement: here("src/lib/jspdf-extras-absent.js"),
+}));
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), serviceWorker()],
+  resolve: { alias: jspdfExtras },
 });

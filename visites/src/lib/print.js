@@ -1,6 +1,17 @@
 import devisCss from "../devis.css?raw";
 
 /**
+ * La feuille A4 elle-même, qu'on lui passe son cadre d'aperçu ou la feuille.
+ * Le cadre est ce que l'écran manipule — il porte la hauteur réduite et rogne
+ * ce qui dépasse ; la feuille est ce qui s'imprime.
+ */
+export function devisSheet(node) {
+  if (!node) return null;
+  if (node.classList?.contains("devis-page")) return node;
+  return node.querySelector?.(".devis-page") ?? null;
+}
+
+/**
  * Imprimer depuis l'application elle-même : la feuille de style bascule tout
  * le reste en invisible et ne laisse que le devis. C'est de là que vient le
  * PDF — la boîte d'impression de l'iPhone comme celle d'un ordinateur sait
@@ -54,23 +65,36 @@ export function printNode(node, title) {
  * par mail » et l'enregistrement en PDF. C'est la porte de sortie.
  */
 export function openNodeInBrowser(node, title) {
-  if (!node) return false;
+  const sheet = devisSheet(node);
+  if (!sheet) return false;
 
-  const clone = node.cloneNode(true);
-  // L'aperçu est réduit pour tenir dans l'écran du téléphone ; la page
-  // autonome, elle, s'affiche en taille réelle.
-  clone.style.transform = "";
+  // Seule la feuille part dans l'onglet, sans son cadre : celui-ci porte la
+  // hauteur réduite de l'aperçu et rogne ce qui dépasse. L'échelle du
+  // téléphone est défaite avec lui — la page autonome s'affiche en A4, à sa
+  // taille réelle.
+  const clone = sheet.cloneNode(true);
+  clone.style.transform = "none";
   clone.style.width = "";
+
+  // La largeur d'une A4 en pixels, mesurée sur la feuille plutôt que calculée :
+  // c'est au navigateur de convertir les millimètres. L'onglet la prend pour
+  // largeur de page, et le téléphone y ajuste son écran tout seul — la feuille
+  // garde ses proportions au lieu d'être rétrécie pour tenir dans 390 pixels.
+  const sheetWidth = sheet.offsetWidth;
 
   const html = `<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=${sheetWidth}" />
     <base href="${window.location.origin}/" />
     <title>${escapeHtml(title)}</title>
     <style>
       body { margin: 0; background: #f4f3ef; display: flex; justify-content: center; }
+      /* Sans cela la feuille, simple élément flexible, se laisse comprimer
+         sous les 210 mm au lieu de déborder : le devis se recompose et n'est
+         plus une A4. */
+      .devis-page { flex: none; }
       @media print { body { background: #fff; display: block; } }
       ${devisCss}
     </style>

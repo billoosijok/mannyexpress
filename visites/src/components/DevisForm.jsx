@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, ExternalLink, Mail, Printer, RotateCcw } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  ExternalLink,
+  FileDown,
+  Mail,
+  Printer,
+  RotateCcw,
+} from "lucide-react";
 import { FORMULES, MAIL_DEVIS, formuleByValue } from "../constants";
 import {
   chargeText,
@@ -14,6 +22,7 @@ import {
   saveDevis,
 } from "../lib/devis";
 import { commit } from "../lib/offline";
+import { devisPdfBlob, sharePdf } from "../lib/pdf";
 import { openNodeInBrowser, printNode } from "../lib/print";
 import DevisDocument from "./DevisDocument";
 import {
@@ -51,8 +60,12 @@ function listesRetouchees(devis) {
 export default function DevisForm({ visit, user, onBack, onSaved }) {
   const [devis, setDevis] = useState(() => devisToForm(visit));
   const [status, setStatus] = useState("idle"); // idle | saving | envoye | en-attente
+  const [pdfStatus, setPdfStatus] = useState("idle"); // idle | working | ready | done
   const [error, setError] = useState("");
   const frameRef = useRef(null);
+  // Le PDF fabriqué, gardé tant que le devis n'a pas changé : c'est lui qui
+  // permet au second appui d'ouvrir la feuille de partage sans attente.
+  const pdfCache = useRef({ key: "", blob: null });
 
   const editing = Boolean(visit.devis);
 
@@ -112,6 +125,48 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
   const aCharge = countLignes(devis.charge);
   const montant = useMemo(() => devisMontant(devis), [devis]);
   const fileName = devisFileName(devis);
+
+  /** Ce que la feuille de partage — ou le téléchargement — a donné. */
+  function announcePdf(result) {
+    if (result === "blocked") {
+      // Safari a refusé la feuille de partage faute de geste récent. Le PDF,
+      // lui, est fait : le bouton le dit et le second appui l'enregistre.
+      setPdfStatus("ready");
+      return;
+    }
+    setPdfStatus(result === "cancelled" ? "idle" : "done");
+    if (result !== "cancelled") setTimeout(() => setPdfStatus("idle"), 2500);
+  }
+
+  /**
+   * Le devis en PDF A4. L'application le fabrique elle-même plutôt que de le
+   * demander à la boîte d'impression : c'est ce qui garantit le format, que
+   * l'enregistrement passe par la feuille de partage de l'iPhone ou par les
+   * téléchargements de l'ordinateur.
+   */
+  function handlePdf() {
+    if (pdfStatus === "working") return;
+    setError("");
+
+    const key = JSON.stringify(devis);
+    if (pdfCache.current.key === key && pdfCache.current.blob) {
+      sharePdf(pdfCache.current.blob, fileName).then(announcePdf);
+      return;
+    }
+
+    setPdfStatus("working");
+    devisPdfBlob(frameRef.current)
+      .then((blob) => {
+        if (!blob) throw new Error("aperçu introuvable");
+        pdfCache.current = { key, blob };
+        return sharePdf(blob, fileName);
+      })
+      .then(announcePdf)
+      .catch(() => {
+        setPdfStatus("idle");
+        setError("La fabrication du PDF a échoué. Réessayez.");
+      });
+  }
 
   async function handleSave() {
     if (status === "saving") return;
@@ -332,15 +387,41 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
         <SectionHeader
           number="9"
           title="Enregistrer en PDF et envoyer"
-          subtitle="La feuille sort au format A4, une page, coupée à la bonne taille"
+          subtitle="Le PDF est une A4 exacte, faite par l'application elle-même"
         />
+        <button
+          type="button"
+          onClick={handlePdf}
+          disabled={pdfStatus === "working"}
+          className={`mb-2 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition ${
+            pdfStatus === "done" ? "bg-green-600" : "bg-navy"
+          } ${pdfStatus === "working" ? "opacity-70" : ""}`}
+        >
+          {pdfStatus === "working" && <Spinner />}
+          {pdfStatus === "done" && <Check size={18} />}
+          {(pdfStatus === "idle" || pdfStatus === "ready") && <FileDown size={18} />}
+          {pdfStatus === "working" && "Fabrication du PDF A4..."}
+          {pdfStatus === "ready" && "PDF A4 prêt — toucher pour enregistrer"}
+          {pdfStatus === "done" && "PDF A4 enregistré"}
+          {pdfStatus === "idle" && "Enregistrer le PDF A4"}
+        </button>
+        <p className="mb-3 text-xs text-muted">
+          Le PDF est fabriqué par l'application, au format <b>A4</b> exact — il
+          n'y a plus de taille de papier à choisir. Sur iPhone, la feuille de
+          partage s'ouvre : « Enregistrer dans Fichiers », Mail, WhatsApp. Sur
+          ordinateur, le fichier descend dans les téléchargements.
+        </p>
+
+        {/* Les deux anciennes voies restent : la boîte d'impression pour sortir
+            le devis sur une vraie imprimante, et l'onglet Safari pour le
+            relire en grand. */}
         <div className="mb-2 flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => printNode(frameRef.current, fileName)}
-            className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg bg-navy px-3 text-sm font-medium text-white"
+            className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-navy px-3 text-sm font-medium text-navy"
           >
-            <Printer size={18} /> Enregistrer en PDF
+            <Printer size={18} /> Imprimer
           </button>
           <button
             type="button"
@@ -351,11 +432,11 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
           </button>
         </div>
         <p className="mb-4 text-xs text-muted">
-          Sur iPhone : « Enregistrer en PDF » ouvre la boîte d'impression →
-          Options → <b>A4</b> → Partager → « Enregistrer dans Fichiers », ou
-          directement « Mail » qui joint le PDF tout seul. Si la boîte ne
-          s'ouvre pas depuis l'application installée, passer par « Ouvrir dans
-          le navigateur », puis le bouton Partager.
+          « Imprimer » ouvre la boîte d'impression du téléphone — penser alors à
+          Options → <b>A4</b>, c'est elle qui décide du papier. Elle ne s'ouvre
+          pas toujours depuis l'application installée sur l'écran d'accueil :
+          « Ouvrir dans le navigateur » affiche le même devis dans un onglet
+          Safari.
         </p>
 
         {/* Le mail part de l'application de messagerie du téléphone, déjà

@@ -353,20 +353,43 @@ prix.**
 - **L'aperçu en bas de l'écran est exactement ce qui s'imprime.** Rien n'y est
   masqué ni ajouté.
 
-**Enregistrer en PDF.** Le bouton **« Enregistrer en PDF »** ouvre la boîte
-d'impression du téléphone, qui sait « Enregistrer au format PDF » et partager
-le fichier — par mail, par WhatsApp. Si elle ne s'ouvre pas depuis
-l'application installée sur l'écran d'accueil (iOS le refuse selon les
-versions), **« Ouvrir dans le navigateur »** affiche le même devis dans un
-onglet Safari, d'où le bouton Partager fait la même chose.
+**Enregistrer en PDF.** Le bouton **« Enregistrer le PDF A4 »** fabrique le
+fichier dans l'application, puis l'enregistre : sur iPhone la feuille de
+partage du système s'ouvre — « Enregistrer dans Fichiers », Mail, WhatsApp —
+et sur ordinateur le fichier descend dans les téléchargements. **Il n'y a
+aucune taille de papier à choisir : la page fait 210 × 297 mm, écrits dans le
+fichier.**
 
-**La feuille est une A4, à la taille réelle** : `.devis-page` fait 210 × 297 mm
-et porte ses propres marges de 12 mm, la page d'impression n'en ajoutant
-aucune (`@page { margin: 0 }`). Le navigateur n'a donc rien à remettre à
-l'échelle et la coupe tombe juste, sans page blanche derrière. À l'écran,
-c'est `transform: scale()` qui réduit la feuille à la largeur du téléphone —
-mesurée sur la feuille elle-même, jamais devinée. Les quatre formules tiennent
-sur une page ; en rallonger les listes peut la faire passer à deux.
+C'est ce qui a remplacé le passage obligé par la boîte d'impression, qui ne
+tenait pas ses promesses sur iPhone : elle ne s'ouvre pas depuis l'application
+installée sur l'écran d'accueil, et le « PDF » du bouton Partager de Safari,
+lui, sort une page unique à la hauteur de la page web — jamais une A4. Les
+deux anciennes voies restent en dessous : **« Imprimer »** pour sortir le devis
+sur une vraie imprimante (c'est alors la boîte d'impression qui décide du
+papier, Options → A4), et **« Ouvrir dans le navigateur »** pour relire le
+devis en grand dans un onglet Safari.
+
+**Comment le PDF est fabriqué** (`lib/pdf.js`). La feuille est photographiée
+par `html2canvas-pro` à deux fois sa taille — l'échelle de l'écran et le
+rognage du cadre d'aperçu sont défaits sur la copie que la bibliothèque se
+fait de la page, jamais sur celle que le gérant regarde — puis l'image est
+posée par `jsPDF` sur des pages A4. Un devis plus long qu'une page est **coupé
+à la hauteur exacte d'une A4** plutôt qu'étiré sur une page interminable. Les
+deux bibliothèques sont chargées à la demande, au premier PDF.
+
+Le PDF fabriqué est **gardé de côté tant que le devis ne change pas**, et ce
+n'est pas qu'une économie : `navigator.share()` doit partir dans le geste même
+du doigt, et Safari refuse la feuille de partage dès qu'une attente le
+précède. Quand cela arrive, le bouton passe à « PDF A4 prêt — toucher pour
+enregistrer » et le second appui l'ouvre sans attente. Un seul appui suffit
+dans le cas courant.
+
+**La feuille est une A4 à l'écran aussi** : `.devis-page` fait 210 × 297 mm et
+porte ses propres marges de 12 mm, la page d'impression n'en ajoutant aucune
+(`@page { margin: 0 }`). L'aperçu est la même feuille, réduite par
+`transform: scale()` à la largeur du téléphone — mesurée sur la feuille
+elle-même, jamais devinée. Les quatre formules tiennent sur une page ; en
+rallonger les listes peut la faire passer à deux.
 
 **Le mail au client.** Le bouton **« Écrire le mail au client »** ouvre
 l'application de messagerie du téléphone avec le destinataire, l'objet
@@ -377,8 +400,8 @@ l'affiche tel qu'il partira.
 **Le PDF s'y joint à la main**, et ce n'est pas un oubli : une page web ne
 peut pas attacher un fichier à un mail qu'elle n'envoie pas elle-même. Deux
 chemins, au choix : enregistrer le PDF puis le joindre au mail ouvert, ou
-partager le PDF directement vers Mail depuis la boîte d'impression — iOS le
-joint alors tout seul, mais sans le message. Un envoi complet et automatique
+choisir « Mail » dans la feuille de partage qui suit « Enregistrer le PDF
+A4 » — iOS joint alors le fichier tout seul, mais sans le message. Un envoi complet et automatique
 demanderait une Cloud Function qui fabrique le PDF et l'expédie par un service
 d'envoi (identifiants à fournir) : rien de tel n'existe pour l'instant.
 
@@ -451,7 +474,9 @@ src/
   lib/
     visits.js             lecture/écriture Firestore des fiches
     devis.js              le devis : pré-remplissage, numérotation, montants, écriture
+    pdf.js                le devis en PDF A4, fabriqué et partagé par l'application
     print.js              impression de la feuille et ouverture dans le navigateur
+    jspdf-extras-absent.js  ce que jsPDF charge à la demande, et dont le devis se passe
     agenda.js             lecture/écriture Firestore des rendez-vous
     photos.js             envoi/suppression Storage
     compress.js           compression via canvas
