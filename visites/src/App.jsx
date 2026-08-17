@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { CalendarDays, ClipboardList, LogOut, Plus, Truck } from "lucide-react";
+import { CalendarDays, ClipboardList, FileText, LogOut, Plus, Truck } from "lucide-react";
 import { auth } from "./firebase";
 import { isOwnerEmail } from "./constants";
 import LoginScreen from "./components/LoginScreen";
@@ -8,6 +8,7 @@ import VisitForm from "./components/VisitForm";
 import VisitsList from "./components/VisitsList";
 import VisitDetail from "./components/VisitDetail";
 import DevisForm from "./components/DevisForm";
+import DevisList from "./components/DevisList";
 import AgendaView from "./components/AgendaView";
 import OfflineNotice from "./components/OfflineNotice";
 import UpdateBanner from "./components/UpdateBanner";
@@ -116,6 +117,17 @@ export default function App() {
         <div className={tab === "agenda" && !selectedVisit ? "" : "hidden"}>
           <AgendaView user={user} isOwner={isOwner} onSelectVisit={setSelectedVisit} />
         </div>
+        {/* L'onglet Devis ouvre le devis directement, sans passer par la fiche :
+            c'est le devis qu'on vient y chercher. */}
+        <div className={tab === "devis" && !selectedVisit ? "" : "hidden"}>
+          <DevisList
+            user={user}
+            onSelect={(visit) => {
+              setSelectedVisit(visit);
+              setQuoting(true);
+            }}
+          />
+        </div>
         {selectedVisit && !editedVisit && !quoting && (
           <VisitDetail
             visit={selectedVisit}
@@ -131,7 +143,11 @@ export default function App() {
             key={selectedVisit.id}
             visit={selectedVisit}
             user={user}
-            onBack={() => setQuoting(false)}
+            // Depuis l'onglet Devis on est arrivé sans passer par la fiche :
+            // le retour ramène à la liste des devis, pas à une fiche qu'on
+            // n'a jamais ouverte.
+            backLabel={tab === "devis" ? "Retour aux devis" : "Retour à la fiche"}
+            onBack={() => (tab === "devis" ? closeVisit() : setQuoting(false))}
             // The list behind is live, but the copy held here is a snapshot:
             // without this the sheet would come back without its new quote.
             onSaved={(devis) =>
@@ -178,6 +194,15 @@ export default function App() {
             }}
             icon={<CalendarDays size={20} />}
             label="Agenda"
+          />
+          <TabButton
+            active={tab === "devis"}
+            onClick={() => {
+              closeVisit();
+              setTab("devis");
+            }}
+            icon={<FileText size={20} />}
+            label="Devis"
           />
         </div>
       </nav>

@@ -96,6 +96,9 @@ export function emptyDevis(visit, numero = DEVIS_START_NUMBER) {
     formule,
     volume,
     prixTTC: "",
+    // Un devis neuf est toujours en cours : il n'est ni signé ni annulé tant
+    // que le client n'a pas répondu.
+    statut: "en-cours",
     chargementTitre: "Chargement des meubles",
     chargementDate: "",
     chargementAdresse: visit.departAdresse || "",
@@ -155,6 +158,37 @@ export async function saveDevis(visitId, devis, user) {
   };
   await updateDoc(doc(db, VISITS, visitId), { devis: stored });
   return stored;
+}
+
+/**
+ * Le seul statut, sans toucher au reste du devis. Écrit par chemin pointé
+ * plutôt qu'en réécrivant la clé `devis` entière : depuis la liste, le devis
+ * n'est pas ouvert, et le renvoyer tel qu'il a été chargé écraserait une
+ * correction faite entre-temps sur un autre téléphone.
+ */
+export async function saveDevisStatut(visitId, statut, user) {
+  await updateDoc(doc(db, VISITS, visitId), {
+    "devis.statut": statut,
+    "devis.updatedAt": serverTimestamp(),
+    "devis.updatedByEmail": user?.email || "",
+  });
+}
+
+/**
+ * Les devis de toutes les fiches, du plus récent au plus ancien. Un devis
+ * n'est pas un document à lui seul — il vit dans la fiche dont il sort — donc
+ * la liste se tire des visites déjà chargées, sans seconde lecture.
+ */
+export function devisFromVisits(visits) {
+  return visits
+    .filter((visit) => visit.devis)
+    .map((visit) => ({
+      visit,
+      devis: visit.devis,
+      numero: Number.parseInt(visit.devis.numero, 10) || 0,
+      montant: devisMontant(visit.devis),
+    }))
+    .sort((a, b) => b.numero - a.numero);
 }
 
 /** L'objet du mail, avec le numéro du devis dedans. */

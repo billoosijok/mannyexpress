@@ -4,7 +4,8 @@ Application web mobile qui remplace la fiche de visite papier. Trois employés
 remplissent la fiche chez le client (avec photos), et le devis se fait depuis
 cette fiche en un bouton : tout ce qu'il demande y est déjà, il ne reste que le
 prix à taper. Un agenda partagé rassemble les prochaines visites et les
-prochains déménagements.
+prochains déménagements, et un onglet Devis les rassemble tous, chacun avec son
+montant et sa couleur — en cours, signé, déménagé, annulé.
 
 L'interface est entièrement en français ; le code, lui, est en anglais.
 
@@ -314,6 +315,46 @@ y compris pour le gérant.
 
 ## 12. Le devis
 
+### L'onglet Devis
+
+**Le quatrième onglet rassemble tous les devis**, le dernier établi en tête.
+Chaque ligne porte le nom du client, le numéro et la date du devis, **son
+montant à droite**, et sa couleur à gauche :
+
+| Couleur | Statut | Ce qu'elle dit |
+| --- | --- | --- |
+| **Doré** | En cours | Le devis est parti, le client n'a pas répondu |
+| **Vert** | Signé | Le client a accepté |
+| **Bleu marine** | Déménagé | Le camion est passé, l'affaire est faite |
+| **Rouge** | Annulé | Elle ne se fera pas |
+
+Ce sont les couleurs de l'agenda, prolongées : doré pour ce qui attend, bleu
+marine pour le déménagement.
+
+**Le statut se change d'un doigt, sans ouvrir le devis** — toucher la pastille
+déplie les quatre choix, en toucher un recolore la ligne aussitôt. C'est le
+geste qu'on fait vingt fois par semaine, il ne passe donc pas par l'écran du
+devis. Il s'écrit seul dans la fiche (`devis.statut`), sans réécrire le devis
+entier : un devis corrigé au même moment sur un autre téléphone n'est pas
+écrasé. Hors connexion il part au retour du réseau, comme le reste.
+
+Les pastilles du haut **filtrent** la liste et en comptent les devis ; la ligne
+sous les filtres donne **le total de ce qui est affiché** — « 4 devis —
+8 410,50 € ». Toucher « Signé » donne donc le montant des affaires signées.
+
+Toucher le nom d'un devis **ouvre directement son écran** (prix, formule, PDF),
+sans passer par la fiche de visite ; le bouton du haut ramène alors à la liste
+des devis. Depuis l'onglet Visites, le chemin d'avant n'a pas bougé : la fiche
+d'abord, le devis ensuite.
+
+Les devis établis avant cet onglet n'ont pas de statut enregistré : ils
+s'affichent **En cours**, et le premier appui sur la pastille l'inscrit.
+
+Le statut se change aussi depuis l'écran du devis (section 3), où il suit le
+formulaire : il part avec « Enregistrer ».
+
+### Faire le devis
+
 **Le devis se fait depuis la fiche de visite, en un bouton.** Ouvrir la fiche
 (onglet Visites ou depuis l'agenda) puis **« Faire le devis »** : l'écran
 s'ouvre déjà rempli avec tout ce que la visite a relevé — le client et ses
@@ -452,7 +493,7 @@ relevé.
 
 ```
 src/
-  App.jsx                 écran de connexion ou coquille de l'app (en-tête + 3 onglets)
+  App.jsx                 écran de connexion ou coquille de l'app (en-tête + 4 onglets)
   firebase.js             initialisation du SDK
   constants.js            couleurs, prestations, formules, entreprise, formulaires vierges
   devis.css               la feuille de devis : mise en page écran et impression
@@ -462,6 +503,7 @@ src/
     VisitsList.jsx        liste temps réel des visites
     VisitDetail.jsx       consultation d'une visite, modification, suppression (gérant)
     DevisForm.jsx         le devis d'une visite : pré-rempli, aperçu, impression
+    DevisList.jsx         l'onglet Devis : tous les devis, leur montant, leur statut
     DevisDocument.jsx     la feuille A4 telle qu'elle s'imprime
     AgendaView.jsx        calendrier du mois, journée choisie, liste « à venir »
     AgendaEventForm.jsx   ajout / modification / suppression d'un rendez-vous

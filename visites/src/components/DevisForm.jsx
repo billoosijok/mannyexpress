@@ -8,7 +8,13 @@ import {
   Printer,
   RotateCcw,
 } from "lucide-react";
-import { FORMULES, MAIL_DEVIS, formuleByValue } from "../constants";
+import {
+  DEVIS_STATUTS,
+  FORMULES,
+  MAIL_DEVIS,
+  devisStatut,
+  formuleByValue,
+} from "../constants";
 import {
   chargeText,
   devisFileName,
@@ -57,7 +63,13 @@ function listesRetouchees(devis) {
  * taper le prix. Tout y reste modifiable, à tout moment : un devis rouvert
  * s'ouvre sur son prix, et « Enregistrer » remplace celui d'avant.
  */
-export default function DevisForm({ visit, user, onBack, onSaved }) {
+export default function DevisForm({
+  visit,
+  user,
+  onBack,
+  onSaved,
+  backLabel = "Retour à la fiche",
+}) {
   const [devis, setDevis] = useState(() => devisToForm(visit));
   const [status, setStatus] = useState("idle"); // idle | saving | envoye | en-attente
   const [pdfStatus, setPdfStatus] = useState("idle"); // idle | working | ready | done
@@ -189,7 +201,7 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
         onClick={onBack}
         className="mb-4 flex min-h-[44px] items-center gap-2 text-sm font-medium text-navy"
       >
-        <ArrowLeft size={18} /> Retour à la fiche
+        <ArrowLeft size={18} /> {backLabel}
       </button>
 
       {error && (
@@ -306,6 +318,29 @@ export default function DevisForm({ visit, user, onBack, onSaved }) {
             onChange={setValue("volume")}
           />
         </Field>
+        {/* Le même statut que dans l'onglet Devis, où il se change d'un doigt.
+            Ici il suit le reste du formulaire : il part à l'enregistrement. */}
+        <p className="mb-1 text-sm font-medium text-ink">Statut</p>
+        <div className="grid grid-cols-2 gap-2">
+          {DEVIS_STATUTS.map((choix) => (
+            <button
+              key={choix.value}
+              type="button"
+              onClick={() => setValue("statut")(choix.value)}
+              className={`min-h-[44px] rounded-lg border px-2 text-xs font-semibold ${
+                devisStatut(devis.statut).value === choix.value
+                  ? choix.pastille
+                  : choix.doux
+              }`}
+            >
+              {choix.label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-muted">
+          C'est la couleur du devis dans l'onglet Devis, où il se change aussi
+          sans ouvrir cet écran.
+        </p>
       </Card>
 
       <Card>

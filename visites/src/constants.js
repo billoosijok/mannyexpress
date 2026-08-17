@@ -64,6 +64,55 @@ export const FORMULES = [
 ];
 
 /**
+ * Où en est un devis, du jour où il part chez le client au jour où le camion
+ * est reparti. C'est la seule chose qu'un devis porte sans qu'on l'ait tapée :
+ * elle se change d'un doigt, depuis l'onglet Devis.
+ *
+ * Les couleurs prolongent celles de l'agenda plutôt que d'en inventer : doré
+ * pour ce qui est en attente, bleu marine pour le déménagement. Le vert dit
+ * qu'un client a signé, le rouge qu'il ne viendra rien.
+ *
+ * Les classes sont écrites en toutes lettres, jamais composées : Tailwind lit
+ * le code source pour savoir quoi produire, et une classe assemblée à
+ * l'exécution n'existerait pas dans la feuille de style.
+ */
+export const DEVIS_STATUTS = [
+  {
+    value: "en-cours",
+    label: "En cours",
+    pastille: "bg-gold text-white",
+    liseret: "border-l-gold",
+    doux: "border-gold bg-gold/10 text-gold",
+  },
+  {
+    value: "signe",
+    label: "Signé",
+    pastille: "bg-green-600 text-white",
+    liseret: "border-l-green-600",
+    doux: "border-green-600 bg-green-600/10 text-green-700",
+  },
+  {
+    value: "demenage",
+    label: "Déménagé",
+    pastille: "bg-navy text-white",
+    liseret: "border-l-navy",
+    doux: "border-navy bg-navy/10 text-navy",
+  },
+  {
+    value: "annule",
+    label: "Annulé",
+    pastille: "bg-red-600 text-white",
+    liseret: "border-l-red-600",
+    doux: "border-red-600 bg-red-600/10 text-red-700",
+  },
+];
+
+/** Le statut d'un devis, celui d'avant l'onglet Devis valant « en cours ». */
+export function devisStatut(value) {
+  return DEVIS_STATUTS.find((statut) => statut.value === value) || DEVIS_STATUTS[0];
+}
+
+/**
  * Le tableau des formules de mannyexpress.com, ligne par ligne, dans l'ordre
  * où la page les présente : pour chaque prestation, les formules qui la
  * prennent en charge. Le reste est marqué « Vous » sur le site, donc à la
