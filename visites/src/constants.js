@@ -75,7 +75,7 @@ export const FORMULES = [
  *
  * Les couleurs prolongent celles de l'agenda plutôt que d'en inventer : doré
  * pour ce qui est en attente, bleu marine pour le déménagement. Le vert dit
- * qu'un client a signé, le rouge qu'il ne viendra rien.
+ * qu'un client a signé, le rouge qu'il a dit non.
  *
  * Les classes sont écrites en toutes lettres, jamais composées : Tailwind lit
  * le code source pour savoir quoi produire, et une classe assemblée à
@@ -104,8 +104,11 @@ export const DEVIS_STATUTS = [
     doux: "border-navy bg-navy/10 text-navy",
   },
   {
+    // Le statut s'affiche « Refusé » : c'est le client qui a dit non, pas nous
+    // qui avons annulé. La valeur reste `annule` — les devis déjà marqués la
+    // portent, et la renommer les ferait tous repasser « En cours ».
     value: "annule",
-    label: "Annulé",
+    label: "Refusé",
     pastille: "bg-red-600 text-white",
     liseret: "border-l-red-600",
     doux: "border-red-600 bg-red-600/10 text-red-700",

@@ -96,7 +96,7 @@ export function emptyDevis(visit, numero = DEVIS_START_NUMBER) {
     formule,
     volume,
     prixTTC: "",
-    // Un devis neuf est toujours en cours : il n'est ni signé ni annulé tant
+    // Un devis neuf est toujours en cours : il n'est ni signé ni refusé tant
     // que le client n'a pas répondu.
     statut: "en-cours",
     chargementTitre: "Chargement des meubles",

@@ -9,7 +9,7 @@ import { ErrorNote, Spinner } from "./ui";
 /**
  * Tous les devis, celui d'aujourd'hui en tête. Chacun porte son montant à
  * droite et sa couleur à gauche : d'un coup d'oeil, ce qui est signé, ce qui
- * attend, ce qui est déménagé et ce qui est tombé.
+ * attend, ce qui est déménagé et ce qui est refusé.
  *
  * Le statut se change d'un doigt, sans ouvrir le devis — c'est ce que la
  * liste sert à faire vingt fois par semaine. Le reste (le prix, les listes,

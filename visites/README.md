@@ -5,7 +5,7 @@ remplissent la fiche chez le client (avec photos), et le devis se fait depuis
 cette fiche en un bouton : tout ce qu'il demande y est déjà, il ne reste que le
 prix à taper. Un agenda partagé rassemble les prochaines visites et les
 prochains déménagements, et un onglet Devis les rassemble tous, chacun avec son
-montant et sa couleur — en cours, signé, déménagé, annulé.
+montant et sa couleur — en cours, signé, déménagé, refusé.
 
 L'interface est entièrement en français ; le code, lui, est en anglais.
 
@@ -326,7 +326,7 @@ montant à droite**, et sa couleur à gauche :
 | **Doré** | En cours | Le devis est parti, le client n'a pas répondu |
 | **Vert** | Signé | Le client a accepté |
 | **Bleu marine** | Déménagé | Le camion est passé, l'affaire est faite |
-| **Rouge** | Annulé | Elle ne se fera pas |
+| **Rouge** | Refusé | Le client a dit non |
 
 Ce sont les couleurs de l'agenda, prolongées : doré pour ce qui attend, bleu
 marine pour le déménagement.
