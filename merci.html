@@ -10,8 +10,14 @@ description: Votre demande de devis a été envoyée avec succès. Notre équipe
 </head>
 
 <body>
+    <!-- Top Bar -->
+    {% include topbar.html %}
+
     <!-- Navigation -->
     {% include header.html %}
+
+    <!-- Mobile Menu -->
+    {% include mobile-menu.html %}
 
     <!-- Thank You Section -->
     <section class="thank-you-section">
@@ -35,7 +41,7 @@ description: Votre demande de devis a été envoyée avec succès. Notre équipe
 
     <script src="{{ '/assets/js/script.js' | relative_url }}"></script>
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google Tag / Google Tag Manager Conversion Event -->
     <script>
         gtag('event', 'conversion', {
             'send_to': 'AW-17649539123/h4pBCIXquewbELOw-t9B'

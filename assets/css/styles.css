@@ -562,6 +562,22 @@ a {
   gap: 0.75rem;
 }
 
+/* Cartes de réassurance : même carte, sans image ni lien. Centrées, et la
+   description ne pousse rien vers le bas puisqu'elle finit la carte. */
+.reassurance-grid .service-content {
+  align-items: center;
+  text-align: center;
+}
+
+.reassurance-grid .service-title {
+  color: var(--primary-blue);
+}
+
+.reassurance-grid .service-description {
+  margin-bottom: 0;
+  flex-grow: 0;
+}
+
 /* Testimonials Slider */
 .testimonials-section {
   padding: 3rem 0;
@@ -917,14 +933,8 @@ a {
   color: var(--primary-blue);
   text-transform: uppercase;
   letter-spacing: 0.02em;
-}
-
-.ft-price {
-  display: block;
-  color: var(--accent-blue);
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin: 0.25rem 0 0.9rem;
+  /* Le nom porte seul l'espace jusqu'à la jauge depuis que le prix a disparu. */
+  margin-bottom: 0.9rem;
 }
 
 .ft-badge {
@@ -1011,6 +1021,20 @@ a {
 .ftable .no {
   color: var(--text-gray);
   font-size: 0.85rem;
+}
+
+/* Disponible mais facturé en plus : ni un ✓ bleu, ni un « Vous » gris. */
+.ftable .opt {
+  color: var(--primary-blue);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Sans objet pour cette formule : présent pour garder la grille lisible, effacé
+   pour ne pas se lire comme un refus. */
+.ftable .na {
+  color: #c2ccd6;
+  font-size: 0.95rem;
 }
 
 /* Featured (Standard) column highlight */
@@ -1249,11 +1273,130 @@ a {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+/* Les quatre formules ne tiennent pas côte à côte dans le conteneur : en grille,
+   la quatrième retombait seule sur une deuxième ligne. Elles défilent donc, sur
+   grand écran comme sur mobile.
+   La piste sort du conteneur et va d'un bord à l'autre de la fenêtre : les
+   cartes se déroulent jusqu'au bord de l'écran, où un fondu posé par-dessus les
+   efface — plutôt que d'être tranchées net à 1200 px. */
+/* 100vw compte la barre de défilement verticale, ce qui suffirait à faire
+   apparaître une barre horizontale sur toute la page. La section coupe ce
+   débord. `clip` d'abord pour les navigateurs qui le connaissent : contrairement
+   à `hidden`, il ne fait pas de la section une zone défilable. */
+.tiers-section {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.pcar {
+  position: relative;
+}
+
+/* Largeur de fenêtre : la marge négative étale l'élément jusqu'aux bords, la
+   marge intérieure ramène la première carte à l'aplomb du conteneur. */
 .pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  align-items: stretch;
   gap: 2rem;
-  margin-top: 3rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  margin-top: 2rem;
+  margin-inline: calc(50% - 50vw);
+  /* La carte « populaire » est agrandie de 5 % : sans ces marges intérieures
+     hautes et basses, un conteneur qui défile lui rognerait l'ombre. */
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  padding-inline: calc(50vw - 50%);
+  /* Sans cela, une carte qui s'aimante viendrait se coller au bord de la
+     fenêtre : la zone d'aimantation doit s'arrêter au bord du conteneur. */
+  scroll-padding-inline: calc(50vw - 50%);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Le fondu est un calque, pas un masque : il se pose au bord de la fenêtre, et
+   les flèches (z-index plus haut) restent nettes par-dessus. Il s'efface du
+   côté déjà parcouru, qui n'a plus rien à annoncer — les deux états viennent du
+   JS, qui s'en sert aussi pour les flèches. */
+.pcar::before,
+.pcar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5rem;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.25s;
+}
+
+.pcar::before {
+  left: calc(50% - 50vw);
+  background: linear-gradient(to right, var(--bg-light), rgba(244, 247, 250, 0));
+}
+
+.pcar::after {
+  right: calc(50% - 50vw);
+  background: linear-gradient(to left, var(--bg-light), rgba(244, 247, 250, 0));
+}
+
+.pcar-at-start::before,
+.pcar-at-end::after {
+  opacity: 0;
+}
+
+.pricing-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.pcar-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  color: var(--primary-blue);
+  font-size: 1.7rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition:
+    opacity 0.2s,
+    background 0.2s;
+}
+
+.pcar-arrow:hover {
+  background: var(--bg-light);
+}
+
+.pcar-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Tout tient à l'écran : plus rien à faire défiler, donc plus de flèches. */
+.pcar.pcar-static .pcar-arrow {
+  display: none;
+}
+
+/* Les flèches suivent la piste jusqu'au bord de la fenêtre : posées au bord du
+   conteneur, celle de droite tomberait au milieu d'une carte. */
+.pcar-prev {
+  left: calc(50% - 50vw + 1rem);
+}
+
+.pcar-next {
+  right: calc(50% - 50vw + 1rem);
 }
 
 .pricing-card {
@@ -1265,6 +1408,8 @@ a {
   transition: all 0.3s;
   display: flex;
   flex-direction: column;
+  flex: 0 0 300px;
+  scroll-snap-align: start;
 }
 
 .pricing-card.featured {
@@ -1437,6 +1582,12 @@ input[type="date"] {
   .pricing-grid::-webkit-scrollbar {
     display: none;
     /* Chrome/Safari/Opera */
+  }
+
+  /* Le doigt fait défiler, et les cartes vont d'un bord à l'autre : une flèche
+     n'aurait plus qu'à se poser par-dessus une carte. */
+  .pcar-arrow {
+    display: none;
   }
 
   /* Slider Items */

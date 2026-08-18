@@ -366,7 +366,7 @@ prix.**
   Les devis d'avant l'application s'arrêtant à 367, le premier proposé est 368
   (`DEVIS_START_NUMBER` dans `lib/devis.js`). Il reste modifiable à la main.
 - **La formule se choisit en premier**, en tête de l'écran : les quatre
-  (P'tit Express, Simple, Standard, Luxe) s'y touchent du doigt, chacune avec
+  (P'tit Express, Simple, Standard, Complet) s'y touchent du doigt, chacune avec
   le tarif de départ annoncé par le site. **Le prix vient juste après**, dans
   son encadré doré. Le reste de l'écran ne fait que se corriger.
 - La formule remplit **deux listes** : ce qu'elle comprend, et ce qu'elle laisse au client. Les deux

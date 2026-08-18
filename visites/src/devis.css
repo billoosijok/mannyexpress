@@ -223,7 +223,7 @@
   flex: 1;
 }
 
-/* La formule Luxe ne laisse rien au client : sa liste, seule, prend toute la
+/* La formule Complet ne laisse rien au client : sa liste, seule, prend toute la
    largeur sur deux colonnes plutôt que de laisser la moitié droite vide. */
 .devis-listes-seule ul {
   column-count: 2;

@@ -208,7 +208,7 @@ export default function DevisDocument({ devis, frameRef }) {
                   ))}
                 </ul>
               </div>
-              {/* La formule Luxe ne laisse rien au client : la colonne
+              {/* La formule Complet ne laisse rien au client : la colonne
                   disparaît alors au lieu de s'afficher vide. */}
               {charge.length > 0 && (
                 <div>
